@@ -5,6 +5,8 @@ import random
 from copy import deepcopy
 import numpy as np
 
+global Move_list 
+Move_list = []
 # Use https://trinket.io/features/pygame to convert this to an online embedded game, when the 
 # Website is up
 #Webflow 
@@ -845,6 +847,13 @@ def remove_dict(Key_Dictionary,  coordinate):
             storedvalue = key
     Key_Dictionary.pop(storedvalue)
     return Key_Dictionary
+
+
+#    move_list = []
+#    for key,value in Key_Dictionary.items():
+#        if value == coordinate:
+#            move_list.append(key)
+
 # We need to define a way to reference all opponent dictionaries, we will reference the key dictionary and the pieces removed
 #from the key dictionary will go into the list of moves, which will be one general list
 #So all dictionaries will be referenced through a for loop, so we need a way to get all opponent dictionaries into one, we
@@ -856,11 +865,53 @@ def remove_dict(Key_Dictionary,  coordinate):
 
 
 def Multiple_Terminator_Move(Your_Dictionary, Dictionary_List, Key_Dictionary, Starting_count, \
-    Adjacency_Dict):
+    Adjacency_Dict, List_of_Moves):
     '''
     This is the brain of the game. It is the algorithm behind the computer's moves and logic.
+    This is meant for multiple AI players
     '''
     
+    #Ideas
+    # Each computer player needs to be able to access all winning lines of all other players not including
+    # itself, along with it's own individual dictionary, so we import the dictionary list, the individual
+    # dictionary, the key dictionary, the starting count, 
+
+    # We will need the computer's color and x or circle mark, to identify the computer
+    # 
+    # Instead of using each player's list of moves, we are going to use one general list
+    # So when the computer makes their move, and when we remove the key from the key dictionary, 
+    # We need to place that key in a list, which we will reference here
+    #
+    #    move_list = []
+    #    for key,value in Key_Dictionary.items():
+    #        if value == coordinate:
+    #            move_list.append(key)
+    #    
+    #    at the end of each computer player's turn, they will append the key through this function to
+    #    the global move_list, and we can then reference this list in our function   
+    #
+    #    Accessing the Dictionary List, Adjacency_Dict, List_of_Moves, Your_Dictionary,
+    #    will be the way it evaluates
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+
+    List_of_Moves = Move_list
+
     #Remaining Keys represents possible spots to move to in any given move
     Remaining_Keys = []
     for key in Key_Dictionary.keys():
