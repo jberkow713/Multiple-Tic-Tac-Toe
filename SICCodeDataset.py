@@ -17,14 +17,11 @@ import numpy as np
 import pandas as pd
 from pprint import pprint
 import json 
+import math
 
 
 # spacy for lemmatization
 import spacy
-
-# Plotting tools
-import pyLDAvis
-import pyLDAvis.gensim  
 
 
 DF = pd.read_csv("https://raw.githubusercontent.com/saintsjd/sic4-list/master/sic-codes.csv")
@@ -175,15 +172,15 @@ def get_word_vectors(words):
 
 #We then apply this vectorization function to the list of words in our Description list from the SIC Descriptions
     
-# pca = PCA(n_components=2)
+# pca = PCA(n_components=3)
 # pca.fit(get_word_vectors(Final_Big_List))
-# word_vecs_2d = pca.transform(get_word_vectors(Final_Big_List))
-# Two_D_List = []
-# for x in word_vecs_2d:
-#     Two_D_List.append(x.tolist())
+# word_vecs_3d = pca.transform(get_word_vectors(Final_Big_List))
+# Three_D_List = []
+# for x in word_vecs_3d:
+#     Three_D_List.append(x.tolist())
 
 # # Saving the dictionary to Json File
-# Vect_Dict = dict(zip(Final_Big_List, Two_D_List))
+# Vect_Dict = dict(zip(Final_Big_List, Three_D_List))
 
 
 # with open('Vect_Dict.json', 'w') as fp:
@@ -195,47 +192,107 @@ def get_word_vectors(words):
 # 
 #     
 
-Comp_Descript = "Sells and Manufactures computers to the public"
-with open('Vect_Dict.json') as f:
-    Vector_Dictionary = json.load(f)
 
 def Avg_Vector_Coordinate(Company_Description:str):
     '''
     This function takes in a string description, if words are in Vector Dictionary, converts their position to vectors, and takes
     Average of the x, and y coordinates, returns array
     '''
+    with open('Vect_Dict.json') as f:
+        Vector_Dictionary = json.load(f)
     A = tokenize(Company_Description)
     
     x_coord = 0
     y_coord = 0
+    z_coord = 0
     count = 0
     for x in A:
         for word, vector in Vector_Dictionary.items():
             if x == word:
                 x_coord += vector[0]
                 y_coord += vector[1]
+                z_coord += vector[2]
                 count +=1
     Final_X_Coord = x_coord / count
     Final_Y_coord = y_coord /count 
+    Final_Z_coord = z_coord /count 
     Position = []
     Position.append(Final_X_Coord)
     Position.append(Final_Y_coord)
+    Position.append(Final_Z_coord)
+
     return(Position)
 
-# print(Avg_Vector_Coordinate(Comp_Descript))
-Coordinate_Description_List = []
-for x in Description_List:
-    Coordinates = Avg_Vector_Coordinate(x)
-    Coordinate_Description_List.append(Coordinates)
+# print(Avg_Vector_Coordinate("sells computers"))
+# Coordinate_Description_List = []
+# for x in Description_List:
+#     Coordinates = Avg_Vector_Coordinate(x)
+#     Coordinate_Description_List.append(Coordinates)
 
-Vect_Dict_Description_List = dict(zip(Description_List, Coordinate_Description_List))
-with open('SIC_Description_Dict.json', 'w') as fp:
-    json.dump(Vect_Dict_Description_List, fp)
-#We now have a Vector_Dict_Description_list with a 2d vector for EACH description, 
+# Vect_Dict_Description_List = dict(zip(Description_List, Coordinate_Description_List))
+# with open('SIC_Description_Dict.json', 'w') as fp:
+#     json.dump(Vect_Dict_Description_List, fp)
+
+
+#We now have a Vector_Dict_Description_list with a 2d average vector position for EACH description, 
 # We want to take a description, run it through the Avg_Vector_coordinate function,
 # and take that 2d array, and find which of the keys in the SIC_Description_Dict, it is closest to in space
 # by comparing values, euclidean distance, then return the key
-# So this is going to be a totally new function:
+#First, let's make helper function for finding distance between description list vectors and actual
+# Company description vector
+
+
+
+# def Euclidean_distance(Point_A, Point_B):
+
+
+def Find_Minimum_Distance_Description(Company_Description:str):
+    '''
+    Point A = [x, y] type list,
+    '''
+    with open('SIC_Description_Dict.json') as f:
+        Description_Vector_Dictionary = json.load(f)
+    # Distance_list = []
+    # for Description, Coordinate in Description_Vector_Dictionary.items():
+    #     Distance_list.append(Coordinate)
+    # print(Distance_list)
+
+    Distance_list = []
+    Coordinate_list = []
+    Point_A = Avg_Vector_Coordinate(Company_Description)
+
+    for Description, Coordinate in Description_Vector_Dictionary.items():
+        distance = math.sqrt(sum([(a - b) ** 2 for a, b in zip(Point_A, Coordinate)]))
+        Coordinate_list.append(Coordinate)
+        Distance_list.append(distance)
+    #Dictionary for reference later, of coordinates and their distances to the point
+    #Had to convert to tuples
+    tuple_list = tuple(tuple(x) for x in Coordinate_list)
+    Point_to_Point_Dict = dict(zip(tuple_list, Distance_list))
+
+    sorted_list = sorted(Distance_list)
+    Closest = (sorted_list[0])
+    #Closest is a value in the Point_to_Point_Dict
+    Coord_needed = []
+    for coordinate, distance in Point_to_Point_Dict.items():
+        if Closest == distance:
+            Coord_needed.append(coordinate)
+    #Now that we have coordinate of closest point, go back to SIC_Desc_Dictionary, and match up 
+    # With actual description
+    SIC_Description_Coord = list(Coord_needed[0])
+
+    Closest_Description = []
+    for Description, Coordinate in Description_Vector_Dictionary.items():
+        if SIC_Description_Coord == Coordinate:
+            Closest_Description.append(Description)
+    return Closest_Description[0]
+            
+
+print(Find_Minimum_Distance_Description("creates computer products and sells to financial companies"))
+
+#A great first step, will need more data and experimentation to make it more accurate
+
+
 
 
 
