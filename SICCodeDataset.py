@@ -20,7 +20,9 @@ import json
 import math
 
 
-# spacy for lemmatization
+
+
+
 import spacy
 
 
@@ -96,6 +98,7 @@ while Len_List > 0:
 #Finally works! List of Dictionaries, with SIC Codes as KEYS and Descriptions as Values
 
 Final_Dict = dict(zip(List_of_Divisions, Dict_List))
+
 SIC_Keys = []
 # print(Final_Dict)
 for x in Final_Dict.values():
@@ -163,6 +166,7 @@ for token in Stemmed_List:
     if token not in STOP_WORDS:
         if token not in Final_Big_List:
             Final_Big_List.append(token)
+# print(Final_Big_List)            
 
 #Final Big_List represents all the words in our Description List, tokenized and everything
 
@@ -173,11 +177,16 @@ def get_word_vectors(words):
 #We then apply this vectorization function to the list of words in our Description list from the SIC Descriptions
     
 # pca = PCA(n_components=3)
-# pca.fit(get_word_vectors(Final_Big_List))
-# word_vecs_3d = pca.transform(get_word_vectors(Final_Big_List))
-# Three_D_List = []
-# for x in word_vecs_3d:
-#     Three_D_List.append(x.tolist())
+# pca.fit(get_word_vectors(Description_List))
+# new_word_vecs_3d = pca.transform(get_word_vectors(Description_List))
+# New_Three_D_List = []
+# for x in new_word_vecs_3d:
+#     New_Three_D_List.append(x.tolist())
+# print(New_Three_D_List)
+# Full_Description_Dict =  dict(zip(Description_List, New_Three_D_List))
+
+# with open('Full_Description_Vect_Dict.json', 'w') as fp:
+#     json.dump(Full_Description_Dict, fp) 
 
 # # Saving the dictionary to Json File
 # Vect_Dict = dict(zip(Final_Big_List, Three_D_List))
@@ -288,16 +297,7 @@ def Find_Minimum_Distance_Description(Company_Description:str):
     return Closest_Description[0]
             
 
-print(Find_Minimum_Distance_Description("creates computer products and sells to financial companies"))
-
 #A great first step, will need more data and experimentation to make it more accurate
-
-
-
-
-
-
-# print(len(Description_List))
 
 def ADVANCED_SIC_SEARCH(SIC_CODE):
     '''
@@ -322,11 +322,11 @@ def ADVANCED_SIC_SEARCH(SIC_CODE):
             SIC_DOC.append(x)
         
         tfidf = TfidfVectorizer(stop_words='english', 
-                        ngram_range=(1,2),
-                        max_df=400,
+                        ngram_range=(1,5),
+                        max_df=50,
                         min_df=1,
                         tokenizer=tokenize,
-                        max_features=5000)
+                        max_features=None)
 
         dtm = tfidf.fit_transform(SIC_DOC)
         dtm = pd.DataFrame(dtm.todense(), columns=tfidf.get_feature_names())
@@ -374,66 +374,10 @@ def ADVANCED_SIC_SEARCH(SIC_CODE):
 
         return(Descript) 
 
+print(Find_Minimum_Distance_Description(" rents movies to local consumers "))
+print(ADVANCED_SIC_SEARCH(" rents movies to local consumers "))
+# print(SIC_SEARCH(112))
+# print(Description_List)
 
-
-# print(ADVANCED_SIC_SEARCH("Computer sales in a dynamic environment"))
-
-# pos_words = []
-# neg_words = []
-# for word, distance in Vect_Dict.items():
-#     if distance[0] >= 0 :
-#         pos_words.append(word)
-#     elif distance[0] <= 0:
-#         neg_words.append(word)
-      
-# pos_distances = []
-# for x in pos_words:
-#     for word, distance in Vect_Dict.items():
-#         if x == word:
-#             pos_distances.append(distance[0])
-# neg_distances = []
-# for x in neg_words:
-#     for word, distance in Vect_Dict.items():
-#         if x == word:
-#             neg_distances.append(distance[0])            
-# sorted_pos_distances = sorted(pos_distances)
-# sorted_neg_distances = sorted(neg_distances, reverse=True)
-
-# Pos_sorted = []
-# for x in sorted_pos_distances:
-#     for word, distance in Vect_Dict.items():
-#         if x == distance:
-#             Pos_sorted.append(word)
-# Neg_sorted = []
-# for x in sorted_neg_distances:
-#     for word, distance in Vect_Dict.items():
-#         if x == distance:
-#             Neg_sorted.append(word)
-
-# Pos_Sorted_Words = dict(zip(Pos_sorted, sorted_pos_distances))
-# Neg_Sorted_Words = dict(zip(Neg_sorted, sorted_neg_distances))
-# print(Pos_Sorted_Words)
-# print(Neg_Sorted_Words)
-
-# Pos_dict = {k: v for v, k in enumerate(Pos_sorted)}
-# Neg_dict = {k: v for v, k in enumerate(Neg_sorted)}
-# print(Neg_dict)
-
-# print(word_vecs_2d)
-
-# plt.figure(figsize=(20,15))
-
-# # plot the scatter plot of where the words will be
-# plt.scatter(word_vecs_2d[:,0], word_vecs_2d[:,1])
-
-# # for each word and coordinate pair: draw the text on the plot
-# for word, coord in zip(Final_Big_List, word_vecs_2d):
-#     x, y = coord
-#     plt.text(x, y, word, size= 15)
-
-# # show the plot
-# plt.show()
-
-#Did not work that well, trying other type of analysis
 
 
