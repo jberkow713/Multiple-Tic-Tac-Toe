@@ -169,12 +169,13 @@ def cosine_sentence(v1,v2, model):
     else:
         return 0.0
 
-def get_relevant_sentence(input_str:str):
+def get_relevant_sentence_desc(input_str:str):
 
     nlp = spacy.load("en_core_web_sm")
     input_str = input_str.replace(',','')
     input_str = input_str.replace('.', '')
     input_str = input_str.replace('-', ' ')
+    input_str = input_str.replace('&', 'and')
     inpt = input_str.lower()
     
     doc = nlp(inpt)
@@ -185,19 +186,30 @@ def get_relevant_sentence(input_str:str):
     Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON']
     # Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
     Acceptable_words = []
+    #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
-        if POS in Acceptable_POS:
-            Acceptable_words.append(word)
+        #Force words to be 3 letters or greater to count
+        if len(word)>=3:
+
+            if POS in Acceptable_POS:
+                Acceptable_words.append(word)
+            #Count Nouns and Verbs Double in the average by doubling their specific counts
+            if POS == 'NOUN':
+                Acceptable_words.append(word)
+            if POS == 'VERB':
+                Acceptable_words.append(word)    
+            
+                
     sentence = ' '.join(word for word in Acceptable_words)    
 
     return(sentence)
 
-def Advanced_Avg_sentence_vec(sentence, model):
+def Advanced_Avg_sentence_vec_desc(sentence, model):
     '''
     Helper function used to find the average vector for all words in sentence
     Will improve using parts of speech, etc
     '''
-    sentence = get_relevant_sentence(sentence)
+    sentence = get_relevant_sentence_desc(sentence)
     #Have to turn this list of relevant words into a new string
     # sentence = ' '.join(word for word in sentence)
 
@@ -207,12 +219,61 @@ def Advanced_Avg_sentence_vec(sentence, model):
         data.append(x)
     Avg_Vector =  np.average(data, axis=0)
     return Avg_Vector
+
+def get_relevant_sentence_industry(input_str:str):
+
+    nlp = spacy.load("en_core_web_sm")
+    input_str = input_str.replace(',','')
+    input_str = input_str.replace('.', '')
+    input_str = input_str.replace('-', ' ')
+    input_str = input_str.replace('&', 'and')
+    inpt = input_str.lower()
+    
+    doc = nlp(inpt)
+    x = [token.pos_ for token in doc]
+    text = input_str.split()
+    
+    Text_Dict = dict(zip(text, x))
+    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON']
+    # Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
+    Acceptable_words = []
+    #Weighting certain words by adding them double for specific tenses
+    for word, POS in Text_Dict.items():
+        if POS in Acceptable_POS:
+            Acceptable_words.append(word)
+        # if POS == 'NOUN':
+        #     Acceptable_words.append(word)
+        # if POS == 'VERB':
+        #     Acceptable_words.append(word)    
+            
+                
+    sentence = ' '.join(word for word in Acceptable_words)    
+
+    return(sentence)
+def Advanced_Avg_sentence_vec_industry(sentence, model):
+    '''
+    Helper function used to find the average vector for all words in sentence
+    Will improve using parts of speech, etc
+    '''
+    sentence = get_relevant_sentence_industry(sentence)
+    #Have to turn this list of relevant words into a new string
+    # sentence = ' '.join(word for word in sentence)
+
+    Vectors = get_w2v(sentence,model)
+    data = []
+    for x in Vectors:
+        data.append(x)
+    Avg_Vector =  np.average(data, axis=0)
+    return Avg_Vector
+
 def Advanced_cosine_sentence(v1,v2, model):
     '''
     Finds cosine similarity between 2 sentences
+    v1:First input is the company description
+    v2:Second input is the industry description, aka SIC Code, etc...
     '''
-    v1 = Advanced_Avg_sentence_vec(v1, model)
-    v2 = Advanced_Avg_sentence_vec(v2, model)
+    v1 = Advanced_Avg_sentence_vec_desc(v1, model)
+    v2 = Advanced_Avg_sentence_vec_industry(v2, model)
 
     if norm(v1) > 0 and norm(v2) > 0:
         return dot(v1, v2) / (norm(v1) * norm(v2))
@@ -238,8 +299,8 @@ G = 'STATE COMMERCIAL BANKS'
 H = 'retail-variety stores'
 print(Advanced_cosine_sentence(D, H, model))
 print(cosine_sentence(D,H, model))
-print(get_relevant_sentence(D))
-print(get_relevant_sentence(H))
+print(get_relevant_sentence_desc(D))
+print(get_relevant_sentence_industry(H))
 
 
 #So far both models are close, quite predictive in terms of SIC Code and company description
