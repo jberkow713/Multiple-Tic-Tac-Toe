@@ -181,8 +181,8 @@ def get_relevant_sentence(input_str:str):
     text = input_str.split()
     
     Text_Dict = dict(zip(text, x))
-    # Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON']
-    Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ']
+    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON']
+    # Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
     Acceptable_words = []
     for word, POS in Text_Dict.items():
         if POS in Acceptable_POS:
@@ -222,20 +222,22 @@ def Advanced_cosine_sentence(v1,v2, model):
 
 # A =Avg_sentence_vec("Hi, I am a battleship", model)
 # B= Avg_sentence_vec("Hello, I am a cruise ship", model)
-A = "American multinational technology company that specializes in Internet-related services and products, which include online advertising technologies, a search engine, cloud computing, software, and hardware."
-B = "provides mail services to the public. The Company specializes in residential, official, business, election, and political mail delivery"
+A = "engages in retail and wholesale business. The Company offers an assortment of merchandise and services at everyday low prices. ... The Walmart International segment manages supercenters, supermarkets, hypermarkets, warehouse clubs, and cash & carry outside of the United States."
+B = "designs, manufactures and markets mobile communication and media devices, personal computers and portable digital music players. The Company sells a range of related software, services, accessories, networking solutions, and third-party digital content and applications"
 # print(Advanced_cosine_sentence(A, B, model))
 # print(cosine_sentence(A,B,model))
 # print('--------------')
 
 
-C = 'home improvement retailer. The Company offers its customers an assortment of building materials, home improvement products, lawn and garden products, and decor products and provide a number of services, including home improvement installation services and tool and equipment rental.'
+C = "world's leading specialist in providing institutional investors with investment servicing, investment management and investment research and trading services"
 D = 'home improvement company. The Company operates approximately 2,370 home improvement and hardware stores. The Company offers a range of products for maintenance, repair, remodeling and decorating.'
-E = 'Information Retrieval Services'
-print(Advanced_cosine_sentence(A, E, model))
-print(cosine_sentence(A,E, model))
-print(get_relevant_sentence(A))
-print(get_relevant_sentence(E))
+E = 'Department Stores'
+F = 'electronic computers'
+G = 'STATE COMMERCIAL BANKS'
+print(Advanced_cosine_sentence(C, G, model))
+print(cosine_sentence(C,G, model))
+print(get_relevant_sentence(C))
+print(get_relevant_sentence(G))
 #Advanced Regular
 # 11          1111
  
