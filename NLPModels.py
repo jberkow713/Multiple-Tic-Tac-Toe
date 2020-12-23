@@ -174,13 +174,15 @@ def get_relevant_sentence(input_str:str):
     nlp = spacy.load("en_core_web_sm")
     input_str = input_str.replace(',','')
     input_str = input_str.replace('.', '')
-    inpt = input_str
+    inpt = input_str.lower()
     
     doc = nlp(inpt)
     x = [token.pos_ for token in doc]
     text = input_str.split()
+    
     Text_Dict = dict(zip(text, x))
-    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON']
+    # Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON']
+    Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ']
     Acceptable_words = []
     for word, POS in Text_Dict.items():
         if POS in Acceptable_POS:
@@ -220,14 +222,20 @@ def Advanced_cosine_sentence(v1,v2, model):
 
 # A =Avg_sentence_vec("Hi, I am a battleship", model)
 # B= Avg_sentence_vec("Hello, I am a cruise ship", model)
-A = "a holding company, which engages in the provision of a portfolio of transportation, e-commerce, and business services"
+A = "American multinational technology company that specializes in Internet-related services and products, which include online advertising technologies, a search engine, cloud computing, software, and hardware."
 B = "provides mail services to the public. The Company specializes in residential, official, business, election, and political mail delivery"
-print(Advanced_cosine_sentence(A, B, model))
-print(cosine_sentence(A,B,model))
-print('--------------')
+# print(Advanced_cosine_sentence(A, B, model))
+# print(cosine_sentence(A,B,model))
+# print('--------------')
 
 
 C = 'home improvement retailer. The Company offers its customers an assortment of building materials, home improvement products, lawn and garden products, and decor products and provide a number of services, including home improvement installation services and tool and equipment rental.'
 D = 'home improvement company. The Company operates approximately 2,370 home improvement and hardware stores. The Company offers a range of products for maintenance, repair, remodeling and decorating.'
-print(Advanced_cosine_sentence(C, D, model))
-print(cosine_sentence(C,D, model))
+E = 'Information Retrieval Services'
+print(Advanced_cosine_sentence(A, E, model))
+print(cosine_sentence(A,E, model))
+print(get_relevant_sentence(A))
+print(get_relevant_sentence(E))
+#Advanced Regular
+# 11          1111
+ 
