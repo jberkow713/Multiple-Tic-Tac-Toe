@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from sklearn.datasets import fetch_20newsgroups
 import pandas as pd
 import pandas as pd
@@ -13,15 +14,166 @@ from sklearn.decomposition import PCA
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
-import numpy as np
 import re
-import numpy as np
-import pandas as pd
 from pprint import pprint
 import json 
 import math
-import spacy
+import collections
+import csv
+import sys
+import codecs
 from collections import defaultdict
+import string
+import numpy as np
+from numpy import dot
+from numpy.linalg import norm
 
 
-#We want to create a model based on the Token_Dict created in the PretrainedModel file
+
+
+def hasNumbers(inputString):
+    return inputString.isalpha()
+    # return any(char.isalpha() for char in inputString)
+
+def convert_to_binary(embedding_path):
+    """
+    Here, it takes path to embedding text file provided by glove.
+    :param embedding_path: takes path of the embedding which is in text format or any format other than binary.
+    :return: a binary file of the given embeddings which takes a lot less time to load.
+    """
+    f = codecs.open(embedding_path + ".txt", 'r', encoding='utf-8')
+    wv = []
+    
+    with codecs.open(embedding_path + ".vocab", "w", encoding='utf-8') as vocab_write:
+        count = 0
+        
+        for line in f:
+            if count == 0:
+                count +=1
+            elif count>0 and count <500000:
+                splitlines = line.split()
+                
+                if hasNumbers(splitlines[0].strip())== True:
+                    vocab_write.write(splitlines[0].strip())
+                    vocab_write.write("\n")
+                    wv.append([float(val) for val in splitlines[1:]])
+                    count +=1
+               
+         
+            else:
+                
+                break    
+                
+                    
+    np.save(embedding_path + ".npy", np.array(wv))
+
+# convert_to_binary("glove.42B.300d")
+
+def load_embeddings_binary(embeddings_path):
+    """
+    It loads embedding provided by glove which is saved as binary file. Loading of this model is
+    about  second faster than that of loading of txt glove file as model.
+    :param embeddings_path: path of glove file.
+    :return: glove model
+    """
+    with codecs.open(embeddings_path + '.vocab', 'r', 'utf-8') as f_in:
+        index2word = [line.strip() for line in f_in]
+    wv = np.load(embeddings_path + '.npy')
+    model = {}
+    for i, w in enumerate(index2word):
+        model[w] = wv[i]
+    # with open('Embedding_Model.json', 'w') as fp:
+    #     json.dump(model, fp) 
+    return model
+
+model = load_embeddings_binary("glove.42B.300d")
+# with open('Embedding_Model.json', 'w') as fp:
+#     json.dump(model, fp)    
+
+def get_w2v(sentence, model):
+    """
+    :param sentence: inputs a single sentences whose word embedding is to be extracted.
+    :param model: inputs glove model.
+    :return: returns numpy array containing word embedding of all words    in input sentence.
+    """
+    list_vec = []
+    b = sentence.lower()
+    b = re.sub(r'[^\w\s]','',b)
+    A = b.split()
+    for word in A:
+        for k, v in model.items():
+            if k == word:
+                list_vec.append(v)
+    return list_vec
+    # return np.array([model.get(val, np.zeros(300)) for val in sentence.split()], dtype=np.float64)
+
+# print(get_w2v("how are you doing?", model))
+# print(model["hello"])
+# print(model["there"])
+def vec(word,model):
+    #Gets vector for specific word, given specific model
+    for k,v in model.items():
+        if word == k:
+            return v
+# print(vec("cow", model))        
+
+# cosine similarity
+def cosine(v1, v2, model):
+    #Compares distances between 2 words in terms of cosine similarity 
+    v1 = vec(v1, model)
+    v2 = vec(v2, model)
+    
+    if norm(v1) > 0 and norm(v2) > 0:
+        return dot(v1, v2) / (norm(v1) * norm(v2))
+    else:
+        return 0.0
+# print(cosine('dog', 'puppy', model))        
+
+# print(cosine('dog', 'puppy', model) > cosine('horse', 'chicken', model))
+
+
+def closest(model, vec_to_check, n=10):
+    #Slow function, takes word, compares distance to all words in model, finds closest, will improve for speed
+    token_list = []
+    for key in model.keys():
+        token_list.append(key)
+
+    return sorted(token_list,
+                  key=lambda x: cosine(vec_to_check, vec(x,model), model),
+                  reverse=True)[:n]
+
+# print(closest(model, 'pants', n=10 ))
+
+
+def Avg_sentence_vec(sentence, model):
+    '''
+    Helper function used to find the average vector for all words in sentence
+    Will improve using parts of speech, etc
+    '''
+    Vectors = get_w2v(sentence,model)
+    data = []
+    for x in Vectors:
+        data.append(x)
+    Avg_Vector =  np.average(data, axis=0)
+    return Avg_Vector   
+
+def cosine_sentence(v1,v2, model):
+    '''
+    Finds cosine similarity between 2 sentences
+    '''
+    v1 = Avg_sentence_vec(v1, model)
+    v2 = Avg_sentence_vec(v2, model)
+
+    if norm(v1) > 0 and norm(v2) > 0:
+        return dot(v1, v2) / (norm(v1) * norm(v2))
+    else:
+        return 0.0
+
+
+
+# A =Avg_sentence_vec("Hi, I am a battleship", model)
+# B= Avg_sentence_vec("Hello, I am a cruise ship", model)
+# A = "a holding company, which engages in the provision of a portfolio of transportation, e-commerce, and business services"
+# B = "provides mail services to the public. The Company specializes in residential, official, business, election, and political mail delivery"
+# print(cosine_sentence(A, B, model))
+#.95, really good
