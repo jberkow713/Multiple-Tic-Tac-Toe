@@ -105,11 +105,7 @@ def get_w2v(sentence, model):
             if k == word:
                 list_vec.append(v)
     return list_vec
-    # return np.array([model.get(val, np.zeros(300)) for val in sentence.split()], dtype=np.float64)
 
-# print(get_w2v("how are you doing?", model))
-# print(model["hello"])
-# print(model["there"])
 def vec(word,model):
     #Gets vector for specific word, given specific model
     for k,v in model.items():
@@ -117,7 +113,6 @@ def vec(word,model):
             return v
 # print(vec("cow", model))        
 
-# cosine similarity
 def cosine(v1, v2, model):
     #Compares distances between 2 words in terms of cosine similarity 
     v1 = vec(v1, model)
@@ -127,10 +122,6 @@ def cosine(v1, v2, model):
         return dot(v1, v2) / (norm(v1) * norm(v2))
     else:
         return 0.0
-# print(cosine('dog', 'puppy', model))        
-
-# print(cosine('dog', 'puppy', model) > cosine('horse', 'chicken', model))
-
 
 def closest(model, vec_to_check, n=10):
     #Slow function, takes word, compares distance to all words in model, finds closest, will improve for speed
@@ -211,8 +202,7 @@ def Advanced_Avg_sentence_vec_desc(sentence, model):
     '''
     sentence = get_relevant_sentence_desc(sentence)
     #Have to turn this list of relevant words into a new string
-    # sentence = ' '.join(word for word in sentence)
-
+    
     Vectors = get_w2v(sentence,model)
     data = []
     for x in Vectors:
@@ -257,8 +247,7 @@ def Advanced_Avg_sentence_vec_industry(sentence, model):
     '''
     sentence = get_relevant_sentence_industry(sentence)
     #Have to turn this list of relevant words into a new string
-    # sentence = ' '.join(word for word in sentence)
-
+    
     Vectors = get_w2v(sentence,model)
     data = []
     for x in Vectors:
@@ -280,16 +269,9 @@ def Advanced_cosine_sentence(v1,v2, model):
     else:
         return 0.0
 
-# print(get_POS("hi I am a tuba"))    
 
-# A =Avg_sentence_vec("Hi, I am a battleship", model)
-# B= Avg_sentence_vec("Hello, I am a cruise ship", model)
 A = "engages in retail and wholesale business. The Company offers an assortment of merchandise and services at everyday low prices. ... The Walmart International segment manages supercenters, supermarkets, hypermarkets, warehouse clubs, and cash & carry outside of the United States."
 B = "designs, manufactures and markets mobile communication and media devices, personal computers and portable digital music players. The Company sells a range of related software, services, accessories, networking solutions, and third-party digital content and applications"
-# print(Advanced_cosine_sentence(A, B, model))
-# print(cosine_sentence(A,B,model))
-# print('--------------')
-
 
 C = "world's leading specialist in providing institutional investors with investment servicing, investment management and investment research and trading services"
 D = "general merchandise retailer selling products through its stores and digital channels. The Company's general merchandise stores offer an edited food assortment, including perishables, dry grocery, dairy and frozen items"
