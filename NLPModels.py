@@ -235,14 +235,17 @@ D = "general merchandise retailer selling products through its stores and digita
 E = 'Department Stores'
 F = 'electronic computers'
 G = 'STATE COMMERCIAL BANKS'
-H = 'RETAIL-VARIETY STORES'
-print(Advanced_cosine_sentence(A, E, model))
-print(cosine_sentence(A,E, model))
-print(get_relevant_sentence(A))
-print(get_relevant_sentence(E))
+H = 'retail-variety stores'
+print(Advanced_cosine_sentence(D, H, model))
+print(cosine_sentence(D,H, model))
+print(get_relevant_sentence(D))
+print(get_relevant_sentence(H))
 
 
 #So far both models are close, quite predictive in terms of SIC Code and company description
 #Advanced model may be better in the end, will just have to keep testing
 #Next step is to integrate it with SIC codes, compare it's code to ALL SIC codes, and have it return one with 
 # highest cosine similarity 
+# But we dont need to check within all the branches,
+# We can run the description first against all the major SIC division keywords, and return the top 1 or 2, then just run the code
+# Against all of the descriptions within those individual branches, to cut down on time tremendously
