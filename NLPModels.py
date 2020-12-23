@@ -169,19 +169,65 @@ def cosine_sentence(v1,v2, model):
     else:
         return 0.0
 
-def get_POS(input_str:str):
+def get_relevant_sentence(input_str:str):
 
     nlp = spacy.load("en_core_web_sm")
+    input_str = input_str.replace(',','')
+    input_str = input_str.replace('.', '')
     inpt = input_str
+    
     doc = nlp(inpt)
     x = [token.pos_ for token in doc]
-    return(x)
+    text = input_str.split()
+    Text_Dict = dict(zip(text, x))
+    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON']
+    Acceptable_words = []
+    for word, POS in Text_Dict.items():
+        if POS in Acceptable_POS:
+            Acceptable_words.append(word)
+    sentence = ' '.join(word for word in Acceptable_words)    
 
-print(get_POS("hi I am a tuba"))    
+    return(sentence)
+
+def Advanced_Avg_sentence_vec(sentence, model):
+    '''
+    Helper function used to find the average vector for all words in sentence
+    Will improve using parts of speech, etc
+    '''
+    sentence = get_relevant_sentence(sentence)
+    #Have to turn this list of relevant words into a new string
+    # sentence = ' '.join(word for word in sentence)
+
+    Vectors = get_w2v(sentence,model)
+    data = []
+    for x in Vectors:
+        data.append(x)
+    Avg_Vector =  np.average(data, axis=0)
+    return Avg_Vector
+def Advanced_cosine_sentence(v1,v2, model):
+    '''
+    Finds cosine similarity between 2 sentences
+    '''
+    v1 = Advanced_Avg_sentence_vec(v1, model)
+    v2 = Advanced_Avg_sentence_vec(v2, model)
+
+    if norm(v1) > 0 and norm(v2) > 0:
+        return dot(v1, v2) / (norm(v1) * norm(v2))
+    else:
+        return 0.0
+
+# print(get_POS("hi I am a tuba"))    
 
 # A =Avg_sentence_vec("Hi, I am a battleship", model)
 # B= Avg_sentence_vec("Hello, I am a cruise ship", model)
-# A = "a holding company, which engages in the provision of a portfolio of transportation, e-commerce, and business services"
-# B = "provides mail services to the public. The Company specializes in residential, official, business, election, and political mail delivery"
-# print(cosine_sentence(A, B, model))
-#.95, really good
+A = "a holding company, which engages in the provision of a portfolio of transportation, e-commerce, and business services"
+B = "provides mail services to the public. The Company specializes in residential, official, business, election, and political mail delivery"
+print(Advanced_cosine_sentence(A, B, model))
+print(cosine_sentence(A,B,model))
+print('--------------')
+
+
+C = 'home improvement retailer. The Company offers its customers an assortment of building materials, home improvement products, lawn and garden products, and decor products and provide a number of services, including home improvement installation services and tool and equipment rental.'
+D = 'home improvement company. The Company operates approximately 2,370 home improvement and hardware stores. The Company offers a range of products for maintenance, repair, remodeling and decorating.'
+print(Advanced_cosine_sentence(C, D, model))
+print(cosine_sentence(C,D, model))
