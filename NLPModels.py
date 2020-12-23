@@ -169,7 +169,15 @@ def cosine_sentence(v1,v2, model):
     else:
         return 0.0
 
+def get_POS(input_str:str):
 
+    nlp = spacy.load("en_core_web_sm")
+    inpt = input_str
+    doc = nlp(inpt)
+    x = [token.pos_ for token in doc]
+    return(x)
+
+print(get_POS("hi I am a tuba"))    
 
 # A =Avg_sentence_vec("Hi, I am a battleship", model)
 # B= Avg_sentence_vec("Hello, I am a cruise ship", model)
