@@ -174,6 +174,7 @@ def get_relevant_sentence(input_str:str):
     nlp = spacy.load("en_core_web_sm")
     input_str = input_str.replace(',','')
     input_str = input_str.replace('.', '')
+    input_str = input_str.replace('-', ' ')
     inpt = input_str.lower()
     
     doc = nlp(inpt)
@@ -230,14 +231,18 @@ B = "designs, manufactures and markets mobile communication and media devices, p
 
 
 C = "world's leading specialist in providing institutional investors with investment servicing, investment management and investment research and trading services"
-D = 'home improvement company. The Company operates approximately 2,370 home improvement and hardware stores. The Company offers a range of products for maintenance, repair, remodeling and decorating.'
+D = "general merchandise retailer selling products through its stores and digital channels. The Company's general merchandise stores offer an edited food assortment, including perishables, dry grocery, dairy and frozen items"
 E = 'Department Stores'
 F = 'electronic computers'
 G = 'STATE COMMERCIAL BANKS'
-print(Advanced_cosine_sentence(C, G, model))
-print(cosine_sentence(C,G, model))
-print(get_relevant_sentence(C))
-print(get_relevant_sentence(G))
-#Advanced Regular
-# 11          1111
- 
+H = 'RETAIL-VARIETY STORES'
+print(Advanced_cosine_sentence(A, E, model))
+print(cosine_sentence(A,E, model))
+print(get_relevant_sentence(A))
+print(get_relevant_sentence(E))
+
+
+#So far both models are close, quite predictive in terms of SIC Code and company description
+#Advanced model may be better in the end, will just have to keep testing
+#Next step is to integrate it with SIC codes, compare it's code to ALL SIC codes, and have it return one with 
+# highest cosine similarity 
