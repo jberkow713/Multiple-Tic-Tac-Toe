@@ -297,14 +297,31 @@ E = 'Department Stores'
 F = 'electronic computers'
 G = 'STATE COMMERCIAL BANKS'
 H = 'retail-variety stores'
+
+I = "fast food, limited service restaurant with more than 35,000 restaurants in over 100 countries."
+J = "Fast-food restaurant, chain"
+
+
+#Apple, industry
+print(Advanced_cosine_sentence(B, F, model))
+print(cosine_sentence(B,F, model))
+print(get_relevant_sentence_desc(B))
+print(get_relevant_sentence_industry(F))
+
+#Target, industry
 print(Advanced_cosine_sentence(D, H, model))
 print(cosine_sentence(D,H, model))
 print(get_relevant_sentence_desc(D))
 print(get_relevant_sentence_industry(H))
 
+#Mcdonalds, industry
+print(Advanced_cosine_sentence(I, J, model))
+print(cosine_sentence(I,J, model))
+print(get_relevant_sentence_desc(I))
+print(get_relevant_sentence_industry(J))
 
-#So far both models are close, quite predictive in terms of SIC Code and company description
-#Advanced model may be better in the end, will just have to keep testing
+
+#Advanced model seems like it has more potential
 #Next step is to integrate it with SIC codes, compare it's code to ALL SIC codes, and have it return one with 
 # highest cosine similarity 
 # But we dont need to check within all the branches,
