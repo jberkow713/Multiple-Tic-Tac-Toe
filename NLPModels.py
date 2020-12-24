@@ -50,7 +50,7 @@ def convert_to_binary(embedding_path):
         for line in f:
             if count == 0:
                 count +=1
-            elif count>0 and count <500000:
+            elif count>0 and count <300000:
                 splitlines = line.split()
                 
                 if hasNumbers(splitlines[0].strip())== True:
@@ -283,7 +283,7 @@ H = 'retail-variety stores'
 
 I = "fast food, limited service restaurant with more than 35,000 restaurants in over 100 countries."
 J = "Fast-food restaurant, chain"
-
+K = "vast Internet-based enterprise that sells books, music, movies, housewares, electronics, toys, and many other goods, either directly or as the middleman between other retailers "
 
 #Apple, industry
 print(Advanced_cosine_sentence(B, F, model))
@@ -313,6 +313,19 @@ print(get_relevant_sentence_industry(J))
 
 #This is a list of main branch descriptions:
 # We can run Advanced Cosine Similarity to check for specific industry
+'''
+0100-0999 "A: Agriculture, Forestry, Fishing"
+1000-1499 "B: Mining"
+1500-1799 "C: Construction"
+1800-1999 not used
+2000-3999 "D: Manufacturing"
+4000-4999 "E: Transportation, Communcations, Electric, Gas, and Sanitation"
+5000-5199 "F: Wholesale Trade"
+5200-5999 "G: Retail Trade"
+6000-6799 "H: Finance, Insurance, Real Estate"
+7000-8999 "I: Services"
+9100-9729 "J: Publc Administration"
+'''
 def find_SEC_branch(company_descript, model):
     List_Codes = ["Agriculture, Forestry, Fishing", "Mining" ,"Construction" , "Manufacturing",\
         "Transportation, Communcations, Electric, Gas, and Sanitation", "Wholesale Trade", "Retail Trade",\
@@ -324,14 +337,28 @@ def find_SEC_branch(company_descript, model):
         Similarities.append(y)
     
     x = dict(zip(List_Codes, Similarities))
+    Top_2 = []
+    Similarity = sorted(Similarities, reverse=True)
+    Top_2.append(Similarity[0])
+    Top_2.append(Similarity[1])
 
-    best_topic = max(x, key=x.get)
-    return(best_topic)
+    Relevant_Industries = []
+    for y in Top_2:
+        for k, v in x.items():
+            if y == v:
+                Relevant_Industries.append(k)
 
-print(find_SEC_branch(C, model))
+            
+
+    # best_topic = max(x, key=x.get)
+    return(Relevant_Industries)
+print(get_relevant_sentence_desc(K))
+print(find_SEC_branch(K, model))
 #Mcdonalds matched up to retail Trade: Correct
 #State Street matched up to Finance, Insurance, Real Estate: Correct
 #Apple matched up with Services: Correct
+#Amazon:Correct
+#Best Buy: Incorrect
 
 #Decide if we want to go further and find deeper SIC Code description by running against all possible descriptions inside
 #Top chosen 1 or 2 branches...or maybe just get the main branch as classification
