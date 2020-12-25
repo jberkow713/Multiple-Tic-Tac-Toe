@@ -90,6 +90,29 @@ model = load_embeddings_binary("glove.42B.300d")
 # with open('Embedding_Model.json', 'w') as fp:
 #     json.dump(model, fp)    
 
+
+def get_w2v2(sentence, model):
+    """
+    :param sentence: inputs a single sentences whose word embedding is to be extracted.
+    :param model: inputs glove model.
+    :return: returns numpy array containing word embedding of all words    in input sentence.
+    """
+    list_vec = []
+    b = sentence.lower()
+    b = re.sub(r'[^\w\s]','',b)
+    A = b.split()
+    for word in A:
+        for k, v in model.items():
+            if k == word:
+                list_vec.append(v)
+    if len(list_vec)>=1:
+        return list_vec
+    else:
+        for k,v in model.items():
+            if k == 'the':
+                list_vec.append(v)
+        return 0
+
 def get_w2v(sentence, model):
     """
     :param sentence: inputs a single sentences whose word embedding is to be extracted.
@@ -105,6 +128,7 @@ def get_w2v(sentence, model):
             if k == word:
                 list_vec.append(v)
     return list_vec
+    
 
 def vec(word,model):
     #Gets vector for specific word, given specific model
@@ -284,24 +308,24 @@ H = 'retail-variety stores'
 I = "fast food, limited service restaurant with more than 35,000 restaurants in over 100 countries."
 J = "Fast-food restaurant, chain"
 K = "vast Internet-based enterprise that sells books, music, movies, housewares, electronics, toys, and many other goods, either directly or as the middleman between other retailers "
-
+L = "RETAIL-CATALOG & MAIL-ORDER HOUSES"
 #Apple, industry
-print(Advanced_cosine_sentence(B, F, model))
-print(cosine_sentence(B,F, model))
-print(get_relevant_sentence_desc(B))
-print(get_relevant_sentence_industry(F))
+# print(Advanced_cosine_sentence(B, F, model))
+# print(cosine_sentence(B,F, model))
+# print(get_relevant_sentence_desc(B))
+# print(get_relevant_sentence_industry(F))
 
-#Target, industry
-print(Advanced_cosine_sentence(D, H, model))
-print(cosine_sentence(D,H, model))
-print(get_relevant_sentence_desc(D))
-print(get_relevant_sentence_industry(H))
+# #Target, industry
+# print(Advanced_cosine_sentence(D, H, model))
+# print(cosine_sentence(D,H, model))
+# print(get_relevant_sentence_desc(D))
+# print(get_relevant_sentence_industry(H))
 
-#Mcdonalds, industry
-print(Advanced_cosine_sentence(I, J, model))
-print(cosine_sentence(I,J, model))
-print(get_relevant_sentence_desc(I))
-print(get_relevant_sentence_industry(J))
+# #Mcdonalds, industry
+# print(Advanced_cosine_sentence(I, J, model))
+# print(cosine_sentence(I,J, model))
+# print(get_relevant_sentence_desc(I))
+# print(get_relevant_sentence_industry(J))
 
 
 #Advanced model seems like it has more potential
@@ -324,9 +348,13 @@ print(get_relevant_sentence_industry(J))
 5200-5999 "G: Retail Trade"
 6000-6799 "H: Finance, Insurance, Real Estate"
 7000-8999 "I: Services"
-9100-9729 "J: Publc Administration"
+9100-9729 "J: Public Administration"
 '''
 def find_SEC_branch(company_descript, model):
+    '''
+    Compares company description to List of SEC industry branches, finds and returns top 2 closest matches
+    '''
+    
     List_Codes = ["Agriculture, Forestry, Fishing", "Mining" ,"Construction" , "Manufacturing",\
         "Transportation, Communcations, Electric, Gas, and Sanitation", "Wholesale Trade", "Retail Trade",\
             "Finance, Insurance, Real Estate", "Services","Public Administration"]
@@ -352,16 +380,178 @@ def find_SEC_branch(company_descript, model):
 
     # best_topic = max(x, key=x.get)
     return(Relevant_Industries)
-print(get_relevant_sentence_desc(K))
-print(find_SEC_branch(K, model))
+
+# print(get_relevant_sentence_desc(K))
+# print(find_SEC_branch(K, model))
+# print(Advanced_cosine_sentence(K, L, model))
+# print(cosine_sentence(K,L, model))
 #Mcdonalds matched up to retail Trade: Correct
 #State Street matched up to Finance, Insurance, Real Estate: Correct
 #Apple matched up with Services: Correct
 #Amazon:Correct
 #Best Buy: Incorrect
 
-#Decide if we want to go further and find deeper SIC Code description by running against all possible descriptions inside
-#Top chosen 1 or 2 branches...or maybe just get the main branch as classification
+#Next step, if necessary, run the description against ALL descriptions within the top 2 branches chosen from the model
+
+
+
+DF = pd.read_csv("https://raw.githubusercontent.com/saintsjd/sic4-list/master/sic-codes.csv")
+
+#Column names = Division, Major Group, Industry Group, SIC, Description
+
+df0 = DF.loc[DF['Division']=='A']
+df1 = DF.loc[DF['Division']=='B']
+df2 = DF.loc[DF['Division']=='C']
+df3 = DF[DF['Division'] == "D"]
+df4 = DF[DF['Division'] == "E"]
+df5 = DF[DF['Division'] == "F"]
+df6 = DF[DF['Division'] == "G"]
+df7 = DF[DF['Division'] == "H"]
+df8 = DF[DF['Division'] == "I"]
+df9 = DF[DF['Division'] == "J"]
+List_of_Dataframes = [df0, df1, df2, df3, df4, df5, df6, df7, df8, df9]
+
+List_of_updated_Dataframes = []
+for x in List_of_Dataframes:
+    x = x.drop(['Division', 'Major Group', 'Industry Group'], axis=1)
+    List_of_updated_Dataframes.append(x)
+
+'''
+#Following are the keys in the dictionary:
+# Values will be nested dictionaries, of all SIC Codes in that range as keys: Their description as Values
+0100-0999 "A: Agriculture, Forestry, Fishing"
+1000-1499 "B: Mining"
+1500-1799 "C: Construction"
+1800-1999 not used
+2000-3999 "D: Manufacturing"
+4000-4999 "E: Transportation, Communcations, Electric, Gas, and Sanitation"
+5000-5199 "F: Wholesale Trade"
+5200-5999 "G: Retail Trade"
+6000-6799 "H: Finance, Insurance, Real Estate"
+7000-8999 "I: Services"
+9100-9729 "J: Publc Administration"
+'''
+
+
+List_Codes = ["Agriculture, Forestry, Fishing", "Mining" ,"Construction" , "Manufacturing",\
+        "Transportation, Communcations, Electric, Gas, and Sanitation", "Wholesale Trade", "Retail Trade",\
+            "Finance, Insurance, Real Estate", "Services","Public Administration"]
+
+
+List_of_Divisions = ["A: Agriculture, Forestry, Fishing", "B: Mining", "C: Construction", "D: Manufacturing", \
+    "E: Transportation, Communcations, Electric, Gas, and Sanitation", "F: Wholesale Trade", \
+        "G: Retail Trade", "H: Finance, Insurance, Real Estate", "I: Services", "J: Publc Administration"]
+
+
+SIC = []
+Desc = []
+Dict_List = []
+Len_List = len(List_of_updated_Dataframes)
+index = 0
+Copied_List = []
+while Len_List > 0:
+    x = List_of_updated_Dataframes[index].copy()
+    x['SIC'] = (x['SIC']).astype(int)
+    A = x['SIC'].values
+    for y in A:
+        SIC.append(y)
+        
+    B = x['Description'].values
+    for z in B:
+        Desc.append(z)
+    Dict = dict(zip(SIC, Desc))
+    
+    Dict_List.append(Dict)
+    SIC.clear()
+    Desc.clear()
+    Len_List -=1
+    index +=1
+
+#MAIN DICTIONARY
+Final_Dict = dict(zip(List_of_Divisions, Dict_List))
+
+#LIST OF ALL SIC CODES
+SIC_Keys = []
+# print(Final_Dict)
+for x in Final_Dict.values():
+    for y in x.keys():
+        SIC_Keys.append(y)
+
+#LIST OF ALL DESCRIPTIONS IN SEC BRANCHES
+Description_List = []
+for x in Final_Dict.values():
+    for y in x.values():
+        Description_List.append(y)
+
+SEC_MAIN_BRANCH_DICT = dict(zip(List_Codes, List_of_Divisions))
+
+def Find_Relevant_Industry_Descriptions(company_descript, model):
+
+    Relevant_Branches = find_SEC_branch(company_descript, model)
+    Main_Branch_list = []
+    for x in Relevant_Branches:
+        for k,v in SEC_MAIN_BRANCH_DICT.items():
+            if x == k:
+                Main_Branch_list.append(v)
+    #Main Branch Represents Branches of Descriptions to parse to compare to company_description
+    Narrowed_Descriptions = []
+    for x in Main_Branch_list:
+        for y,z in Final_Dict.items():
+            if x == y:
+                for a in z.values():
+                    Narrowed_Descriptions.append(a)
+    return Narrowed_Descriptions
+
+
+#We take old description list, filter it down so that terms are in our actual word vector dictionary
+
+New_Description_list = []
+for word in Description_List:
+    A = get_w2v2(word,model)
+    if A != 0:
+        New_Description_list.append(word)
+
+#Description.npy is avg_vectors of individual descriptions in New_Description_list
+wv = np.load('Description.npy')
+print(wv[10])
+
+#New_Dict represents the "model" to compare company descriptions to once we have a company description
+New_Dict = dict(zip(New_Description_list, wv))
+
+def Advanced_cosine_sentence_2(v1,v2, model):
+    '''
+    Finds cosine similarity between 2 sentences
+    v1:First input is the company description
+    v2:Second input is the industry description, aka SIC Code, etc...
+    model1: main model of all words
+    model2: newly created model of only descriptions from SEC list
+    '''
+    v1 = Advanced_Avg_sentence_vec_desc(v1, model)
+    v2 = v2 
+    
+    if norm(v1) > 0 and norm(v2) > 0:
+        return dot(v1, v2) / (norm(v1) * norm(v2))
+    else:
+        return 0.0
+
+#C = state street, so let's try it out
+comparison_list = []
+for x, y in New_Dict.items():
+    A = Advanced_cosine_sentence_2(C, y, model)
+    comparison_list.append(A)
+print(comparison_list)    
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
