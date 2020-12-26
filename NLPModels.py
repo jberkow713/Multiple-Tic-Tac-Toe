@@ -533,25 +533,22 @@ def Most_Relevant_Description(comp_descript, model):
             if x == k:
                 Main_Branch_list.append(v)
     #Main branch is list of branches in final dict to check
+    
     Descript_to_check = []
     for x in Main_Branch_list:
         for y,z in Final_Dict.items():
             if x == y:
                 for A in z.values():
-                    Descript_to_check.append(A)
-    Final_Descript_to_check = []
-    for x in Descript_to_check:
-        if x in Description_list:
-            Final_Descript_to_check.append(x)
+                    if A in Description_list:
+                        Descript_to_check.append(A)
     Scores = []
-    for x in Final_Descript_to_check:
+    for x in Descript_to_check:
         for k,v in New_Dict.items():
             if x == k:
-
                 B = Advanced_cosine_sentence_2(comp_descript, v, model)
                 Scores.append(B)
-    
-    Score_Dict = dict(zip(Final_Descript_to_check, Scores))
+   
+    Score_Dict = dict(zip(Descript_to_check, Scores))
     Top_Scores = sorted(Scores, reverse=True)
     # best_topic = max(Score_Dict, key=Score_Dict.get)
     Top_Descriptions = []
