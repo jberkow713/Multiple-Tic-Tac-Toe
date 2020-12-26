@@ -416,6 +416,8 @@ for x in List_of_Dataframes:
     x = x.drop(['Division', 'Major Group', 'Industry Group'], axis=1)
     List_of_updated_Dataframes.append(x)
 
+
+
 '''
 #Following are the keys in the dictionary:
 # Values will be nested dictionaries, of all SIC Codes in that range as keys: Their description as Values
@@ -442,7 +444,6 @@ List_of_Divisions = ["A: Agriculture, Forestry, Fishing", "B: Mining", "C: Const
     "E: Transportation, Communcations, Electric, Gas, and Sanitation", "F: Wholesale Trade", \
         "G: Retail Trade", "H: Finance, Insurance, Real Estate", "I: Services", "J: Publc Administration"]
 
-
 SIC = []
 Desc = []
 Dict_List = []
@@ -466,22 +467,9 @@ while Len_List > 0:
     Desc.clear()
     Len_List -=1
     index +=1
-
-#MAIN DICTIONARY
 Final_Dict = dict(zip(List_of_Divisions, Dict_List))
 
-#LIST OF ALL SIC CODES
-SIC_Keys = []
-# print(Final_Dict)
-for x in Final_Dict.values():
-    for y in x.keys():
-        SIC_Keys.append(y)
 
-#LIST OF ALL DESCRIPTIONS IN SEC BRANCHES
-Description_List = []
-for x in Final_Dict.values():
-    for y in x.values():
-        Description_List.append(y)
 
 SEC_MAIN_BRANCH_DICT = dict(zip(List_Codes, List_of_Divisions))
 
@@ -503,20 +491,17 @@ def Find_Relevant_Industry_Descriptions(company_descript, model):
     return Narrowed_Descriptions
 
 
-#We take old description list, filter it down so that terms are in our actual word vector dictionary
-
-New_Description_list = []
-for word in Description_List:
-    A = get_w2v2(word,model)
-    if A != 0:
-        New_Description_list.append(word)
 
 #Description.npy is avg_vectors of individual descriptions in New_Description_list
 wv = np.load('Description.npy')
-print(wv[10])
+with open('Description_list.json') as f:
+    Description_list = json.load(f)
 
 #New_Dict represents the "model" to compare company descriptions to once we have a company description
-New_Dict = dict(zip(New_Description_list, wv))
+New_Dict = dict(zip(Description_list, wv))
+
+
+
 
 def Advanced_cosine_sentence_2(v1,v2, model):
     '''
@@ -534,24 +519,43 @@ def Advanced_cosine_sentence_2(v1,v2, model):
     else:
         return 0.0
 
-#C = state street, so let's try it out
-comparison_list = []
-for x, y in New_Dict.items():
-    A = Advanced_cosine_sentence_2(C, y, model)
-    comparison_list.append(A)
-print(comparison_list)    
+def Most_Relevant_Description(comp_descript, model):
+    '''
+    This will take a random company description, find its top 2 relevant SEC branches,
+    Check the relevant Descriptions within these branches, and return the description
+    With highest cosine similarity between the company description, and the SEC narrowed description
+    '''
 
+    Relevant_Branches = find_SEC_branch(comp_descript, model)
+    Main_Branch_list = []
+    for x in Relevant_Branches:
+        for k,v in SEC_MAIN_BRANCH_DICT.items():
+            if x == k:
+                Main_Branch_list.append(v)
+    #Main branch is list of branches in final dict to check
+    Descript_to_check = []
+    for x in Main_Branch_list:
+        for y,z in Final_Dict.items():
+            if x == y:
+                for A in z.values():
+                    Descript_to_check.append(A)
+    Final_Descript_to_check = []
+    for x in Descript_to_check:
+        if x in Description_list:
+            Final_Descript_to_check.append(x)
+    Scores = []
+    for x in Final_Descript_to_check:
+        for k,v in New_Dict.items():
+            if x == k:
 
+                B = Advanced_cosine_sentence_2(comp_descript, v, model)
+                Scores.append(B)
+    
+    Score_Dict = dict(zip(Final_Descript_to_check, Scores))
+    best_topic = max(Score_Dict, key=Score_Dict.get)
+    return best_topic
 
-
-
-
-
-
-
-
-
-
-
-
+            
+print(Most_Relevant_Description(C,model))            
+#State Street Description = Management Investment Offices
 
