@@ -552,10 +552,16 @@ def Most_Relevant_Description(comp_descript, model):
                 Scores.append(B)
     
     Score_Dict = dict(zip(Final_Descript_to_check, Scores))
-    best_topic = max(Score_Dict, key=Score_Dict.get)
-    return best_topic
+    Top_Scores = sorted(Scores, reverse=True)
+    # best_topic = max(Score_Dict, key=Score_Dict.get)
+    Top_Descriptions = []
+    for x in Top_Scores[0:3]:
+        for k,v in Score_Dict.items():
+            if x == v:
+                Top_Descriptions.append(k)
+    return Top_Descriptions 
 
-            
-print(Most_Relevant_Description(C,model))            
+Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
+print(Most_Relevant_Description(D,model))            
 #State Street Description = Management Investment Offices
 
