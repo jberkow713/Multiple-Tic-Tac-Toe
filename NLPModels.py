@@ -314,13 +314,45 @@ L = "RETAIL-CATALOG & MAIL-ORDER HOUSES"
 7000-8999 "I: Services"
 9100-9729 "J: Public Administration"
 '''
+
+# Sector	Description
+# 11	Agriculture, Forestry, Fishing and Hunting
+# 21	Mining, Quarrying, and Oil and Gas Extraction
+# 22	Utilities
+# 23	Construction
+# 31-33	Manufacturing
+# 42	Wholesale Trade
+# 44-45	Retail Trade
+# 48-49	Transportation and Warehousing
+# 51	Information
+# 52	Finance and Insurance
+# 53	Real Estate and Rental and Leasing
+# 54	Professional, Scientific, and Technical Services
+# 55	Management of Companies and Enterprises
+# 56	Administrative and Support and Waste Management and Remediation Services
+# 61	Educational Services
+# 62	Health Care and Social Assistance
+# 71	Arts, Entertainment, and Recreation
+# 72	Accommodation and Food Services
+# 81	Other Services (except Public Administration)
+# 92	Public Administration
+
+
+
+
+
+
 def find_SEC_branch(company_descript, model):
     '''
     Compares company description to List of SEC industry branches, finds and returns top 2 closest matches
     '''
-    List_Codes = ["Agriculture, Forestry, Fishing", "Mining" ,"Construction" , "Manufacturing",\
-        "Transportation, Communcations, Electric, Gas, and Sanitation", "Wholesale Trade", "Retail Trade",\
-            "Finance, Insurance, Real Estate", "Services","Public Administration"]
+    List_Codes = ["Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction" ,\
+        "Utilities", "Construction" , "Manufacturing", "Transportation and Warehousing", "Wholesale Trade", "Retail Trade",
+        "Information", "Finance and Insurance", "Real Estate and Rental and Leasing",\
+            "Professional, Scientific, and Technical Services", "Management of Companies and Enterprises",\
+                "Administrative and Support and Waste Management and Remediation Services", "Educational Services",\
+                    "Health Care and Social Assistance", "Arts, Entertainment, and Recreation", "Accommodation and Food Services",\
+                       "Public Administration" ]
 
     Similarities = []
     for x in List_Codes:
@@ -328,114 +360,120 @@ def find_SEC_branch(company_descript, model):
         Similarities.append(y)
     
     x = dict(zip(List_Codes, Similarities))
+    Similarities = sorted(Similarities, reverse=True)
+    Top3 = Similarities[0:3]
     Top_Choice = max(x, key=x.get)
-      
-    return Top_Choice
+    Top_Choices = []
+    for y in Top3:
+        for k,v in x.items():
+            if y == v:
+                Top_Choices.append(k)  
+    return Top_Choices, Top_Choice
 
 
 
 
-DF = pd.read_csv("https://raw.githubusercontent.com/saintsjd/sic4-list/master/sic-codes.csv")
+# DF = pd.read_csv("https://raw.githubusercontent.com/saintsjd/sic4-list/master/sic-codes.csv")
 
-#Column names = Division, Major Group, Industry Group, SIC, Description
+# #Column names = Division, Major Group, Industry Group, SIC, Description
 
-df0 = DF.loc[DF['Division']=='A']
-df1 = DF.loc[DF['Division']=='B']
-df2 = DF.loc[DF['Division']=='C']
-df3 = DF[DF['Division'] == "D"]
-df4 = DF[DF['Division'] == "E"]
-df5 = DF[DF['Division'] == "F"]
-df6 = DF[DF['Division'] == "G"]
-df7 = DF[DF['Division'] == "H"]
-df8 = DF[DF['Division'] == "I"]
-df9 = DF[DF['Division'] == "J"]
-List_of_Dataframes = [df0, df1, df2, df3, df4, df5, df6, df7, df8, df9]
+# df0 = DF.loc[DF['Division']=='A']
+# df1 = DF.loc[DF['Division']=='B']
+# df2 = DF.loc[DF['Division']=='C']
+# df3 = DF[DF['Division'] == "D"]
+# df4 = DF[DF['Division'] == "E"]
+# df5 = DF[DF['Division'] == "F"]
+# df6 = DF[DF['Division'] == "G"]
+# df7 = DF[DF['Division'] == "H"]
+# df8 = DF[DF['Division'] == "I"]
+# df9 = DF[DF['Division'] == "J"]
+# List_of_Dataframes = [df0, df1, df2, df3, df4, df5, df6, df7, df8, df9]
 
-List_of_updated_Dataframes = []
-for x in List_of_Dataframes:
-    x = x.drop(['Division', 'Major Group', 'Industry Group'], axis=1)
-    List_of_updated_Dataframes.append(x)
+# List_of_updated_Dataframes = []
+# for x in List_of_Dataframes:
+#     x = x.drop(['Division', 'Major Group', 'Industry Group'], axis=1)
+#     List_of_updated_Dataframes.append(x)
 
-'''
-#Following are the keys in the dictionary:
-# Values will be nested dictionaries, of all SIC Codes in that range as keys: Their description as Values
-0100-0999 "A: Agriculture, Forestry, Fishing"
-1000-1499 "B: Mining"
-1500-1799 "C: Construction"
-1800-1999 not used
-2000-3999 "D: Manufacturing"
-4000-4999 "E: Transportation, Communcations, Electric, Gas, and Sanitation"
-5000-5199 "F: Wholesale Trade"
-5200-5999 "G: Retail Trade"
-6000-6799 "H: Finance, Insurance, Real Estate"
-7000-8999 "I: Services"
-9100-9729 "J: Publc Administration"
-'''
-
-
-List_Codes = ["Agriculture, Forestry, Fishing", "Mining" ,"Construction" , "Manufacturing",\
-        "Transportation, Communcations, Electric, Gas, and Sanitation", "Wholesale Trade", "Retail Trade",\
-            "Finance, Insurance, Real Estate", "Services","Public Administration"]
+# '''
+# #Following are the keys in the dictionary:
+# # Values will be nested dictionaries, of all SIC Codes in that range as keys: Their description as Values
+# 0100-0999 "A: Agriculture, Forestry, Fishing"
+# 1000-1499 "B: Mining"
+# 1500-1799 "C: Construction"
+# 1800-1999 not used
+# 2000-3999 "D: Manufacturing"
+# 4000-4999 "E: Transportation, Communcations, Electric, Gas, and Sanitation"
+# 5000-5199 "F: Wholesale Trade"
+# 5200-5999 "G: Retail Trade"
+# 6000-6799 "H: Finance, Insurance, Real Estate"
+# 7000-8999 "I: Services"
+# 9100-9729 "J: Publc Administration"
+# '''
 
 
-List_of_Divisions = ["A: Agriculture, Forestry, Fishing", "B: Mining", "C: Construction", "D: Manufacturing", \
-    "E: Transportation, Communcations, Electric, Gas, and Sanitation", "F: Wholesale Trade", \
-        "G: Retail Trade", "H: Finance, Insurance, Real Estate", "I: Services", "J: Publc Administration"]
+# List_Codes = ["Agriculture, Forestry, Fishing", "Mining" ,"Construction" , "Manufacturing",\
+#         "Transportation, Communcations, Electric, Gas, and Sanitation", "Wholesale Trade", "Retail Trade",\
+#             "Finance, Insurance, Real Estate", "Services","Public Administration"]
 
-SIC = []
-Desc = []
-Dict_List = []
-Len_List = len(List_of_updated_Dataframes)
-index = 0
-Copied_List = []
-while Len_List > 0:
-    x = List_of_updated_Dataframes[index].copy()
-    x['SIC'] = (x['SIC']).astype(int)
-    A = x['SIC'].values
-    for y in A:
-        SIC.append(y)
+
+# List_of_Divisions = ["A: Agriculture, Forestry, Fishing", "B: Mining", "C: Construction", "D: Manufacturing", \
+#     "E: Transportation, Communcations, Electric, Gas, and Sanitation", "F: Wholesale Trade", \
+#         "G: Retail Trade", "H: Finance, Insurance, Real Estate", "I: Services", "J: Publc Administration"]
+
+# SIC = []
+# Desc = []
+# Dict_List = []
+# Len_List = len(List_of_updated_Dataframes)
+# index = 0
+# Copied_List = []
+# while Len_List > 0:
+#     x = List_of_updated_Dataframes[index].copy()
+#     x['SIC'] = (x['SIC']).astype(int)
+#     A = x['SIC'].values
+#     for y in A:
+#         SIC.append(y)
         
-    B = x['Description'].values
-    for z in B:
-        Desc.append(z)
-    Dict = dict(zip(SIC, Desc))
+#     B = x['Description'].values
+#     for z in B:
+#         Desc.append(z)
+#     Dict = dict(zip(SIC, Desc))
     
-    Dict_List.append(Dict)
-    SIC.clear()
-    Desc.clear()
-    Len_List -=1
-    index +=1
-Final_Dict = dict(zip(List_of_Divisions, Dict_List))
+#     Dict_List.append(Dict)
+#     SIC.clear()
+#     Desc.clear()
+#     Len_List -=1
+#     index +=1
+# Final_Dict = dict(zip(List_of_Divisions, Dict_List))
 
 
-SEC_MAIN_BRANCH_DICT = dict(zip(List_Codes, List_of_Divisions))
+# SEC_MAIN_BRANCH_DICT = dict(zip(List_Codes, List_of_Divisions))
 
-def Find_Relevant_Industry_Descriptions(company_descript, model):
+# def Find_Relevant_Industry_Descriptions(company_descript, model):
 
-    Relevant_Branches = find_SEC_branch(company_descript, model)
-    Main_Branch_list = []
-    for k,v in SEC_MAIN_BRANCH_DICT.items():
-        if Relevant_Branches == k:
-            Main_Branch_list.append(v)
-    Main_Branch_list = Main_Branch_list[0]        
-    #Main Branch Represents Branches of Descriptions to parse to compare to company_description
-    Narrowed_Descriptions = []
-    for y,z in Final_Dict.items():
-        if Main_Branch_list == y:
-            for a in z.values():
-                Narrowed_Descriptions.append(a)
-    return Narrowed_Descriptions
+#     Relevant_Branches = find_SEC_branch(company_descript, model)
+#     Main_Branch_list = []
+#     for k,v in SEC_MAIN_BRANCH_DICT.items():
+#         if Relevant_Branches == k:
+#             Main_Branch_list.append(v)
+#     Main_Branch_list = Main_Branch_list[0]        
+#     #Main Branch Represents Branches of Descriptions to parse to compare to company_description
+#     Narrowed_Descriptions = []
+#     for y,z in Final_Dict.items():
+#         if Main_Branch_list == y:
+#             for a in z.values():
+#                 Narrowed_Descriptions.append(a)
+#     return Narrowed_Descriptions
 
-# print(Find_Relevant_Industry_Descriptions(I,model))
+# # print(Find_Relevant_Industry_Descriptions(I,model))
 
 
-#Description.npy is avg_vectors of individual descriptions in New_Description_list
-wv = np.load('Description.npy')
-with open('Description_list.json') as f:
-    Description_list = json.load(f)
+# #Description.npy is avg_vectors of individual descriptions in New_Description_list
+# wv = np.load('Description.npy')
+# with open('Description_list.json') as f:
+#     Description_list = json.load(f)
 
-#New_Dict represents the "model" to compare company descriptions to once we have a company description
-New_Dict = dict(zip(Description_list, wv))
+# #New_Dict represents the "model" to compare company descriptions to once we have a company description
+# New_Dict = dict(zip(Description_list, wv))
 
 
 
@@ -490,6 +528,5 @@ Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, 
 print(find_SEC_branch(K,model))   
 
 
-#Finding the Main Branch seems to make more sense in terms of classification of a company's investments
 
 
