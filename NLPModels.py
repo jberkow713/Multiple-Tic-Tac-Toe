@@ -166,10 +166,7 @@ def Avg_sentence_vec(sentence, model):
     Will improve using parts of speech, etc
     '''
     Vectors = get_w2v(sentence,model)
-    data = []
-    for x in Vectors:
-        data.append(x)
-    Avg_Vector =  np.average(data, axis=0)
+    Avg_Vector =  np.average(Vectors, axis=0)
     return Avg_Vector   
 
 def cosine_sentence(v1,v2, model):
@@ -195,7 +192,8 @@ def get_relevant_sentence_desc(input_str:str):
     
     doc = nlp(inpt)
     x = [token.pos_ for token in doc]
-    text = input_str.split()
+    text = inpt.split()
+    # text = input_str.split()
     
     Text_Dict = dict(zip(text, x))
     Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON']
@@ -229,10 +227,7 @@ def Advanced_Avg_sentence_vec_desc(sentence, model):
     #Have to turn this list of relevant words into a new string
     
     Vectors = get_w2v(sentence,model)
-    data = []
-    for x in Vectors:
-        data.append(x)
-    Avg_Vector =  np.average(data, axis=0)
+    Avg_Vector =  np.average(Vectors, axis=0)
     return Avg_Vector
 
 def get_relevant_sentence_industry(input_str:str):
@@ -246,7 +241,8 @@ def get_relevant_sentence_industry(input_str:str):
     
     doc = nlp(inpt)
     x = [token.pos_ for token in doc]
-    text = input_str.split()
+    text = inpt.split()
+    # text = input_str.split()
     
     Text_Dict = dict(zip(text, x))
     Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON']
@@ -256,15 +252,13 @@ def get_relevant_sentence_industry(input_str:str):
     for word, POS in Text_Dict.items():
         if POS in Acceptable_POS:
             Acceptable_words.append(word)
-        # if POS == 'NOUN':
-        #     Acceptable_words.append(word)
-        # if POS == 'VERB':
-        #     Acceptable_words.append(word)    
+         
             
                 
     sentence = ' '.join(word for word in Acceptable_words)    
 
     return(sentence)
+
 def Advanced_Avg_sentence_vec_industry(sentence, model):
     '''
     Helper function used to find the average vector for all words in sentence
@@ -274,10 +268,7 @@ def Advanced_Avg_sentence_vec_industry(sentence, model):
     #Have to turn this list of relevant words into a new string
     
     Vectors = get_w2v(sentence,model)
-    data = []
-    for x in Vectors:
-        data.append(x)
-    Avg_Vector =  np.average(data, axis=0)
+    Avg_Vector =  np.average(Vectors, axis=0)
     return Avg_Vector
 
 def Advanced_cosine_sentence(v1,v2, model):
@@ -309,34 +300,7 @@ I = "fast food, limited service restaurant with more than 35,000 restaurants in 
 J = "Fast-food restaurant, chain"
 K = "vast Internet-based enterprise that sells books, music, movies, housewares, electronics, toys, and many other goods, either directly or as the middleman between other retailers "
 L = "RETAIL-CATALOG & MAIL-ORDER HOUSES"
-#Apple, industry
-# print(Advanced_cosine_sentence(B, F, model))
-# print(cosine_sentence(B,F, model))
-# print(get_relevant_sentence_desc(B))
-# print(get_relevant_sentence_industry(F))
 
-# #Target, industry
-# print(Advanced_cosine_sentence(D, H, model))
-# print(cosine_sentence(D,H, model))
-# print(get_relevant_sentence_desc(D))
-# print(get_relevant_sentence_industry(H))
-
-# #Mcdonalds, industry
-# print(Advanced_cosine_sentence(I, J, model))
-# print(cosine_sentence(I,J, model))
-# print(get_relevant_sentence_desc(I))
-# print(get_relevant_sentence_industry(J))
-
-
-#Advanced model seems like it has more potential
-#Next step is to integrate it with SIC codes, compare it's code to ALL SIC codes, and have it return one with 
-# highest cosine similarity 
-# But we dont need to check within all the branches,
-# We can run the description first against all the major SIC division keywords, and return the top 1 or 2, then just run the code
-# Against all of the descriptions within those individual branches, to cut down on time tremendously
-
-#This is a list of main branch descriptions:
-# We can run Advanced Cosine Similarity to check for specific industry
 '''
 0100-0999 "A: Agriculture, Forestry, Fishing"
 1000-1499 "B: Mining"
@@ -354,7 +318,6 @@ def find_SEC_branch(company_descript, model):
     '''
     Compares company description to List of SEC industry branches, finds and returns top 2 closest matches
     '''
-    
     List_Codes = ["Agriculture, Forestry, Fishing", "Mining" ,"Construction" , "Manufacturing",\
         "Transportation, Communcations, Electric, Gas, and Sanitation", "Wholesale Trade", "Retail Trade",\
             "Finance, Insurance, Real Estate", "Services","Public Administration"]
@@ -365,33 +328,10 @@ def find_SEC_branch(company_descript, model):
         Similarities.append(y)
     
     x = dict(zip(List_Codes, Similarities))
-    Top_2 = []
-    Similarity = sorted(Similarities, reverse=True)
-    Top_2.append(Similarity[0])
-    Top_2.append(Similarity[1])
+    Top_Choice = max(x, key=x.get)
+      
+    return Top_Choice
 
-    Relevant_Industries = []
-    for y in Top_2:
-        for k, v in x.items():
-            if y == v:
-                Relevant_Industries.append(k)
-
-            
-
-    # best_topic = max(x, key=x.get)
-    return(Relevant_Industries)
-
-# print(get_relevant_sentence_desc(K))
-# print(find_SEC_branch(K, model))
-# print(Advanced_cosine_sentence(K, L, model))
-# print(cosine_sentence(K,L, model))
-#Mcdonalds matched up to retail Trade: Correct
-#State Street matched up to Finance, Insurance, Real Estate: Correct
-#Apple matched up with Services: Correct
-#Amazon:Correct
-#Best Buy: Incorrect
-
-#Next step, if necessary, run the description against ALL descriptions within the top 2 branches chosen from the model
 
 
 
@@ -415,8 +355,6 @@ List_of_updated_Dataframes = []
 for x in List_of_Dataframes:
     x = x.drop(['Division', 'Major Group', 'Industry Group'], axis=1)
     List_of_updated_Dataframes.append(x)
-
-
 
 '''
 #Following are the keys in the dictionary:
@@ -470,26 +408,25 @@ while Len_List > 0:
 Final_Dict = dict(zip(List_of_Divisions, Dict_List))
 
 
-
 SEC_MAIN_BRANCH_DICT = dict(zip(List_Codes, List_of_Divisions))
 
 def Find_Relevant_Industry_Descriptions(company_descript, model):
 
     Relevant_Branches = find_SEC_branch(company_descript, model)
     Main_Branch_list = []
-    for x in Relevant_Branches:
-        for k,v in SEC_MAIN_BRANCH_DICT.items():
-            if x == k:
-                Main_Branch_list.append(v)
+    for k,v in SEC_MAIN_BRANCH_DICT.items():
+        if Relevant_Branches == k:
+            Main_Branch_list.append(v)
+    Main_Branch_list = Main_Branch_list[0]        
     #Main Branch Represents Branches of Descriptions to parse to compare to company_description
     Narrowed_Descriptions = []
-    for x in Main_Branch_list:
-        for y,z in Final_Dict.items():
-            if x == y:
-                for a in z.values():
-                    Narrowed_Descriptions.append(a)
+    for y,z in Final_Dict.items():
+        if Main_Branch_list == y:
+            for a in z.values():
+                Narrowed_Descriptions.append(a)
     return Narrowed_Descriptions
 
+# print(Find_Relevant_Industry_Descriptions(I,model))
 
 
 #Description.npy is avg_vectors of individual descriptions in New_Description_list
@@ -521,26 +458,17 @@ def Advanced_cosine_sentence_2(v1,v2, model):
 
 def Most_Relevant_Description(comp_descript, model):
     '''
-    This will take a random company description, find its top 2 relevant SEC branches,
-    Check the relevant Descriptions within these branches, and return the description
-    With highest cosine similarity between the company description, and the SEC narrowed description
+    This will take a random company description's top matched SEC industry branch
+    Check the relevant Descriptions within this branch, and return the description
+    With highest cosine similarity between the company description, and the SEC descriptions
     '''
-
-    Relevant_Branches = find_SEC_branch(comp_descript, model)
-    Main_Branch_list = []
-    for x in Relevant_Branches:
-        for k,v in SEC_MAIN_BRANCH_DICT.items():
-            if x == k:
-                Main_Branch_list.append(v)
-    #Main branch is list of branches in final dict to check
-    
+        
+    Relevant_Descriptions = Find_Relevant_Industry_Descriptions(comp_descript, model)
     Descript_to_check = []
-    for x in Main_Branch_list:
-        for y,z in Final_Dict.items():
-            if x == y:
-                for A in z.values():
-                    if A in Description_list:
-                        Descript_to_check.append(A)
+    for x in Relevant_Descriptions:
+        if x in Description_list:
+            Descript_to_check.append(x)
+    
     Scores = []
     for x in Descript_to_check:
         for k,v in New_Dict.items():
@@ -559,6 +487,9 @@ def Most_Relevant_Description(comp_descript, model):
     return Top_Descriptions 
 
 Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
-print(Most_Relevant_Description(D,model))            
-#State Street Description = Management Investment Offices
+print(find_SEC_branch(K,model))   
+
+
+#Finding the Main Branch seems to make more sense in terms of classification of a company's investments
+
 
