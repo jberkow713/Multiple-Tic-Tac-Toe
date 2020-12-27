@@ -203,7 +203,7 @@ def get_relevant_sentence_desc(input_str:str):
     for word, POS in Text_Dict.items():
         #Force words to be 3 letters or greater to count
         if len(word)>=3:
-            if "servic" not in word:
+            if "servic" not in word and "manag" not in word:
 
                 if POS in Acceptable_POS:
                     Acceptable_words.append(word)
@@ -362,13 +362,15 @@ def find_SEC_branch(company_descript, model):
     x = dict(zip(List_Codes, Similarities))
     Similarities = sorted(Similarities, reverse=True)
     Top3 = Similarities[0:3]
+    Top3_Scores = []
     Top_Choice = max(x, key=x.get)
     Top_Choices = []
     for y in Top3:
         for k,v in x.items():
             if y == v:
+                Top3_Scores.append(v)
                 Top_Choices.append(k)  
-    return Top_Choices, Top_Choice
+    return Top_Choices, Top_Choice, Top3_Scores
 
 
 
@@ -525,8 +527,10 @@ def Most_Relevant_Description(comp_descript, model):
     return Top_Descriptions 
 
 Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
-print(find_SEC_branch(K,model))   
+ZZ = "operates as a technology platform for people and things mobility. The firm offers multi-modal people transportation, restaurant food delivery, and connecting freight carriers and shippers."
+print(find_SEC_branch(ZZ,model))   
 
+#Uber --  'Accommodation and Food Services', 
 
 
 
