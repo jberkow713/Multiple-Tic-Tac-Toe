@@ -346,16 +346,26 @@ def get_relevant_sentence_desc(input_str:str):
     #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
         #Force words to be 3 letters or greater to count
+        
+        # if len(word)>=4 and POS in Acceptable_POS:
+        #     Final_Acceptable_Words.append(word)
+        # count = 0
+        # for wrd in Useful_Industry_Final_Words:
+        #     if count == 1:
+        #         break
+        #     if len(word)>=4 and POS in Acceptable_POS and wrd in word:
+        #         Final_Acceptable_Words.append(word)
+        #         count +=1
+        
         if len(word)>=4 and POS in Acceptable_POS:
-            Final_Acceptable_Words.append(word)
-        count = 0
-        for wrd in Useful_Industry_Final_Words:
-            if count == 1:
-                break
-            if len(word)>=4 and POS in Acceptable_POS and wrd in word:
-                Final_Acceptable_Words.append(word)
-                count +=1
-    
+            count = 0
+            for wrd in Useful_Industry_Final_Words:
+                if count ==1:
+                    break
+                if wrd in word:
+                    Final_Acceptable_Words.append(word)
+                    count +=1
+
     for word in Final_Acceptable_Words:
         if 'service' in word:
             Final_Acceptable_Words.remove(word)
@@ -465,10 +475,10 @@ P = "RETAIL-DRUG STORES AND PROPRIETARY STORES"
 Q = " operates an international chain of membership warehouses, mainly under the 'Costco Wholesale' name, that carry quality, brand-name merchandise at substantially lower prices than are typically found at conventional wholesale or retail sources."
 R = "Variety Stores"
 # print(get_relevant_sentence_industry(G))
-print(get_relevant_sentence_desc(Q))
-print(get_relevant_sentence_industry(R))
-print(Advanced_cosine_sentence(Q,R,model))
-print(cosine_sentence(Q,R,model))
+print(get_relevant_sentence_desc(D))
+print(get_relevant_sentence_industry(H))
+print(Advanced_cosine_sentence(D,H,model))
+print(cosine_sentence(D,H,model))
 
 
 '''
@@ -699,7 +709,7 @@ def Most_Relevant_Description(comp_descript, model):
 Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
 ZZ = "operates as a technology platform for people and things mobility. The firm offers multi-modal people transportation, restaurant food delivery, and connecting freight carriers and shippers."
 
-print(find_SEC_branch(Q,model))   
+print(find_SEC_branch(D,model))   
 
 #Uber --  'Accommodation and Food Services', 
 
