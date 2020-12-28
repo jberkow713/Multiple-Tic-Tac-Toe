@@ -185,6 +185,11 @@ stemmer = SnowballStemmer(language='english')
 #         outfile.write(re.sub(r"\s*,\s*", " ", line))
  
 
+
+
+#Adding Industry Keywords to Files
+
+
 #Created output.csv, to use to capture all industry key words
 df = pd.read_csv("output.csv")
 # print(df.head(25))
@@ -333,35 +338,31 @@ def get_relevant_sentence_desc(input_str:str):
     # text = input_str.split()
     
     Text_Dict = dict(zip(text, x))
-    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB'] 
+    # Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB'] 
     # 'PRON']
-    Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
-    Acceptable_words = []
-    Tenses = []
+    Acceptable_POS = ['NOUN', 'PRON', 'ADJ' ]
+    Final_Acceptable_Words = []
+    
     #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
         #Force words to be 3 letters or greater to count
-        if len(word)>=4:
-            if "servic" not in word :
-
-                if POS in Acceptable_POS:
-                    for wrd in Useful_Industry_Final_Words:
-                        if wrd in word:
-     
-
-                            Acceptable_words.append(word)
-                            Tenses.append(POS)
-                
-                           
-                    # else:
-                    #     Acceptable_words.append(word)
-                    #     if POS == 'NOUN':
-                    #         Acceptable_words.append(word)
-                    #     Tenses.append(POS)
-                                     
+        if len(word)>=4 and POS in Acceptable_POS:
+            Final_Acceptable_Words.append(word)
+        count = 0
+        for wrd in Useful_Industry_Final_Words:
+            if count == 1:
+                break
+            if len(word)>=4 and POS in Acceptable_POS and wrd in word:
+                Final_Acceptable_Words.append(word)
+                count +=1
+    
+    for word in Final_Acceptable_Words:
+        if 'service' in word:
+            Final_Acceptable_Words.remove(word)
+      
 
                     
-    sentence = ' '.join(word for word in Acceptable_words)    
+    sentence = ' '.join(word for word in Final_Acceptable_Words)    
 
     return(sentence)
 
@@ -393,23 +394,27 @@ def get_relevant_sentence_industry(input_str:str):
     # text = input_str.split()
     
     Text_Dict = dict(zip(text, x))
-    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB'] 
+    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN' ] 
     # Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
-    Acceptable_words = []
+    Final_Acceptable_Words = []
     
     #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
-        if POS in Acceptable_POS:
-            Acceptable_words.append(word)
-
-            for wrd in Useful_Industry_Final_Words:
-                if wrd in word:
-                    Acceptable_words.append(word)    
+        #Force words to be 3 letters or greater to count
+        if len(word)>=4 and POS in Acceptable_POS:
+            Final_Acceptable_Words.append(word)
+        count = 0
+        for wrd in Useful_Industry_Final_Words:
+            if count == 1:
+                break
+            if len(word)>=4 and POS in Acceptable_POS and wrd in word:
+                Final_Acceptable_Words.append(word)
+                count +=1  
 
             
             
                 
-    sentence = ' '.join(word for word in Acceptable_words)    
+    sentence = ' '.join(word for word in Final_Acceptable_Words)    
 
     return(sentence)
 
@@ -453,13 +458,17 @@ I = "fast food, limited service restaurant with more than 35,000 restaurants in 
 J = "Fast-food restaurant, chain"
 K = "vast Internet-based enterprise that sells books, music, movies, housewares, electronics, toys, and many other goods, either directly or as the middleman between other retailers "
 L = "RETAIL-CATALOG & MAIL-ORDER HOUSES"
-# C = 'state commercial banks'
-
+M = " is one of the computer chip companies, Intel offers platform products that incorporate various components and technologies, including a microprocessor and chipset, a stand-alone SoC, or a multichip package."
+N = 'Semiconductors and Related Devices'
+O = "engages in the provision of health care services. It operates through the following segments: Pharmacy Services, Retail or Long Term Care, Health Care Benefits, and Corporate. ... The Retail or Long Term Care segment includes selling of prescription drugs and assortment of general merchandise."
+P = "RETAIL-DRUG STORES AND PROPRIETARY STORES"
+Q = " operates an international chain of membership warehouses, mainly under the 'Costco Wholesale' name, that carry quality, brand-name merchandise at substantially lower prices than are typically found at conventional wholesale or retail sources."
+R = "Variety Stores"
 # print(get_relevant_sentence_industry(G))
-print(get_relevant_sentence_desc(I))
-print(get_relevant_sentence_industry(J))
-print(Advanced_cosine_sentence(I,J,model))
-print(cosine_sentence(I,J,model))
+print(get_relevant_sentence_desc(Q))
+print(get_relevant_sentence_industry(R))
+print(Advanced_cosine_sentence(Q,R,model))
+print(cosine_sentence(Q,R,model))
 
 
 '''
@@ -690,7 +699,7 @@ def Most_Relevant_Description(comp_descript, model):
 Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
 ZZ = "operates as a technology platform for people and things mobility. The firm offers multi-modal people transportation, restaurant food delivery, and connecting freight carriers and shippers."
 
-print(find_SEC_branch(D,model))   
+print(find_SEC_branch(Q,model))   
 
 #Uber --  'Accommodation and Food Services', 
 
