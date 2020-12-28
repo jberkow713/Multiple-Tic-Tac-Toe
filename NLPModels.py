@@ -171,9 +171,51 @@ def tokenize(text):
     
         
     return tokens 
+
+
 from nltk.stem.snowball import SnowballStemmer
 
 stemmer = SnowballStemmer(language='english')
+
+
+# import csv
+# import re
+# with open("industry_words1.csv") as infile, open("output.csv", "w") as outfile:
+#     for line in infile:
+#         outfile.write(re.sub(r"\s*,\s*", " ", line))
+ 
+
+#Created output.csv, to use to capture all industry key words
+df = pd.read_csv("output.csv")
+# print(df.head(25))
+df_1 = df['MajorField|Keywords']
+df[['Field','Subfield']] = df_1.str.split('|', 1, expand=True)
+# df = df.loc[df['Field', 'Subfield']]                                 
+df = df[['Field','Subfield']]
+# print(df.head())
+Keywords = []
+A = df['Field'].values
+for x in A:
+    B = tokenize(x)
+    if B not in Keywords:
+        Keywords.append(B)
+
+Final_Industry_Keywords = []
+for lst in Keywords:
+    for a in lst:
+        if a not in Final_Industry_Keywords:
+            Final_Industry_Keywords.append(a)
+Final_Useful_Industry_Words_Stemmed = []
+for word in Final_Industry_Keywords:
+    x = stemmer.stem(word)
+    if x not in Final_Useful_Industry_Words_Stemmed:
+        Final_Useful_Industry_Words_Stemmed.append(x)
+Final_Useful_Industry_Words_Stemmed.remove('and')
+Final_Useful_Industry_Words_Stemmed.remove('of')    
+
+
+#Add these lemmas to the ones below, for full list of industry lemmas
+
 
 Industry_Words = []
 List_Codes = ["Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction" ,\
@@ -197,8 +239,22 @@ Useful_Industry_Words.remove('services')
 Useful_Industry_Words_Stemmed = []
 
 for word in Useful_Industry_Words:
-    Useful_Industry_Words_Stemmed.append(stemmer.stem(word))
-print(Useful_Industry_Words_Stemmed)    
+    x = stemmer.stem(word)
+    if x not in Useful_Industry_Words_Stemmed:
+        Useful_Industry_Words_Stemmed.append(x)
+# print(Useful_Industry_Words_Stemmed)    
+# print(Final_Useful_Industry_Words_Stemmed)
+
+for word in Final_Useful_Industry_Words_Stemmed:
+    if word not in Useful_Industry_Words_Stemmed:
+        Useful_Industry_Words_Stemmed.append(word)
+#We now have a list of key words to reflect the INDUSTRY, 
+#These words will be given extra weight if found in a company description
+print(Useful_Industry_Words_Stemmed)        
+
+#Now want to find key words in specific branches, add these to this list as well
+ 
+
 
 
 
@@ -361,9 +417,9 @@ L = "RETAIL-CATALOG & MAIL-ORDER HOUSES"
 # C = 'state commercial banks'
 
 # print(get_relevant_sentence_industry(G))
-print(get_relevant_sentence_desc(I))
-print(Advanced_cosine_sentence(I,J,model))
-print(cosine_sentence(I,J,model))
+# print(get_relevant_sentence_desc(I))
+# print(Advanced_cosine_sentence(I,J,model))
+# print(cosine_sentence(I,J,model))
 
 
 '''
