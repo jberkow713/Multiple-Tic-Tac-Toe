@@ -211,7 +211,31 @@ for word in Final_Industry_Keywords:
     if x not in Final_Useful_Industry_Words_Stemmed:
         Final_Useful_Industry_Words_Stemmed.append(x)
 Final_Useful_Industry_Words_Stemmed.remove('and')
-Final_Useful_Industry_Words_Stemmed.remove('of')    
+Final_Useful_Industry_Words_Stemmed.remove('of')
+
+
+Keywords2 = []
+Final_Industry_Keywords2 = []
+B = df['Subfield'].values
+for x in B:
+    C = tokenize(x)
+    if C not in Keywords2:
+        Keywords2.append(C)
+
+Final_Industry_Keywords2 = []
+for lst in Keywords2:
+    for a in lst:
+        if a not in Final_Industry_Keywords2:
+            Final_Industry_Keywords2.append(a)
+Final_Useful_Industry_Words_Stemmed2 = []
+for word in Final_Industry_Keywords2:
+    x = stemmer.stem(word)
+    if x not in Final_Useful_Industry_Words_Stemmed2:
+        Final_Useful_Industry_Words_Stemmed2.append(x)
+Final_Useful_Industry_Words_Stemmed2.remove('and')
+Final_Useful_Industry_Words_Stemmed2.remove('of')
+Final_Useful_Industry_Words_Stemmed2.remove('to')
+# print(Final_Useful_Industry_Words_Stemmed2)    
 
 
 #Add these lemmas to the ones below, for full list of industry lemmas
@@ -250,7 +274,20 @@ for word in Final_Useful_Industry_Words_Stemmed:
         Useful_Industry_Words_Stemmed.append(word)
 #We now have a list of key words to reflect the INDUSTRY, 
 #These words will be given extra weight if found in a company description
-print(Useful_Industry_Words_Stemmed)        
+for word in Final_Useful_Industry_Words_Stemmed2:
+    if word not in Useful_Industry_Words_Stemmed:
+        Useful_Industry_Words_Stemmed.append(word)
+Useful_Industry_Words_Stemmed = sorted(Useful_Industry_Words_Stemmed)
+# for x in Useful_Industry_Words_Stemmed:
+#     if len(x) <3:
+#         Useful_Industry_Words_Stemmed.remove(x)
+Useful_Industry_Final_Words = []
+for x in Useful_Industry_Words_Stemmed:
+    if len(x) >=3:
+        Useful_Industry_Final_Words.append(x)
+
+
+# print((Useful_Industry_Final_Words[0:5]))        
 
 #Now want to find key words in specific branches, add these to this list as well
  
@@ -286,6 +323,7 @@ def get_relevant_sentence_desc(input_str:str):
     industry specific words
     '''
     nlp = spacy.load("en_core_web_sm")
+    input_str = input_str.replace('-', ' ')
     inpt = tokenize(input_str)
     inpt = ' '.join(word for word in inpt) 
 
@@ -307,7 +345,7 @@ def get_relevant_sentence_desc(input_str:str):
             if "servic" not in word :
 
                 if POS in Acceptable_POS:
-                    for wrd in Useful_Industry_Words_Stemmed:
+                    for wrd in Useful_Industry_Final_Words:
                         if wrd in word:
      
 
@@ -315,11 +353,11 @@ def get_relevant_sentence_desc(input_str:str):
                             Tenses.append(POS)
                 
                            
-                    else:
-                        Acceptable_words.append(word)
-                        if POS == 'NOUN':
-                            Acceptable_words.append(word)
-                        Tenses.append(POS)
+                    # else:
+                    #     Acceptable_words.append(word)
+                    #     if POS == 'NOUN':
+                    #         Acceptable_words.append(word)
+                    #     Tenses.append(POS)
                                      
 
                     
@@ -345,6 +383,7 @@ def Advanced_Avg_sentence_vec_desc(sentence, model):
 def get_relevant_sentence_industry(input_str:str):
 
     nlp = spacy.load("en_core_web_sm")
+    input_str = input_str.replace('-', ' ')
     inpt = tokenize(input_str)
     inpt = ' '.join(word for word in inpt) 
     
@@ -363,7 +402,7 @@ def get_relevant_sentence_industry(input_str:str):
         if POS in Acceptable_POS:
             Acceptable_words.append(word)
 
-            for wrd in Useful_Industry_Words_Stemmed:
+            for wrd in Useful_Industry_Final_Words:
                 if wrd in word:
                     Acceptable_words.append(word)    
 
@@ -417,9 +456,10 @@ L = "RETAIL-CATALOG & MAIL-ORDER HOUSES"
 # C = 'state commercial banks'
 
 # print(get_relevant_sentence_industry(G))
-# print(get_relevant_sentence_desc(I))
-# print(Advanced_cosine_sentence(I,J,model))
-# print(cosine_sentence(I,J,model))
+print(get_relevant_sentence_desc(I))
+print(get_relevant_sentence_industry(J))
+print(Advanced_cosine_sentence(I,J,model))
+print(cosine_sentence(I,J,model))
 
 
 '''
@@ -482,16 +522,16 @@ def find_SEC_branch(company_descript, model):
     
     x = dict(zip(List_Codes, Similarities))
     Similarities = sorted(Similarities, reverse=True)
-    Top3 = Similarities[0:3]
-    Top3_Scores = []
+    Top2 = Similarities[0:2]
+    Top2_Scores = []
     Top_Choice = max(x, key=x.get)
     Top_Choices = []
-    for y in Top3:
+    for y in Top2:
         for k,v in x.items():
             if y == v:
-                Top3_Scores.append(v)
+                Top2_Scores.append(v)
                 Top_Choices.append(k)  
-    return Top_Choices, Top_Choice, Top3_Scores
+    return Top_Choices, Top_Choice, Top2_Scores
 
 
 
@@ -649,7 +689,8 @@ def Most_Relevant_Description(comp_descript, model):
 
 Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
 ZZ = "operates as a technology platform for people and things mobility. The firm offers multi-modal people transportation, restaurant food delivery, and connecting freight carriers and shippers."
-# print(find_SEC_branch(ZZ,model))   
+
+print(find_SEC_branch(D,model))   
 
 #Uber --  'Accommodation and Food Services', 
 
