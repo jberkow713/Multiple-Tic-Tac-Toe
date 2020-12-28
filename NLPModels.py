@@ -158,6 +158,49 @@ def closest(model, vec_to_check, n=10):
                   reverse=True)[:n]
 
 # print(closest(model, 'pants', n=10 ))
+def tokenize(text):
+    """Parses a string into a list of semantic units (words)
+    Args:
+        text (str): The string that the function will tokenize.
+    Returns:
+        list: tokens parsed out by the mechanics of your choice
+    """
+    
+    tokens = re.sub('[^a-zA-Z 0-9]', '', text)
+    tokens = tokens.lower().split()
+    
+        
+    return tokens 
+from nltk.stem.snowball import SnowballStemmer
+
+stemmer = SnowballStemmer(language='english')
+
+Industry_Words = []
+List_Codes = ["Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction" ,\
+        "Utilities", "Construction" , "Manufacturing", "Transportation and Warehousing", "Wholesale Trade", "Retail Trade",
+        "Information", "Finance and Insurance", "Real Estate and Rental and Leasing",\
+            "Professional, Scientific, and Technical Services", "Management of Companies and Enterprises",\
+                "Administrative and Support and Waste Management and Remediation Services", "Educational Services",\
+                    "Health Care and Social Assistance", "Arts, Entertainment, and Recreation", "Accommodation and Food Services",\
+                       "Public Administration", "restaurant" ]
+for phrase in List_Codes:
+    A = tokenize(phrase)
+    Industry_Words.append(A)
+Useful_Industry_Words = []
+for lst in Industry_Words:
+    for word in lst:
+        if word not in Useful_Industry_Words:
+            Useful_Industry_Words.append(word)
+Useful_Industry_Words.remove('and')
+Useful_Industry_Words.remove('of')
+Useful_Industry_Words.remove('services')
+Useful_Industry_Words_Stemmed = []
+
+for word in Useful_Industry_Words:
+    Useful_Industry_Words_Stemmed.append(stemmer.stem(word))
+print(Useful_Industry_Words_Stemmed)    
+
+
 
 
 def Avg_sentence_vec(sentence, model):
@@ -182,41 +225,54 @@ def cosine_sentence(v1,v2, model):
         return 0.0
 
 def get_relevant_sentence_desc(input_str:str):
-
+    '''
+    Get relevant words in description, tokenize them and match them using tense, and if they are 
+    industry specific words
+    '''
     nlp = spacy.load("en_core_web_sm")
-    input_str = input_str.replace(',','')
-    input_str = input_str.replace('.', '')
-    input_str = input_str.replace('-', ' ')
-    input_str = input_str.replace('&', 'and')
-    inpt = input_str.lower()
-    
+    inpt = tokenize(input_str)
+    inpt = ' '.join(word for word in inpt) 
+
     doc = nlp(inpt)
     x = [token.pos_ for token in doc]
     text = inpt.split()
     # text = input_str.split()
     
     Text_Dict = dict(zip(text, x))
-    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON']
-    # Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
+    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB'] 
+    # 'PRON']
+    Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
     Acceptable_words = []
+    Tenses = []
     #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
         #Force words to be 3 letters or greater to count
-        if len(word)>=3:
-            if "servic" not in word and "manag" not in word:
+        if len(word)>=4:
+            if "servic" not in word :
 
                 if POS in Acceptable_POS:
-                    Acceptable_words.append(word)
-                #Count Nouns and Verbs Double in the average by doubling their specific counts
-                if POS == 'NOUN':
-                    Acceptable_words.append(word)
-                if POS == 'VERB':
-                    Acceptable_words.append(word)    
-            
+                    for wrd in Useful_Industry_Words_Stemmed:
+                        if wrd in word:
+     
+
+                            Acceptable_words.append(word)
+                            Tenses.append(POS)
                 
+                           
+                    else:
+                        Acceptable_words.append(word)
+                        if POS == 'NOUN':
+                            Acceptable_words.append(word)
+                        Tenses.append(POS)
+                                     
+
+                    
     sentence = ' '.join(word for word in Acceptable_words)    
 
     return(sentence)
+
+
+
 
 def Advanced_Avg_sentence_vec_desc(sentence, model):
     '''
@@ -233,11 +289,8 @@ def Advanced_Avg_sentence_vec_desc(sentence, model):
 def get_relevant_sentence_industry(input_str:str):
 
     nlp = spacy.load("en_core_web_sm")
-    input_str = input_str.replace(',','')
-    input_str = input_str.replace('.', '')
-    input_str = input_str.replace('-', ' ')
-    input_str = input_str.replace('&', 'and')
-    inpt = input_str.lower()
+    inpt = tokenize(input_str)
+    inpt = ' '.join(word for word in inpt) 
     
     doc = nlp(inpt)
     x = [token.pos_ for token in doc]
@@ -245,14 +298,20 @@ def get_relevant_sentence_industry(input_str:str):
     # text = input_str.split()
     
     Text_Dict = dict(zip(text, x))
-    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON']
+    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB'] 
     # Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
     Acceptable_words = []
+    
     #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
         if POS in Acceptable_POS:
             Acceptable_words.append(word)
-         
+
+            for wrd in Useful_Industry_Words_Stemmed:
+                if wrd in word:
+                    Acceptable_words.append(word)    
+
+            
             
                 
     sentence = ' '.join(word for word in Acceptable_words)    
@@ -285,7 +344,6 @@ def Advanced_cosine_sentence(v1,v2, model):
     else:
         return 0.0
 
-
 A = "engages in retail and wholesale business. The Company offers an assortment of merchandise and services at everyday low prices. ... The Walmart International segment manages supercenters, supermarkets, hypermarkets, warehouse clubs, and cash & carry outside of the United States."
 B = "designs, manufactures and markets mobile communication and media devices, personal computers and portable digital music players. The Company sells a range of related software, services, accessories, networking solutions, and third-party digital content and applications"
 
@@ -300,6 +358,13 @@ I = "fast food, limited service restaurant with more than 35,000 restaurants in 
 J = "Fast-food restaurant, chain"
 K = "vast Internet-based enterprise that sells books, music, movies, housewares, electronics, toys, and many other goods, either directly or as the middleman between other retailers "
 L = "RETAIL-CATALOG & MAIL-ORDER HOUSES"
+# C = 'state commercial banks'
+
+# print(get_relevant_sentence_industry(G))
+print(get_relevant_sentence_desc(I))
+print(Advanced_cosine_sentence(I,J,model))
+print(cosine_sentence(I,J,model))
+
 
 '''
 0100-0999 "A: Agriculture, Forestry, Fishing"
@@ -528,7 +593,7 @@ def Most_Relevant_Description(comp_descript, model):
 
 Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
 ZZ = "operates as a technology platform for people and things mobility. The firm offers multi-modal people transportation, restaurant food delivery, and connecting freight carriers and shippers."
-print(find_SEC_branch(ZZ,model))   
+# print(find_SEC_branch(ZZ,model))   
 
 #Uber --  'Accommodation and Food Services', 
 
