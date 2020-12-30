@@ -194,12 +194,14 @@ stemmer = SnowballStemmer(language='english')
 df = pd.read_csv("output.csv")
 # print(df.head(25))
 df_1 = df['MajorField|Keywords']
+
 df[['Field','Subfield']] = df_1.str.split('|', 1, expand=True)
 # df = df.loc[df['Field', 'Subfield']]                                 
 df = df[['Field','Subfield']]
 # print(df.head())
 Keywords = []
 A = df['Field'].values
+
 for x in A:
     B = tokenize(x)
     if B not in Keywords:
@@ -217,6 +219,7 @@ for word in Final_Industry_Keywords:
         Final_Useful_Industry_Words_Stemmed.append(x)
 Final_Useful_Industry_Words_Stemmed.remove('and')
 Final_Useful_Industry_Words_Stemmed.remove('of')
+
 
 
 Keywords2 = []
@@ -274,27 +277,38 @@ for word in Useful_Industry_Words:
 # print(Useful_Industry_Words_Stemmed)    
 # print(Final_Useful_Industry_Words_Stemmed)
 
+#Going to try new idea, to classify Major field keywords to mean more
+
+
 for word in Final_Useful_Industry_Words_Stemmed:
     if word not in Useful_Industry_Words_Stemmed:
         Useful_Industry_Words_Stemmed.append(word)
+for word in Useful_Industry_Words_Stemmed:
+    if len(word) <3:
+        Useful_Industry_Words_Stemmed.remove(word)
+
+
 #We now have a list of key words to reflect the INDUSTRY, 
 #These words will be given extra weight if found in a company description
+Useful_Industry_Words_Stemmed2 = []
 for word in Final_Useful_Industry_Words_Stemmed2:
-    if word not in Useful_Industry_Words_Stemmed:
-        Useful_Industry_Words_Stemmed.append(word)
-Useful_Industry_Words_Stemmed = sorted(Useful_Industry_Words_Stemmed)
+    if word not in Useful_Industry_Words_Stemmed2 and word not in Useful_Industry_Words_Stemmed:
+        Useful_Industry_Words_Stemmed2.append(word)
+Useful_Industry_Words_Stemmed2 = sorted(Useful_Industry_Words_Stemmed2)
 # for x in Useful_Industry_Words_Stemmed:
 #     if len(x) <3:
 #         Useful_Industry_Words_Stemmed.remove(x)
-Useful_Industry_Final_Words = []
-for x in Useful_Industry_Words_Stemmed:
+Useful_Industry_Final_Words2 = []
+for x in Useful_Industry_Words_Stemmed2:
     if len(x) >=3:
-        Useful_Industry_Final_Words.append(x)
+        Useful_Industry_Final_Words2.append(x)
 
+#Industry Keywords
+# print(Useful_Industry_Words_Stemmed)
+# #Subfield Industry keywords
+# print(Useful_Industry_Words_Stemmed2)
+#We have Useful Indtusry stemmed, and we have Useful Industry Final Words 2
 
-# print((Useful_Industry_Final_Words[0:5]))        
-
-#Now want to find key words in specific branches, add these to this list as well
  
 
 
@@ -340,7 +354,7 @@ def get_relevant_sentence_desc(input_str:str):
     Text_Dict = dict(zip(text, x))
     # Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB'] 
     # 'PRON']
-    Acceptable_POS = ['NOUN', 'PRON', 'ADJ' ]
+    Acceptable_POS = ['NOUN', 'PRON', 'ADJ', 'PROPN' ]
     Final_Acceptable_Words = []
     
     #Weighting certain words by adding them double for specific tenses
@@ -359,14 +373,20 @@ def get_relevant_sentence_desc(input_str:str):
         
         if len(word)>=4 and POS in Acceptable_POS and 'servic' not in word:
             count = 0
-            for wrd in Useful_Industry_Final_Words:
+            for wrd in Useful_Industry_Words_Stemmed:
                 if count ==1:
                     break
                 if wrd in word:
                     Final_Acceptable_Words.append(word)
+                    Final_Acceptable_Words.append(word)
+                    Final_Acceptable_Words.append(word)
                     count +=1
- 
-      
+            for wrd in Useful_Industry_Final_Words2:
+                if count == 1:
+                    break 
+                if wrd in word:
+                    Final_Acceptable_Words.append(word)
+                    count +=1
 
                     
     sentence = ' '.join(word for word in Final_Acceptable_Words)    
@@ -401,7 +421,7 @@ def get_relevant_sentence_industry(input_str:str):
     # text = input_str.split()
     
     Text_Dict = dict(zip(text, x))
-    Acceptable_POS = ['ADJ', 'ADV', 'NOUN' ] 
+    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN' ] 
     # Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
     Final_Acceptable_Words = []
     
@@ -417,11 +437,19 @@ def get_relevant_sentence_industry(input_str:str):
         #     if len(word)>=4 and POS in Acceptable_POS and wrd in word:
         #         Final_Acceptable_Words.append(word)
         #         count +=1  
-        if len(word)>=4 and POS in Acceptable_POS and 'manage' not in word and 'service' not in word:
-            count = 0
-            for wrd in Useful_Industry_Final_Words:
+        if len(word)>=4 and POS in Acceptable_POS and "manag" not in word and "servic" not in word:
+            count = 0 
+            for wrd in Useful_Industry_Words_Stemmed:
                 if count ==1:
                     break
+                if wrd in word:
+                    Final_Acceptable_Words.append(word)
+                    Final_Acceptable_Words.append(word)
+                    Final_Acceptable_Words.append(word)
+                    count +=1
+            for wrd in Useful_Industry_Final_Words2:
+                if count == 1:
+                    break 
                 if wrd in word:
                     Final_Acceptable_Words.append(word)
                     count +=1
@@ -482,7 +510,7 @@ R = "Variety Stores"
 # print(get_relevant_sentence_industry(G))
 print(get_relevant_sentence_desc(I))
 print(get_relevant_sentence_industry(J))
-print(Advanced_cosine_sentence(I,J,model))
+print(Advanced_cosine_sentence(I ,J,model))
 print(cosine_sentence(I,J,model))
 
 
