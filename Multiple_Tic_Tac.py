@@ -858,7 +858,6 @@ def decrease_values_multiple_players(dictionary, key_name):
         return dictionary                         
 
 
-
 def remove_dict(Key_Dictionary,  coordinate):
     '''
     Removes the key from the dictionary if the coordinate corresponds to the key. 
@@ -881,6 +880,23 @@ def remove_dict(Key_Dictionary,  coordinate):
 #So all dictionaries will be referenced through a for loop, so we need a way to get all opponent dictionaries into one, we
 #Can nest them 
 
+def Divide_Dictionary(Dictionary, Player):
+    Player_Name = []
+    Player_Values = []
+    Opponent_Names = []
+    Opponent_Values = []
+    for k,v in Dictionary.items():
+        if k == Player:
+            Player_Name.append(k)
+            Player_Values.append(v)
+        elif k != Player:
+            Opponent_Names.append(k)
+            Opponent_Values.append(v)
+
+    Player_Dict = dict(zip(Player_Name, Player_Values))
+    Opponent_Dict = dict(zip(Opponent_Names, Opponent_Values))
+
+    return  Player_Dict, Opponent_Dict        
 
 
 
@@ -925,17 +941,15 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
     #    will be the way it evaluates
     #
     
-    Computer_Piece_List = ['red square', 'blue square', 'green square', 'red circle', 'blue circle', 'green circle']
-    
-    for piece, dictionary in Dictionary_List.items():
-        if piece == Player_Piece:
-            Player_Dictionary = dictionary
-        elif piece != Player_Piece:
-            Opponent_Dictionary = dictionary 
-            
+    #So this represents the divided dictionary list, its 2 parts, first part is the player dict,
+    # Second is the opponent part
+
+    Player_Dict = Divide_Dictionary(Dictionary_List, Player_Piece )
+
+    #Going to be referencing this throughout the function  
 
 
-    #need to check all other dictionaries as opponents    
+     
 
 
 
@@ -1498,7 +1512,9 @@ def Play_Game(Boardsize, Squares, Squares_to_win, Player=False,):
 # if Variable8 == "no":
 #     print("To restart the game, click the stop button, and then click run again.")
 #     Play_Game(Variable1, Variable3, Variable4, Player=False)
-print(create_Dictionary_List(15, 14, 2))          
+
+A = create_Dictionary_List(3, 3, 6)
+print(Divide_Dictionary(A, 'red square'))          
 
 
 
