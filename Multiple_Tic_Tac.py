@@ -952,28 +952,10 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
     for v in Opponent_Dict.values():
         Opponent_Dictionary.append(v)
 
+
+
     #Your Dictionary = Dictionary with Winning_Lines as keys, and counts as values
     #Opponent Dictionary = List of Dictionaries, in Each Dictionary, Winning Lines as keys, counts as values
-    
-
-
-
-
-    #Your_Dictionary now represents your specific lines and their counts
-          
-
-    # for name, Dict in Player_Dict.items():
-
-
-    #Divide the Dictionary into separate components, to operate more efficiently on
-
-    #Going to be referencing this throughout the function  
-
-
-     
-
-
-
 
 
 
@@ -984,25 +966,29 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
     for key in Key_Dictionary.keys():
         Remaining_Keys.append(key)
        
-    #This check makes sure, first, that you block opponent's move, puts key to remove in Keys_to_Remove list
+    # puts blocking keys in Keys_to_Remove against multiple opponents
     Keys_to_Remove = []
-    for winning_line, count in Opponent_Dictionary_List.items():
-        for Line, Count in Your_Dictionary.items():
-            if winning_line == Line:
-                if count == 1 and Count == Starting_count:
-                    for keys in Line:
-                        if keys in Remaining_Keys:
-                            Keys_to_Remove.append(keys)
+    for Dictionary in Opponent_Dictionary:
+        for winning_line, count in Dictionary.items():
+            for Line, Count in Your_Dictionary.items():
+                if winning_line == Line:
+                    if count == 1 and Count == Starting_count:
+                        for keys in Line:
+                            if keys in Remaining_Keys:
+                                Keys_to_Remove.append(keys)
        
-    #Setting up winning move if possible:
+    #Setting up winning move if possible against multiple opponents:
     Keys_to_win = []
-    for winning_line, count in Opponent_Dictionary.items():
-        for Line, Count in Your_Dictionary.items():
-            if Line == winning_line:
-                if Count == 1 and count == Starting_count:
-                    for keys in Line:
-                        if keys in Remaining_Keys:
-                            Keys_to_win.append(keys)
+    for Dictionary in Opponent_Dictionary:
+        for winning_line, count in Dictionary.items():
+            for Line, Count in Your_Dictionary.items():
+                if winning_line == Line:
+                    if Count == 1 and count == Starting_count:
+                        for keys in Line:
+                            if keys in Remaining_Keys:
+                                Keys_to_win.append(keys)
+    #######
+    #TODO
     #Check if you can win
     if len(Keys_to_win)> 0:
         for position, coord in Key_Dictionary.items():
