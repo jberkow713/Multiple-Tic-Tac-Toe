@@ -946,6 +946,25 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
     Player_Dict = Divide_Dictionary(Dictionary_List, Player_Piece)[0]
     Opponent_Dict = Divide_Dictionary(Dictionary_List, Player_Piece)[1]
 
+    for v in Player_Dict.values():
+        Your_Dictionary = v
+    Opponent_Dictionary = []
+    for v in Opponent_Dict.values():
+        Opponent_Dictionary.append(v)
+
+    #Your Dictionary = Dictionary with Winning_Lines as keys, and counts as values
+    #Opponent Dictionary = List of Dictionaries, in Each Dictionary, Winning Lines as keys, counts as values
+    
+
+
+
+
+    #Your_Dictionary now represents your specific lines and their counts
+          
+
+    # for name, Dict in Player_Dict.items():
+
+
     #Divide the Dictionary into separate components, to operate more efficiently on
 
     #Going to be referencing this throughout the function  
@@ -1519,6 +1538,7 @@ A = create_Dictionary_List(3, 3, 6)
 B = Divide_Dictionary(A, 'red square') 
 print(B[0])
 print(B[1])
+
 
 
 
