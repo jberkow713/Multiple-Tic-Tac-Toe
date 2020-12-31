@@ -835,7 +835,29 @@ def decrease_values(dictionary, key_name, updated_dictionary):
     if min(Values) == 0:
         return 0 
     else:
-        return dictionary                       
+        return dictionary   
+
+def decrease_values_multiple_players(dictionary, key_name):
+    '''
+    Takes in a key and reduces all winning lines in multiple player game
+    '''                            
+
+    
+    for value in dictionary.values():
+        for key_lists in value.keys():
+            
+            if key_name in key_lists:
+                value[key_lists] = value[key_lists]-1
+    Values = []            
+    for value in dictionary.values():
+        for valuez in value.values():
+            Values.append(valuez)
+    if min(Values) == 0:
+        return 0
+    else:
+        return dictionary                         
+
+
 
 def remove_dict(Key_Dictionary,  coordinate):
     '''
@@ -864,20 +886,29 @@ def remove_dict(Key_Dictionary,  coordinate):
 
 
 
-def Multiple_Terminator_Move(Your_Dictionary, Dictionary_List, Key_Dictionary, Starting_count, \
+def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Starting_count, \
     Adjacency_Dict, List_of_Moves):
     '''
     This is the brain of the game. It is the algorithm behind the computer's moves and logic.
     This is meant for multiple AI players
     '''
-    
-    #Ideas
-    # Each computer player needs to be able to access all winning lines of all other players not including
-    # itself, along with it's own individual dictionary, so we import the dictionary list, the individual
-    # dictionary, the key dictionary, the starting count, 
+    #Key dictionary, list of keys and their positions---Already created
 
-    # We will need the computer's color and x or circle mark, to identify the computer
+    #def create_Dictionary_List(Squares, Squares_to_win, Number_of_Computer_Players)
+    
+    #Adjacency Dict-Already created
+
+    #Computer_Piece_List = ['red square', 'blue square', 'green square', 'red circle', 'blue circle', 'green circle']
+
+    #Ideas
+    # Each computer player needs to be able to access all winning lines of all other players including
+    # itself 
+
+
+    # We will need the computer's color and x or circle mark, to identify the computer 
+    # Has to be able to reference itself
     # 
+    #  
     # Instead of using each player's list of moves, we are going to use one general list
     # So when the computer makes their move, and when we remove the key from the key dictionary, 
     # We need to place that key in a list, which we will reference here
@@ -893,22 +924,23 @@ def Multiple_Terminator_Move(Your_Dictionary, Dictionary_List, Key_Dictionary, S
     #    Accessing the Dictionary List, Adjacency_Dict, List_of_Moves, Your_Dictionary,
     #    will be the way it evaluates
     #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
+    
+    Computer_Piece_List = ['red square', 'blue square', 'green square', 'red circle', 'blue circle', 'green circle']
+    
+    for piece, dictionary in Dictionary_List.items():
+        if piece == Player_Piece:
+            Player_Dictionary = dictionary
+        elif piece != Player_Piece:
+            Opponent_Dictionary = dictionary 
+            
+
+
+    #need to check all other dictionaries as opponents    
+
+
+
+
+
 
     List_of_Moves = Move_list
 
@@ -1466,7 +1498,7 @@ def Play_Game(Boardsize, Squares, Squares_to_win, Player=False,):
 # if Variable8 == "no":
 #     print("To restart the game, click the stop button, and then click run again.")
 #     Play_Game(Variable1, Variable3, Variable4, Player=False)
-print(create_Dictionary_List(15, 9, 6))          
+print(create_Dictionary_List(15, 14, 2))          
 
 
 
