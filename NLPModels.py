@@ -183,11 +183,7 @@ stemmer = SnowballStemmer(language='english')
 # with open("industry_words1.csv") as infile, open("output.csv", "w") as outfile:
 #     for line in infile:
 #         outfile.write(re.sub(r"\s*,\s*", " ", line))
- 
-
-
-
-#Adding Industry Keywords to Files
+# Adding Industry Keywords to Files
 
 
 #Created output.csv, to use to capture all industry key words
@@ -303,17 +299,6 @@ for x in Useful_Industry_Words_Stemmed2:
     if len(x) >=3:
         Useful_Industry_Final_Words2.append(x)
 
-#Industry Keywords
-# print(Useful_Industry_Words_Stemmed)
-# #Subfield Industry keywords
-# print(Useful_Industry_Words_Stemmed2)
-#We have Useful Indtusry stemmed, and we have Useful Industry Final Words 2
-
- 
-
-
-
-
 
 def Avg_sentence_vec(sentence, model):
     '''
@@ -354,32 +339,20 @@ def get_relevant_sentence_desc(input_str:str):
     Text_Dict = dict(zip(text, x))
     # Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB'] 
     # 'PRON']
-    Acceptable_POS = ['NOUN', 'PRON', 'ADJ', 'PROPN' ]
+    Acceptable_POS = ['NOUN',  'ADJ', 'VERB']
     Final_Acceptable_Words = []
     
     #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
-        #Force words to be 3 letters or greater to count
-        
-        # if len(word)>=4 and POS in Acceptable_POS:
-        #     Final_Acceptable_Words.append(word)
-        # count = 0
-        # for wrd in Useful_Industry_Final_Words:
-        #     if count == 1:
-        #         break
-        #     if len(word)>=4 and POS in Acceptable_POS and wrd in word:
-        #         Final_Acceptable_Words.append(word)
-        #         count +=1
-        
+               
         if len(word)>=4 and POS in Acceptable_POS and 'servic' not in word:
             count = 0
             for wrd in Useful_Industry_Words_Stemmed:
                 if count ==1:
                     break
                 if wrd in word:
-                    Final_Acceptable_Words.append(word)
-                    Final_Acceptable_Words.append(word)
-                    Final_Acceptable_Words.append(word)
+                    for i in range(0,3):
+                        Final_Acceptable_Words.append(word)
                     count +=1
             for wrd in Useful_Industry_Final_Words2:
                 if count == 1:
@@ -421,31 +394,20 @@ def get_relevant_sentence_industry(input_str:str):
     # text = input_str.split()
     
     Text_Dict = dict(zip(text, x))
-    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN' ] 
+    Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON' ] 
     # Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
     Final_Acceptable_Words = []
     
     #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
-        #Force words to be 3 letters or greater to count
-        # if len(word)>=4 and POS in Acceptable_POS:
-        #     Final_Acceptable_Words.append(word)
-        # count = 0
-        # for wrd in Useful_Industry_Final_Words:
-        #     if count == 1:
-        #         break
-        #     if len(word)>=4 and POS in Acceptable_POS and wrd in word:
-        #         Final_Acceptable_Words.append(word)
-        #         count +=1  
         if len(word)>=4 and POS in Acceptable_POS and "manag" not in word and "servic" not in word:
             count = 0 
             for wrd in Useful_Industry_Words_Stemmed:
                 if count ==1:
                     break
                 if wrd in word:
-                    Final_Acceptable_Words.append(word)
-                    Final_Acceptable_Words.append(word)
-                    Final_Acceptable_Words.append(word)
+                    for i in range(0,3):
+                        Final_Acceptable_Words.append(word)
                     count +=1
             for wrd in Useful_Industry_Final_Words2:
                 if count == 1:
@@ -508,10 +470,10 @@ P = "RETAIL-DRUG STORES AND PROPRIETARY STORES"
 Q = " operates an international chain of membership warehouses, mainly under the 'Costco Wholesale' name, that carry quality, brand-name merchandise at substantially lower prices than are typically found at conventional wholesale or retail sources."
 R = "Variety Stores"
 # print(get_relevant_sentence_industry(G))
-print(get_relevant_sentence_desc(I))
-print(get_relevant_sentence_industry(J))
-print(Advanced_cosine_sentence(I ,J,model))
-print(cosine_sentence(I,J,model))
+# print(get_relevant_sentence_desc(I))
+# print(get_relevant_sentence_industry(J))
+# print(Advanced_cosine_sentence(I ,J,model))
+# print(cosine_sentence(I,J,model))
 
 
 '''
@@ -549,11 +511,6 @@ print(cosine_sentence(I,J,model))
 # 72	Accommodation and Food Services
 # 81	Other Services (except Public Administration)
 # 92	Public Administration
-
-
-
-
-
 
 def find_SEC_branch(company_descript, model):
     '''
@@ -741,8 +698,9 @@ def Most_Relevant_Description(comp_descript, model):
 
 Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
 ZZ = "operates as a technology platform for people and things mobility. The firm offers multi-modal people transportation, restaurant food delivery, and connecting freight carriers and shippers."
-
-print(find_SEC_branch(I,model))   
+YY = "We partner with biopharma companies, care providers, pharmacies, manufacturers, governments and others to deliver the right medicines, medical products and healthcare services to the patients who need them, when they need them — safely and cost-effectively."
+print(get_relevant_sentence_desc(A))
+print(find_SEC_branch(A,model))   
 
 #Uber --  'Accommodation and Food Services', 
 
