@@ -941,10 +941,12 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
     #    will be the way it evaluates
     #
     
-    #So this represents the divided dictionary list, its 2 parts, first part is the player dict,
-    # Second is the opponent part
+    
 
-    Player_Dict = Divide_Dictionary(Dictionary_List, Player_Piece )
+    Player_Dict = Divide_Dictionary(Dictionary_List, Player_Piece)[0]
+    Opponent_Dict = Divide_Dictionary(Dictionary_List, Player_Piece)[1]
+
+    #Divide the Dictionary into separate components, to operate more efficiently on
 
     #Going to be referencing this throughout the function  
 
@@ -1514,7 +1516,9 @@ def Play_Game(Boardsize, Squares, Squares_to_win, Player=False,):
 #     Play_Game(Variable1, Variable3, Variable4, Player=False)
 
 A = create_Dictionary_List(3, 3, 6)
-print(Divide_Dictionary(A, 'red square'))          
+B = Divide_Dictionary(A, 'red square') 
+print(B[0])
+print(B[1])
 
 
 
