@@ -908,39 +908,7 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
     This is the brain of the game. It is the algorithm behind the computer's moves and logic.
     This is meant for multiple AI players
     '''
-    #Key dictionary, list of keys and their positions---Already created
-
-    #def create_Dictionary_List(Squares, Squares_to_win, Number_of_Computer_Players)
-    
-    #Adjacency Dict-Already created
-
-    #Computer_Piece_List = ['red square', 'blue square', 'green square', 'red circle', 'blue circle', 'green circle']
-
-    #Ideas
-    # Each computer player needs to be able to access all winning lines of all other players including
-    # itself 
-
-
-    # We will need the computer's color and x or circle mark, to identify the computer 
-    # Has to be able to reference itself
-    # 
-    #  
-    # Instead of using each player's list of moves, we are going to use one general list
-    # So when the computer makes their move, and when we remove the key from the key dictionary, 
-    # We need to place that key in a list, which we will reference here
-    #
-    #    move_list = []
-    #    for key,value in Key_Dictionary.items():
-    #        if value == coordinate:
-    #            move_list.append(key)
-    #    
-    #    at the end of each computer player's turn, they will append the key through this function to
-    #    the global move_list, and we can then reference this list in our function   
-    #
-    #    Accessing the Dictionary List, Adjacency_Dict, List_of_Moves, Your_Dictionary,
-    #    will be the way it evaluates
-    #
-    
+       
     
 
     Player_Dict = Divide_Dictionary(Dictionary_List, Player_Piece)[0]
@@ -951,16 +919,11 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
     Opponent_Dictionary = []
     for v in Opponent_Dict.values():
         Opponent_Dictionary.append(v)
-
-
-
+    
     #Your Dictionary = Dictionary with Winning_Lines as keys, and counts as values
     #Opponent Dictionary = List of Dictionaries, in Each Dictionary, Winning Lines as keys, counts as values
 
-
-
-    List_of_Moves = Move_list
-
+    
     #Remaining Keys represents possible spots to move to in any given move
     Remaining_Keys = []
     for key in Key_Dictionary.keys():
@@ -987,15 +950,13 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
                         for keys in Line:
                             if keys in Remaining_Keys:
                                 Keys_to_win.append(keys)
-    #######
-    #TODO
     #Check if you can win
     if len(Keys_to_win)> 0:
         for position, coord in Key_Dictionary.items():
             if Keys_to_win[0] == position:
                 coordinates = coord
                 computer.setpos(coordinates[0],coordinates[1])
-                List_of_your_moves.append(Keys_to_win[0])
+                List_of_Moves.append(Keys_to_win[0])
                 return                          
     
     #Check if you MUST block winning move of opponent
@@ -1004,17 +965,16 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
             if Keys_to_Remove[0] == position:
                 coordinates = coord
                 computer.setpos(coordinates[0],coordinates[1])
-                List_of_your_moves.append(Keys_to_Remove[0])
+                List_of_Moves.append(Keys_to_Remove[0])
                 return
        
     Keys_Remaining = len(Remaining_Keys)
     Winning_Line_Count = []
-    Winning_lines_Containers = []
+    
     Count = 0
     index = 0
-    Special_Case_Count = 0
-    Opp_winning_lines = []
-    Your_winning_lines = []
+    List_of_Opponent_Moves = []
+    List_of_your_moves = []    
     Opp_Adjacency_list = []
     Your_Adjacency_list = []
     while Keys_Remaining > 0:
@@ -1023,58 +983,67 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
         #value winning lines highly to stop opponent, value count highly, super highly in the beginning, this is only
         #to block winning lines
         for Winning_lines, valuess in Your_Dictionary.items():
-            for Winning_linez, valuezz in Opponent_Dictionary.items():
-                if Winning_lines == Winning_linez:
-                    if valuezz < Starting_count and valuess == Starting_count:
-                        if key in Winning_lines:
-                            Opp_winning_lines.append(key)
-                            Special_Case_Count +=1
-                            if valuess - valuezz <= .5 * Starting_count:
-                                #Make incentive on smaller board to block quicker, as one slip up early can cost game
-                                #Notice it is to the 8th power here, again bigger than continuing winning line, which is 
-                                # only raised to the 6th power
-                                if Starting_count <= 6:
-                                    Count +=  (valuess - valuezz)**8
-                                #Disincentivize blocking early on big boards, no need, better to expand
-                                elif Starting_count > 6:
-                                    Count +=  (valuess - valuezz)**2
+            for Dictionary in Opponent_Dictionary:
 
-                            elif valuess - valuezz > .5 * Starting_count:
-                                #Not as important to block once it's too late in small games, by that point, it should have 
-                                #already blocked, but still more value than adjacency moves
-                                if Starting_count < 6:
-                                    Count +=  (valuess - valuezz)**7
-                                #Make the incentive on a bigger board, to wait until blocks are >half the amount to win
-                                #Before you force the block, allow for more expansion...notice its to the 7th power here,
-                                # which makes it more important than continuing your original line, which is only raised to 6th
-                                elif Starting_count > 6:
-                                    Count +=  (valuess - valuezz)**7
+                for Winning_linez, valuezz in Dictionary.items():
+                    if Winning_lines == Winning_linez:
+                        if valuezz < Starting_count and valuess == Starting_count:
+                            if key in Winning_lines:
+                                List_of_Opponent_Moves.append(key)
+                                # if key not in Opp_winning_lines:
+
+                                #     Opp_winning_lines.append(key)
+                                    
+                                if valuess - valuezz <= .5 * Starting_count:
+                                    #Make incentive on smaller board to block quicker, as one slip up early can cost game
+                                    #Notice it is to the 8th power here, again bigger than continuing winning line, which is 
+                                    # only raised to the 6th power
+                                    if Starting_count <= 6:
+                                        Count +=  (valuess - valuezz)**8
+                                    #Disincentivize blocking early on big boards, no need, better to expand
+                                    elif Starting_count > 6:
+                                        Count +=  (valuess - valuezz)**2
+
+                                elif valuess - valuezz > .5 * Starting_count:
+                                    #Not as important to block once it's too late in small games, by that point, it should have 
+                                    #already blocked, but still more value than adjacency moves
+                                    if Starting_count < 6:
+                                        Count +=  (valuess - valuezz)**7
+                                    #Make the incentive on a bigger board, to wait until blocks are >half the amount to win
+                                    #Before you force the block, allow for more expansion...notice its to the 7th power here,
+                                    # which makes it more important than continuing your original line, which is only raised to 6th
+                                    elif Starting_count > 6:
+                                        Count +=  (valuess - valuezz)**7
 
         #improve your winning line if possible, value count highly, this is only to improve existing winning lines
-        for Winning_lines, values in Opponent_Dictionary.items():
-            for Winning_linez, valuez in Your_Dictionary.items():
-                if Winning_lines == Winning_linez:
-                    if valuez < Starting_count and values == Starting_count:
-                        if key in Winning_lines:
-                            Your_winning_lines.append(key)
-                            Special_Case_Count +=1
-                            #incentivizing continuing the winning lines in progress on any board size, 
-                            #This incentivizes expanding on early winning lines
-                            if values - valuez < .5 * Starting_count:
-                                Count += (valuess - valuezz)**6
-                            #After blocking opponents early lines in small games, or late lines in big games, 
-                            # raising to the power of 4 here trumps the 3rd and 2nd power in the other games, 
-                            # meaning this will take precendence over blocking in those situations
-                            elif values - valuez >= .5 * Starting_count:
-                                Count +=  (values - valuez)**4
+        for Dictionary in Opponent_Dictionary:
+            for Winning_linez, valuezz in Dictionary.items():
+                for Winning_lines, values in Your_Dictionary.items():
+                    if Winning_lines == Winning_linez:
+                        if values < Starting_count and valuezz == Starting_count:
+                            if key in Winning_lines:
+                                List_of_your_moves.append(key)
+                                
+                                
+                                #incentivizing continuing the winning lines in progress on any board size, 
+                                #This incentivizes expanding on early winning lines
+                                if valuezz - values < .5 * Starting_count:
+                                    Count += (valuezz - values)**6
+                                #After blocking opponents early lines in small games, or late lines in big games, 
+                                # raising to the power of 4 here trumps the 3rd and 2nd power in the other games, 
+                                # meaning this will take precendence over blocking in those situations
+                                elif valuezz - values >= .5 * Starting_count:
+                                    Count +=  (valuezz - values)**4
+
         #We need something to implement finding new winning lines
-        for Winning_lines, values in Opponent_Dictionary.items():
-            for Winning_linez, valuez in Your_Dictionary.items():
-                if Winning_lines == Winning_linez:
-                    if values == Starting_count and valuez == Starting_count:
-                        if key in Winning_lines:
-                            Special_Case_Count +=1
-                            count += Starting_count        
+        for Dictionary in Opponent_Dictionary:
+            for Winning_lines, values in Dictionary.items():
+                for Winning_linez, valuez in Your_Dictionary.items():
+                    if Winning_lines == Winning_linez:
+                        if values == Starting_count and valuez == Starting_count:
+                            if key in Winning_lines:
+                                
+                                count += Starting_count        
         
         #Value 2nd highly if spot is in adjacency Dict of opponent moves
         for keys, adjacency_list in Adjacency_Dict.items():
@@ -1082,7 +1051,7 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
                 if keyz == keys:
                     if key in adjacency_list:
                         Opp_Adjacency_list.append(key)
-                        Special_Case_Count +=1
+                        
 
                         Count +=len(adjacency_list)
         #Value 2nd highly if spot is in adjacency Dict of your moves
@@ -1091,23 +1060,19 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
                 if kyz == ky:
                     if key in adj_list:
                         Your_Adjacency_list.append(key)
-                        Special_Case_Count +=1
+                        
                         Count +=len(adjacency_list)              
         
-        #Added bonuses, exponential bonus, based on how many of the previous conditions it meets          
-        Count += (Special_Case_Count**2)
-        #Most of the time, this special case count will not matter, until winning lines and blocking come to an end,
-        # At which case you will see players only playing adjacent, because of the small added incentive      
+          
         
         #Append the count, clear all the containers, repeat
         Winning_Line_Count.append(Count)
         Count = 0
-        Special_Case_Count = 0 
-        Opp_winning_lines.clear()
-        Your_winning_lines.clear()
+        List_of_Opponent_Moves.clear()
+        List_of_your_moves.clear()                
         Opp_Adjacency_list.clear()
         Your_Adjacency_list.clear()
-        Winning_lines_Containers.clear()        
+              
         index +=1
         Keys_Remaining -=1
 
@@ -1133,7 +1098,7 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
                 coordinates = coord 
 
                 computer.setpos(coordinates[0],coordinates[1])
-                List_of_your_moves.append(Random_Final_Choiz[0])
+                List_of_Moves.append(Random_Final_Choiz[0])
                 return     
     
     Best_Key = max(Best_Choice, key=Best_Choice.get)
@@ -1142,7 +1107,7 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
             coordinates = coord 
 
     computer.setpos(coordinates[0],coordinates[1])
-    List_of_your_moves.append(Best_Key)
+    List_of_Moves.append(Best_Key)
     return
 
 
