@@ -273,7 +273,10 @@ for word in Useful_Industry_Words:
 # print(Useful_Industry_Words_Stemmed)    
 # print(Final_Useful_Industry_Words_Stemmed)
 
-#Going to try new idea, to classify Major field keywords to mean more
+
+
+#These represent all the Major Field Keywords, Useful_Industry_Words_Stemmed
+
 
 
 for word in Final_Useful_Industry_Words_Stemmed:
@@ -284,11 +287,11 @@ for word in Useful_Industry_Words_Stemmed:
         Useful_Industry_Words_Stemmed.remove(word)
 
 
-#We now have a list of key words to reflect the INDUSTRY, 
-#These words will be given extra weight if found in a company description
+#These represent Subfield Keywords, Useful_Industry_Words_Stemmed2
+
 Useful_Industry_Words_Stemmed2 = []
 for word in Final_Useful_Industry_Words_Stemmed2:
-    if word not in Useful_Industry_Words_Stemmed2 and word not in Useful_Industry_Words_Stemmed:
+    if word not in Useful_Industry_Words_Stemmed2 :
         Useful_Industry_Words_Stemmed2.append(word)
 Useful_Industry_Words_Stemmed2 = sorted(Useful_Industry_Words_Stemmed2)
 # for x in Useful_Industry_Words_Stemmed:
@@ -298,6 +301,15 @@ Useful_Industry_Final_Words2 = []
 for x in Useful_Industry_Words_Stemmed2:
     if len(x) >=3:
         Useful_Industry_Final_Words2.append(x)
+
+List_Codes2 = ["Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction" ,\
+        "Utilities", "Construction" , "Manufacturing", "Transportation and Warehousing", "Wholesale Trade", "Retail Trade",
+        "Information", "Finance and Insurance", "Real Estate and Rental and Leasing",\
+            "Professional, Scientific, and Technical Services", "Management of Companies and Enterprises",\
+                "Administrative and Support and Waste Management and Remediation Services", "Educational Services",\
+                    "Health Care and Social Assistance", "Arts, Entertainment, and Recreation", "Accommodation and Food Services",\
+                       "Public Administration" ]
+
 
 
 def Avg_sentence_vec(sentence, model):
@@ -321,10 +333,36 @@ def cosine_sentence(v1,v2, model):
     else:
         return 0.0
 
+def check_in_list(Word, List):
+    
+    Words = []
+    for phrase in List:
+        A = tokenize(phrase)
+        for x in A:
+            if x not in Words and len(x)>2:
+            
+                Words.append(x)
+    
+    for word in Words:
+        x = stemmer.stem(word)
+        if x not in Words:
+            Words.append(x)            
+
+    for x in Words:
+        if x in Word:
+            return True 
+    else:
+        return False         
+
+
+
+
+
 def get_relevant_sentence_desc(input_str:str):
     '''
     Get relevant words in description, tokenize them and match them using tense, and if they are 
     industry specific words
+    Specifically target Industry Keywords that do not appear in classification terms, to minimize bias 
     '''
     nlp = spacy.load("en_core_web_sm")
     input_str = input_str.replace('-', ' ')
@@ -346,7 +384,7 @@ def get_relevant_sentence_desc(input_str:str):
     for word, POS in Text_Dict.items():
                
         # if len(word)>=4 and POS in Acceptable_POS and 'servic' not in word:
-        if len(word)>=4 and 'servic' not in word and 'manag' not in word:
+        if len(word)>=4 :
 
             count = 0
             for wrd in Useful_Industry_Words_Stemmed:
@@ -397,30 +435,17 @@ def get_relevant_sentence_industry(input_str:str):
     
     Text_Dict = dict(zip(text, x))
     # Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON' ] 
-    # Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
+    Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
     Final_Acceptable_Words = []
     
     #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
-        if len(word)>=3 :
-        # if len(word)>=4 and POS in Acceptable_POS and "manag" not in word and "servic" not in word:
-            count = 0 
-            for wrd in Useful_Industry_Words_Stemmed:
-                if count ==1:
-                    break
-                if wrd in word:
-                    for i in range(0,3):
-                        Final_Acceptable_Words.append(word)
-                    count +=1
-            for wrd in Useful_Industry_Final_Words2:
-                if count == 1:
-                    break 
-                if wrd in word:
-                    Final_Acceptable_Words.append(word)
-                    count +=1
-
+        if len(word)>=3 and POS in Acceptable_POS:
+            Final_Acceptable_Words.append(word)
+        if word in Useful_Industry_Final_Words2:
+            Final_Acceptable_Words.append(word)    
             
-            
+                   
                 
     sentence = ' '.join(word for word in Final_Acceptable_Words)    
 
@@ -472,10 +497,10 @@ O = "engages in the provision of health care services. It operates through the f
 P = "RETAIL-DRUG STORES AND PROPRIETARY STORES"
 Q = " operates an international chain of membership warehouses, mainly under the 'Costco Wholesale' name, that carry quality, brand-name merchandise at substantially lower prices than are typically found at conventional wholesale or retail sources."
 R = "Variety Stores"
-# print(get_relevant_sentence_industry(G))
-# print(get_relevant_sentence_desc(I))
+print(get_relevant_sentence_desc(I))
+print(get_relevant_sentence_industry(J))
 # print(get_relevant_sentence_industry(J))
-# print(Advanced_cosine_sentence(I ,J,model))
+print(Advanced_cosine_sentence(I ,J,model))
 # print(cosine_sentence(I,J,model))
 
 
@@ -515,24 +540,17 @@ R = "Variety Stores"
 # 81	Other Services (except Public Administration)
 # 92	Public Administration
 
-def find_SEC_branch(company_descript, model):
+def find_SEC_branch(company_descript, industry_list, model):
     '''
     Compares company description to List of SEC industry branches, finds and returns top 2 closest matches
     '''
-    List_Codes = ["Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction" ,\
-        "Utilities", "Construction" , "Manufacturing", "Transportation and Warehousing", "Wholesale Trade", "Retail Trade",
-        "Information", "Finance and Insurance", "Real Estate and Rental and Leasing",\
-            "Professional, Scientific, and Technical Services", "Management of Companies and Enterprises",\
-                "Administrative and Support and Waste Management and Remediation Services", "Educational Services",\
-                    "Health Care and Social Assistance", "Arts, Entertainment, and Recreation", "Accommodation and Food Services",\
-                       "Public Administration" ]
-
+    
     Similarities = []
-    for x in List_Codes:
+    for x in industry_list:
         y = Advanced_cosine_sentence(company_descript, x, model)
         Similarities.append(y)
     
-    x = dict(zip(List_Codes, Similarities))
+    x = dict(zip(industry_list, Similarities))
     Similarities = sorted(Similarities, reverse=True)
     Top2 = Similarities[0:2]
     Top2_Scores = []
@@ -547,165 +565,27 @@ def find_SEC_branch(company_descript, model):
 
 
 
-
-# DF = pd.read_csv("https://raw.githubusercontent.com/saintsjd/sic4-list/master/sic-codes.csv")
-
-# #Column names = Division, Major Group, Industry Group, SIC, Description
-
-# df0 = DF.loc[DF['Division']=='A']
-# df1 = DF.loc[DF['Division']=='B']
-# df2 = DF.loc[DF['Division']=='C']
-# df3 = DF[DF['Division'] == "D"]
-# df4 = DF[DF['Division'] == "E"]
-# df5 = DF[DF['Division'] == "F"]
-# df6 = DF[DF['Division'] == "G"]
-# df7 = DF[DF['Division'] == "H"]
-# df8 = DF[DF['Division'] == "I"]
-# df9 = DF[DF['Division'] == "J"]
-# List_of_Dataframes = [df0, df1, df2, df3, df4, df5, df6, df7, df8, df9]
-
-# List_of_updated_Dataframes = []
-# for x in List_of_Dataframes:
-#     x = x.drop(['Division', 'Major Group', 'Industry Group'], axis=1)
-#     List_of_updated_Dataframes.append(x)
-
-# '''
-# #Following are the keys in the dictionary:
-# # Values will be nested dictionaries, of all SIC Codes in that range as keys: Their description as Values
-# 0100-0999 "A: Agriculture, Forestry, Fishing"
-# 1000-1499 "B: Mining"
-# 1500-1799 "C: Construction"
-# 1800-1999 not used
-# 2000-3999 "D: Manufacturing"
-# 4000-4999 "E: Transportation, Communcations, Electric, Gas, and Sanitation"
-# 5000-5199 "F: Wholesale Trade"
-# 5200-5999 "G: Retail Trade"
-# 6000-6799 "H: Finance, Insurance, Real Estate"
-# 7000-8999 "I: Services"
-# 9100-9729 "J: Publc Administration"
-# '''
-
-
-# List_Codes = ["Agriculture, Forestry, Fishing", "Mining" ,"Construction" , "Manufacturing",\
-#         "Transportation, Communcations, Electric, Gas, and Sanitation", "Wholesale Trade", "Retail Trade",\
-#             "Finance, Insurance, Real Estate", "Services","Public Administration"]
-
-
-# List_of_Divisions = ["A: Agriculture, Forestry, Fishing", "B: Mining", "C: Construction", "D: Manufacturing", \
-#     "E: Transportation, Communcations, Electric, Gas, and Sanitation", "F: Wholesale Trade", \
-#         "G: Retail Trade", "H: Finance, Insurance, Real Estate", "I: Services", "J: Publc Administration"]
-
-# SIC = []
-# Desc = []
-# Dict_List = []
-# Len_List = len(List_of_updated_Dataframes)
-# index = 0
-# Copied_List = []
-# while Len_List > 0:
-#     x = List_of_updated_Dataframes[index].copy()
-#     x['SIC'] = (x['SIC']).astype(int)
-#     A = x['SIC'].values
-#     for y in A:
-#         SIC.append(y)
-        
-#     B = x['Description'].values
-#     for z in B:
-#         Desc.append(z)
-#     Dict = dict(zip(SIC, Desc))
-    
-#     Dict_List.append(Dict)
-#     SIC.clear()
-#     Desc.clear()
-#     Len_List -=1
-#     index +=1
-# Final_Dict = dict(zip(List_of_Divisions, Dict_List))
-
-
-# SEC_MAIN_BRANCH_DICT = dict(zip(List_Codes, List_of_Divisions))
-
-# def Find_Relevant_Industry_Descriptions(company_descript, model):
-
-#     Relevant_Branches = find_SEC_branch(company_descript, model)
-#     Main_Branch_list = []
-#     for k,v in SEC_MAIN_BRANCH_DICT.items():
-#         if Relevant_Branches == k:
-#             Main_Branch_list.append(v)
-#     Main_Branch_list = Main_Branch_list[0]        
-#     #Main Branch Represents Branches of Descriptions to parse to compare to company_description
-#     Narrowed_Descriptions = []
-#     for y,z in Final_Dict.items():
-#         if Main_Branch_list == y:
-#             for a in z.values():
-#                 Narrowed_Descriptions.append(a)
-#     return Narrowed_Descriptions
-
-# # print(Find_Relevant_Industry_Descriptions(I,model))
-
-
-# #Description.npy is avg_vectors of individual descriptions in New_Description_list
-# wv = np.load('Description.npy')
-# with open('Description_list.json') as f:
-#     Description_list = json.load(f)
-
-# #New_Dict represents the "model" to compare company descriptions to once we have a company description
-# New_Dict = dict(zip(Description_list, wv))
-
-
-
-
-def Advanced_cosine_sentence_2(v1,v2, model):
-    '''
-    Finds cosine similarity between 2 sentences
-    v1:First input is the company description
-    v2:Second input is the industry description, aka SIC Code, etc...
-    model1: main model of all words
-    model2: newly created model of only descriptions from SEC list
-    '''
-    v1 = Advanced_Avg_sentence_vec_desc(v1, model)
-    v2 = v2 
-    
-    if norm(v1) > 0 and norm(v2) > 0:
-        return dot(v1, v2) / (norm(v1) * norm(v2))
-    else:
-        return 0.0
-
-def Most_Relevant_Description(comp_descript, model):
-    '''
-    This will take a random company description's top matched SEC industry branch
-    Check the relevant Descriptions within this branch, and return the description
-    With highest cosine similarity between the company description, and the SEC descriptions
-    '''
-        
-    Relevant_Descriptions = Find_Relevant_Industry_Descriptions(comp_descript, model)
-    Descript_to_check = []
-    for x in Relevant_Descriptions:
-        if x in Description_list:
-            Descript_to_check.append(x)
-    
-    Scores = []
-    for x in Descript_to_check:
-        for k,v in New_Dict.items():
-            if x == k:
-                B = Advanced_cosine_sentence_2(comp_descript, v, model)
-                Scores.append(B)
-   
-    Score_Dict = dict(zip(Descript_to_check, Scores))
-    Top_Scores = sorted(Scores, reverse=True)
-    # best_topic = max(Score_Dict, key=Score_Dict.get)
-    Top_Descriptions = []
-    for x in Top_Scores[0:3]:
-        for k,v in Score_Dict.items():
-            if x == v:
-                Top_Descriptions.append(k)
-    return Top_Descriptions 
-
 Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
 ZZ = "operates as a technology platform for people and things mobility. The firm offers multi-modal people transportation, restaurant food delivery, and connecting freight carriers and shippers."
 YY = "We partner with biopharma companies, care providers, pharmacies, manufacturers, governments and others to deliver the right medicines, medical products and healthcare services to the patients who need them, when they need them — safely and cost-effectively."
 AB = " is a holding company. The Company is a provider of telecommunications, media and technology services globally. The Company operates through four segments: Communication segment, WarnerMedia segment, Latin America segment and Xandr segment. ... The Xandr segment provides advertising services."
-print(get_relevant_sentence_desc(C))
-print(find_SEC_branch(C,model))   
+# print(get_relevant_sentence_desc(I))
 
+List_Codes3 = ["Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction" ,\
+        "Utilities", "Construction" , "Manufacturing", "Transportation and Warehousing", "Wholesale Trade", "Retail Sales ",
+        "Information", "Finance and Insurance", "Real Estate and Rental and Leasing",\
+            "Education",\
+                "Health Care", "Arts, Entertainment, and Recreation", "Accommodation and Food",\
+                    "Private investment ", "Public Administration" ]
+
+
+
+
+
+print(find_SEC_branch(I,List_Codes3,model))   
+# print(check_in_list('applesauce', List_Codes2))
+
+       
 #Uber --  'Accommodation and Food Services', 
 
 
