@@ -1113,15 +1113,14 @@ def Multiple_Terminator_Move(Player_Piece, Dictionary_List, Key_Dictionary, Star
 
 global PLAYER_TURN
 PLAYER_TURN = True
-def Play_Game(Boardsize, Squares, Squares_to_win, Player=False,):
+def Play_Game(Boardsize, Squares, Squares_to_win, Player=False, Computer_Players):
     '''
     Function to play entire game using all other functions. One ring, to rule them all!
     '''
     
     Create_Board(Boardsize, Squares, "white", "Tic-Tac-Toe", "black", 2.5)
     Key_Dictionary = create_key_dict_and_coords(Boardsize, Squares)
-    Remaining_Dict_O = create_remaining_dict(Squares, Squares_to_win)
-    Remaining_Dict_X = create_remaining_dict(Squares, Squares_to_win)
+    Dictionary_List = create_Dictionary_List(Squares, Squares_to_win, Computer_Players)
     Adjacency_Dict1 = Adjacency_Dict(Squares)
     List_of_X_moves = []
     List_of_O_moves = []
