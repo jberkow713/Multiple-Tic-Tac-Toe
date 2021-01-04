@@ -377,21 +377,21 @@ def get_relevant_sentence_desc(input_str:str):
     Text_Dict = dict(zip(text, x))
     # Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB'] 
     # 'PRON']
-    # Acceptable_POS = ['NOUN',  'ADJ', 'VERB']
+    Acceptable_POS = ['NOUN']
     Final_Acceptable_Words = []
     
     #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
                
         # if len(word)>=4 and POS in Acceptable_POS and 'servic' not in word:
-        if len(word)>=4 :
+        if len(word)>=4 and POS in Acceptable_POS:
 
             count = 0
             for wrd in Useful_Industry_Words_Stemmed:
                 if count ==1:
                     break
                 if wrd in word:
-                    for i in range(0,3):
+                    for i in range(0,1):
                         Final_Acceptable_Words.append(word)
                     count +=1
             for wrd in Useful_Industry_Final_Words2:
@@ -435,12 +435,12 @@ def get_relevant_sentence_industry(input_str:str):
     
     Text_Dict = dict(zip(text, x))
     # Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON' ] 
-    Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
+    # Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
     Final_Acceptable_Words = []
     
     #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
-        if len(word)>=3 and POS in Acceptable_POS:
+        if len(word)>=3 :
             Final_Acceptable_Words.append(word)
         if word in Useful_Industry_Final_Words2:
             Final_Acceptable_Words.append(word)    
@@ -497,10 +497,10 @@ O = "engages in the provision of health care services. It operates through the f
 P = "RETAIL-DRUG STORES AND PROPRIETARY STORES"
 Q = " operates an international chain of membership warehouses, mainly under the 'Costco Wholesale' name, that carry quality, brand-name merchandise at substantially lower prices than are typically found at conventional wholesale or retail sources."
 R = "Variety Stores"
-print(get_relevant_sentence_desc(I))
-print(get_relevant_sentence_industry(J))
-# print(get_relevant_sentence_industry(J))
-print(Advanced_cosine_sentence(I ,J,model))
+# print(get_relevant_sentence_desc(K))
+# print(get_relevant_sentence_industry(L))
+# # print(get_relevant_sentence_industry(J))
+# print(Advanced_cosine_sentence(K ,L,model))
 # print(cosine_sentence(I,J,model))
 
 
@@ -552,7 +552,7 @@ def find_SEC_branch(company_descript, industry_list, model):
     
     x = dict(zip(industry_list, Similarities))
     Similarities = sorted(Similarities, reverse=True)
-    Top2 = Similarities[0:2]
+    Top2 = Similarities[0:3]
     Top2_Scores = []
     Top_Choice = max(x, key=x.get)
     Top_Choices = []
@@ -560,8 +560,12 @@ def find_SEC_branch(company_descript, industry_list, model):
         for k,v in x.items():
             if y == v:
                 Top2_Scores.append(v)
-                Top_Choices.append(k)  
-    return Top_Choices, Top_Choice, Top2_Scores
+                Top_Choices.append(k)
+            
+    if Top2_Scores[0] > Top2_Scores[1] * (1.1):
+        return Top_Choice, Top2_Scores[0]
+    else:
+        return Top_Choices, Top_Choice, Top2_Scores
 
 
 
@@ -570,19 +574,18 @@ ZZ = "operates as a technology platform for people and things mobility. The firm
 YY = "We partner with biopharma companies, care providers, pharmacies, manufacturers, governments and others to deliver the right medicines, medical products and healthcare services to the patients who need them, when they need them — safely and cost-effectively."
 AB = " is a holding company. The Company is a provider of telecommunications, media and technology services globally. The Company operates through four segments: Communication segment, WarnerMedia segment, Latin America segment and Xandr segment. ... The Xandr segment provides advertising services."
 # print(get_relevant_sentence_desc(I))
-
-List_Codes3 = ["Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction" ,\
-        "Utilities", "Construction" , "Manufacturing", "Transportation and Warehousing", "Wholesale Trade", "Retail Sales ",
-        "Information", "Finance and Insurance", "Real Estate and Rental and Leasing",\
-            "Education",\
-                "Health Care", "Arts, Entertainment, and Recreation", "Accommodation and Food",\
-                    "Private investment ", "Public Administration" ]
-
+AC = "  vehicle builder that makes and sells a range of RVs, from motor homes to travel trailers, as well as related parts. "
+List_Codes3 = ["Agriculture, Forestry, Fishing,  Hunting", "Mining, Quarrying,  Oil, Gas Extraction" ,\
+        "Utilities", "Construction" , "Manufacturing", "Transportation", "Wholesale Trade", "Retail Sales ",
+        "Finance, Insurance, Investments", "Housing, Apartments", "Rental, Leasing",\
+            "Health Care", "Arts, Entertainment", "Restaurants, Food",\
+                    "Communications" ]
 
 
 
-
-print(find_SEC_branch(I,List_Codes3,model))   
+print(get_relevant_sentence_desc(AB))
+print(cosine("food", "range", model))
+print(find_SEC_branch(AB,List_Codes3,model))   
 # print(check_in_list('applesauce', List_Codes2))
 
        
