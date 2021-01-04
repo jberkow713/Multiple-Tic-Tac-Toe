@@ -391,7 +391,7 @@ def get_relevant_sentence_desc(input_str:str):
                 if count ==1:
                     break
                 if wrd in word:
-                    for i in range(0,1):
+                    for i in range(0,2):
                         Final_Acceptable_Words.append(word)
                     count +=1
             for wrd in Useful_Industry_Final_Words2:
@@ -577,15 +577,15 @@ AB = " is a holding company. The Company is a provider of telecommunications, me
 AC = "  vehicle builder that makes and sells a range of RVs, from motor homes to travel trailers, as well as related parts. "
 List_Codes3 = ["Agriculture, Forestry, Fishing,  Hunting", "Mining, Quarrying,  Oil, Gas Extraction" ,\
         "Utilities", "Construction" , "Manufacturing", "Transportation", "Wholesale Trade", "Retail Sales ",
-        "Finance, Insurance, Investments", "Housing, Apartments", "Rental, Leasing",\
+        "Investment Management", "Finance, Insurance", "Housing, Apartments", "Rental, Leasing",\
             "Health Care", "Arts, Entertainment", "Restaurants, Food",\
                     "Communications" ]
 
 
-
-print(get_relevant_sentence_desc(AB))
-print(cosine("food", "range", model))
-print(find_SEC_branch(AB,List_Codes3,model))   
+# print(Useful_Industry_Words_Stemmed)
+print(get_relevant_sentence_desc(YY))
+# print(cosine("food", "range", model))
+print(find_SEC_branch(YY,List_Codes3,model))   
 # print(check_in_list('applesauce', List_Codes2))
 
        
