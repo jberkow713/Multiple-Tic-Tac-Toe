@@ -239,3 +239,22 @@ def Find_Company_Name(Dict):
   return(Amended_Company_Names)
 
 print(Find_Company_Name(A))    
+
+#Want to create a function that takes this data, and runs each company through google site, to get a 
+#list of strings, each string will be the company description from google....
+# We use for x in Find_Company_Name(dict):
+#           then our google function of "x company description"
+
+# Then operate on the string using advance cosine, to match each one up to a particular industry
+# so then we will have a list of company names, and their SEC classifications, Key, and Value
+#Dict = {Company:Classification, Company2:Classification, etc...}
+
+# We want an overall classification for the venture capital firm
+# Take each value for each key, place in a list, then make a count_Dictionary, using counter or whatever,
+# To create a dictionary of {Classification:Count, Classification:Count, etc}
+# Take top 3 Classifications, based on Count, and Put in list of descending order, with 
+
+#[Classification_1, and its % of overall classifications, Classification_2, and its % of overall classifications,\
+# Classification_3, and its % of overall classifications]  
+ 
+#If we can get the proper string returned from Google, we can make this work
