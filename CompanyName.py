@@ -727,113 +727,186 @@ def googleSearch(query):
     except Exception as ex:
       print(str(ex))
     finally:
-      return g_clean[0:10]
-print(googleSearch("CVS"))      
+      return g_clean[0]
+# print(googleSearch("CVS"))      
 
 def Company_Description_Links(Dict):
   '''
   This function takes in a Dictionary, returns a dictionary of the company name and its
-  Website to be used for scraping its company description
-  Fixing it to be reuters and bloomberg for now, if other good sites come along, will add
+  yahoo finance company symbol to be used in yahoo finance searching
   '''
   Company_Names = Find_Company_Name(Dict)
   lst = []
   for x in Company_Names:
-    y = x + ' '+ "company decription"
+    y = x + ' '+ "yahoo finance stock symbol"
     lst.append(y)
   Link_List = []
-  Best_Sites = ['www.reuters.com/companies', 'bloomberg.com']
+  
   for x in lst:
-    y = googleSearch(x)
-    for site in y:
-      for choice in Best_Sites:
-        if choice in site and '%' not in site:
-          Link_List.append(site)
-          break
+    a = googleSearch(x)
+   
+    Link_List.append(a)
+          # break
     
   Company_Website_Dict = dict(zip(Company_Names, Link_List))  
   return Company_Website_Dict
 
-print(Company_Description_Links(B))
+# print(Company_Description_Links(B))
 
 
 # print(googleSearch("Tesla company description"))
 # URL = 'https://www.wsj.com/market-data/quotes/JFIL/company-people'
-import requests
-# A = Company_Description_Links(B)
-# Description_List = []
-# for value in A.values():
-#   URL = str(value)
+# import requests
+# # A = Company_Description_Links(B)
+# # Description_List = []
+# # for value in A.values():
+# #   URL = str(value)
 
-#   page = requests.get(URL)
-#   Description_List.append(page)
-# print(Description_List)  
-
-
-
-# page = requests.get(URL)
-# print(page)
-# URL = 'https://realpython.com/beautiful-soup-web-scraper-python/'
-# page = requests.get(URL)
-# print(page)
-
-# So the wall street journal does not allow get requests to their stupid site, we have to replace
-# # all wsj requests with equivalent bloomberg requests
-# import urllib.request
-
-# wp = urllib.request.urlopen('https://finance.yahoo.com/quote/NVDA/profile/')
-# pw = wp.read()
-# print(pw)
+# #   page = requests.get(URL)
+# #   Description_List.append(page)
+# # print(Description_List)  
 
 
-# page = urllib2.urlopen(URL)
+# # page = requests.get(URL)
+# # print(page)
+# # URL = 'https://realpython.com/beautiful-soup-web-scraper-python/'
+# # page = requests.get(URL)
+# # print(page)
 
-# soup = BeautifulSoup(page.content, 'html.parser')
-# results = soup.find(id='ResultsContainer')
-# print(results.prettify())
+# # So the wall street journal does not allow get requests to their stupid site, we have to replace
+# # # all wsj requests with equivalent bloomberg requests
+# # import urllib.request
 
-import pandas as pd
-from bs4 import BeautifulSoup
-URL = 'https://www.reuters.com/companies/MSFT.OQ'
-html_text = requests.get(URL).text
-soup = BeautifulSoup(html_text, 'html.parser')
-A = soup.find("div", {"class": "Profile-about-1d-H-"})
-
-#For reuters, we have a way to directly find the ABOUT info and return it in HTML form
-# Need to find this for each of the different possible websites
+# # wp = urllib.request.urlopen('https://finance.yahoo.com/quote/NVDA/profile/')
+# # pw = wp.read()
+# # print(pw)
 
 
-# print(A)
+# # page = urllib2.urlopen(URL)
 
+# # soup = BeautifulSoup(page.content, 'html.parser')
+# # results = soup.find(id='ResultsContainer')
+# # print(results.prettify())
 
-# links = []
-# for link in soup.find_all('a'):
-#   print(link.get('href'))
-#   links.append((link.get('href')))
-
-import requests
-from bs4 import BeautifulSoup
-
-
-# vgm_url = 'https://www.vgmusic.com/music/console/nintendo/nes/'
-# html_text = requests.get(vgm_url).text
+# import pandas as pd
+# from bs4 import BeautifulSoup
+# URL = 'https://www.reuters.com/companies/JFIL.PK'
+# html_text = requests.get(URL).text
 # soup = BeautifulSoup(html_text, 'html.parser')
-# A = soup.find(id='banner_ad').text
+# A = soup.find("div", {"class": "Profile-about-1d-H-"})
 # print(A)
 
+# #For reuters, we have a way to directly find the ABOUT info and return it in HTML form
+# # Need to find this for each of the different possible websites
 
 
 
-# <div class="Profile-about-1d-H-"
+# # <div class="Profile-about-1d-H-"
 
-# ><h3 class="TextLabel__text-label___3oCVw TextLabel__black___2FN-Z TextLabel__medium___t9PWg Profile-title-2cbxz">About Rite Aid Corporation</h3><p class="TextLabel__text-label___3oCVw TextLabel__black___2FN-Z TextLabel__serif___3lOpX Profile-body-2Aarn">Rite Aid Corporation is a retail drugstore chain. The Company's segments include Retail Pharmacy and Pharmacy Services. The Company operates under The Rite Aid name. It operates approximately 4,560 stores in over 30 states across the country and in the District of Columbia. The Company's Retail Pharmacy segment consists of Rite Aid stores, RediClinic and Health Dialog. It sells brand and generic prescription drugs, as well as an assortment of front-end products, including health and beauty aids, personal care products, seasonal merchandise, and a private brand product line. Its front-end products include over-the-counter medications, health and beauty aids, personal care items, cosmetics, household items, food and beverages, greeting cards, seasonal merchandise and numerous other everyday and convenience products. The Company's Pharmacy Services segment consists of EnvisionRx, which provides a range of pharmacy benefit services.</p></div> 
-# # This is the part we want to copy
+# # from selenium import webdriver
+# # import time
+# # from bs4 import BeautifulSoup
 
-# from BeautifulSoup import BeautifulSoup
-# tree = BeautifulSoup(bad_html)
-# good_html = tree.prettify()
-# import re
-# from selenium import webdriver
-# import chromedriver_binary
-# import string
+# # <div class="noMargin__bb878349"><section class="companyProfileOverview__aa874298 down__74925925">
+# print('=========')
+
+# URL2= "https://stockanalysis.com/stocks/tinv/"
+# html_text = requests.get(URL2).text
+# soup = BeautifulSoup(html_text, 'html.parser')
+# A = soup.find("div", {"class": "sidew descr"})
+# print(A)
+
+# print('-----------')
+
+# # # print(A)
+# # <div class="noMargin__bb878349"
+# # document.querySelector("#root > div > section > div.noMargin__bb878349 > section > section.info__d075c560 > div")
+# URL3 = "https://www.marketwatch.com/investing/stock/jfil"
+# html_text = requests.get(URL3).text
+# soup = BeautifulSoup(html_text, 'html.parser')
+# # B= soup.find("div", {"class": "element element--description "})
+# table = soup.find('div',{"class": "element element--description"})
+# print(table)
+# # print(B)
+# print("---------------------")
+# <p class="description__text">
+
+# URL4 = "https://www.bloomberg.com/profile/company/TINV/U:US"
+# html_text = requests.get(URL4).text
+# soup = BeautifulSoup(html_text, 'html.parser')
+# # B= soup.find("div", {"class": "element element--description "})
+# table = soup.find('div',{"class": "fence-body"})
+# print(table)
+
+
+
+
+# # <div class="asset-profile-container full Mb(25px) smartphone_Px(20px)" 
+# print(B)
+# <div class="asset-profile-container full Mb(25px) smartphone_Px(20px)" data-test="asset-profile">
+# <div class="element element--description ">
+
+# <section class="info__d075c560">
+
+# driver = webdriver.Ie(r"C:\Users\JayBeast\Desktop\Selenium\IEDriverServer.exe")
 # pd.options.display.float_format = '{:.0f}'.format
+# driver.get(url)
+
+# time.sleep(5)
+# content = driver.page_source.encode('utf-8').strip()
+# soup = BeautifulSoup(content,"html.parser")
+# officials = soup.find("div", {"class":"description__ce057c5c"})
+
+# for entry in officials:
+#     print(str(entry))
+
+
+
+import yfinance as yf
+from yfinance import Ticker
+import json
+import matplotlib.pyplot as plt
+
+def get_summary(Stock_Symbol):
+  ticker_nm: Ticker = yf.Ticker(Stock_Symbol)
+
+  x = ticker_nm.info
+  for k,v in x.items():
+    if k == "longBusinessSummary":
+      return(v)
+
+# print(get_summary("kmx"))      
+
+# def get_comp_description_Dict(Dict):
+
+#   A = Company_Description_Links(Dict)
+#   Websites = []
+#   for x in A.values():
+#     Websites.append(x)
+
+def get_comp_description_Dict(Dict):
+
+  A = Company_Description_Links(Dict)
+  Websites = []
+  for x in A.values():
+    Websites.append(x)
+  Symbols = []
+  for x in Websites:
+    a = x.split('/')
+    if '%' not in a[-2]:
+      Symbols.append(a[-2])
+    else:
+      b = a[-2].split('%')
+      Symbols.append(b[0])
+
+  #Symbols is a list of all ticker symbols to be fed into yahoo_finance
+  Summary_List = []
+  for x in Symbols:
+    desc = get_summary(x)
+    if desc != None:
+      Summary_List.append(desc)
+  
+  return Summary_List
+
+# print(get_comp_description_Dict(B)) 
+# print(get_summary('TINV-UN'))    
