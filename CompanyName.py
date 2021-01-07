@@ -750,4 +750,94 @@ print(Company_Description_Links(B))
 
 
 # print(googleSearch("Tesla company description"))
+# URL = 'https://www.wsj.com/market-data/quotes/JFIL/company-people'
+import requests
+# A = Company_Description_Links(B)
+# Description_List = []
+# for value in A.values():
+#   URL = str(value)
 
+#   page = requests.get(URL)
+#   Description_List.append(page)
+# print(Description_List)  
+
+
+
+# page = requests.get(URL)
+# print(page)
+# URL = 'https://realpython.com/beautiful-soup-web-scraper-python/'
+# page = requests.get(URL)
+# print(page)
+
+# So the wall street journal does not allow get requests to their stupid site, we have to replace
+# # all wsj requests with equivalent bloomberg requests
+# import urllib.request
+
+# wp = urllib.request.urlopen('https://finance.yahoo.com/quote/NVDA/profile/')
+# pw = wp.read()
+# print(pw)
+
+
+# page = urllib2.urlopen(URL)
+
+# soup = BeautifulSoup(page.content, 'html.parser')
+# results = soup.find(id='ResultsContainer')
+# print(results.prettify())
+
+import pandas as pd
+from bs4 import BeautifulSoup
+URL = 'https://www.reuters.com/companies/MSFT.OQ'
+html_text = requests.get(URL).text
+soup = BeautifulSoup(html_text, 'html.parser')
+A = soup.find("div", {"class": "Profile-about-1d-H-"})
+
+#For reuters, we have a way to directly find the ABOUT info and return it in HTML form
+# Need to find this for each of the different possible websites
+print(A)
+
+
+# links = []
+# for link in soup.find_all('a'):
+#   print(link.get('href'))
+#   links.append((link.get('href')))
+
+import requests
+from bs4 import BeautifulSoup
+
+
+# vgm_url = 'https://www.vgmusic.com/music/console/nintendo/nes/'
+# html_text = requests.get(vgm_url).text
+# soup = BeautifulSoup(html_text, 'html.parser')
+# A = soup.find(id='banner_ad').text
+# print(A)
+
+
+
+
+# <div class="Profile-about-1d-H-"
+
+# ><h3 class="TextLabel__text-label___3oCVw TextLabel__black___2FN-Z TextLabel__medium___t9PWg Profile-title-2cbxz">About Rite Aid Corporation</h3><p class="TextLabel__text-label___3oCVw TextLabel__black___2FN-Z TextLabel__serif___3lOpX Profile-body-2Aarn">Rite Aid Corporation is a retail drugstore chain. The Company's segments include Retail Pharmacy and Pharmacy Services. The Company operates under The Rite Aid name. It operates approximately 4,560 stores in over 30 states across the country and in the District of Columbia. The Company's Retail Pharmacy segment consists of Rite Aid stores, RediClinic and Health Dialog. It sells brand and generic prescription drugs, as well as an assortment of front-end products, including health and beauty aids, personal care products, seasonal merchandise, and a private brand product line. Its front-end products include over-the-counter medications, health and beauty aids, personal care items, cosmetics, household items, food and beverages, greeting cards, seasonal merchandise and numerous other everyday and convenience products. The Company's Pharmacy Services segment consists of EnvisionRx, which provides a range of pharmacy benefit services.</p></div> 
+# # This is the part we want to copy
+
+# from BeautifulSoup import BeautifulSoup
+# tree = BeautifulSoup(bad_html)
+# good_html = tree.prettify()
+# import re
+# from selenium import webdriver
+# import chromedriver_binary
+# import string
+# pd.options.display.float_format = '{:.0f}'.format
+
+# is_link = 'https://finance.yahoo.com/'
+# driver = webdriver.Ie(r"C:\Users\JayBeast\Desktop\Selenium\IEDriverServer.exe")
+# A = driver.get(is_link)
+# print(A)
+# driver.quit()
+# html = driver.execute_script('return document.body.innerHTML;')
+# soup = BeautifulSoup(html,'lxml')
+# print(soup)
+# search_string = 'Fedex Company Description'
+# search_string = search_string.replace(' ', '+') 
+# for i in range(1): 
+#   matched_elements = driver.get("https://www.google.com/search?q=" + search_string + "&start=" + str(i)) 
+# print(matched_elements)
