@@ -727,12 +727,14 @@ def googleSearch(query):
     except Exception as ex:
       print(str(ex))
     finally:
-      return g_clean[0]
+      return g_clean[0:10]
+print(googleSearch("CVS"))      
 
 def Company_Description_Links(Dict):
   '''
   This function takes in a Dictionary, returns a dictionary of the company name and its
   Website to be used for scraping its company description
+  Fixing it to be reuters and bloomberg for now, if other good sites come along, will add
   '''
   Company_Names = Find_Company_Name(Dict)
   lst = []
@@ -740,9 +742,15 @@ def Company_Description_Links(Dict):
     y = x + ' '+ "company decription"
     lst.append(y)
   Link_List = []
+  Best_Sites = ['www.reuters.com/companies', 'bloomberg.com']
   for x in lst:
     y = googleSearch(x)
-    Link_List.append(y)
+    for site in y:
+      for choice in Best_Sites:
+        if choice in site and '%' not in site:
+          Link_List.append(site)
+          break
+    
   Company_Website_Dict = dict(zip(Company_Names, Link_List))  
   return Company_Website_Dict
 
@@ -793,7 +801,9 @@ A = soup.find("div", {"class": "Profile-about-1d-H-"})
 
 #For reuters, we have a way to directly find the ABOUT info and return it in HTML form
 # Need to find this for each of the different possible websites
-print(A)
+
+
+# print(A)
 
 
 # links = []
@@ -827,17 +837,3 @@ from bs4 import BeautifulSoup
 # import chromedriver_binary
 # import string
 # pd.options.display.float_format = '{:.0f}'.format
-
-# is_link = 'https://finance.yahoo.com/'
-# driver = webdriver.Ie(r"C:\Users\JayBeast\Desktop\Selenium\IEDriverServer.exe")
-# A = driver.get(is_link)
-# print(A)
-# driver.quit()
-# html = driver.execute_script('return document.body.innerHTML;')
-# soup = BeautifulSoup(html,'lxml')
-# print(soup)
-# search_string = 'Fedex Company Description'
-# search_string = search_string.replace(' ', '+') 
-# for i in range(1): 
-#   matched_elements = driver.get("https://www.google.com/search?q=" + search_string + "&start=" + str(i)) 
-# print(matched_elements)
