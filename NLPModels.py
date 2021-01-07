@@ -382,6 +382,8 @@ def get_relevant_sentence_desc(input_str:str):
     
     #Weighting certain words by adding them double for specific tenses
     for word, POS in Text_Dict.items():
+
+        # Final_Acceptable_Words.append(word)
                
         # if len(word)>=4 and POS in Acceptable_POS and 'servic' not in word:
         if len(word)>=4 and POS in Acceptable_POS:
@@ -405,7 +407,25 @@ def get_relevant_sentence_desc(input_str:str):
     sentence = ' '.join(word for word in Final_Acceptable_Words)    
 
     return(sentence)
+def get_relevant_sentence_desc2(input_str:str):
+    '''
+    Get relevant words in description, tokenize them and match them using tense, and if they are 
+    industry specific words
+    Specifically target Industry Keywords that do not appear in classification terms, to minimize bias 
+    '''
+    
+    input_str = input_str.replace('-', ' ')
+    inpt = tokenize(input_str)
+    inpt = ' '.join(word for word in inpt) 
 
+    
+    text = inpt.split()
+          
+   
+                    
+    sentence = ' '.join(word for word in text)    
+
+    return(sentence)
 
 
 
@@ -565,8 +585,19 @@ def find_SEC_branch(company_descript, industry_list, model):
     if Top2_Scores[0] > Top2_Scores[1] * (1.1):
         return Top_Choice, Top2_Scores[0]
     else:
-        return Top_Choices, Top_Choice, Top2_Scores
-
+        Final_returned_scores = []
+        Final_returned_keys = []
+        for x in Top2_Scores:
+            if (x / Top2_Scores[0]) >.9:
+                Final_returned_scores.append(x)
+                top_dict = dict(zip(Top_Choices, Top2_Scores))
+                for k,v in top_dict.items():
+                    for x in Final_returned_scores:
+                        if x == v:
+                            if k not in Final_returned_keys:
+                                Final_returned_keys.append(k)
+        # return  Top_Choice, Top2_Scores[0], Final_returned_keys
+        return [Top_Choice]
 
 
 Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
@@ -575,21 +606,58 @@ YY = "We partner with biopharma companies, care providers, pharmacies, manufactu
 AB = " is a holding company. The Company is a provider of telecommunications, media and technology services globally. The Company operates through four segments: Communication segment, WarnerMedia segment, Latin America segment and Xandr segment. ... The Xandr segment provides advertising services."
 # print(get_relevant_sentence_desc(I))
 AC = "  vehicle builder that makes and sells a range of RVs, from motor homes to travel trailers, as well as related parts. "
-List_Codes3 = ["Agriculture, Forestry, Fishing,  Hunting", "Mining, Quarrying,  Oil, Gas Extraction" ,\
+Industry_Codes = ["Agriculture, Forestry, Fishing,  Hunting", "Mining, Quarrying,  Oil, Gas Extraction" ,\
         "Utilities", "Construction" , "Manufacturing", "Transportation", "Wholesale Trade", "Retail Sales ",
-        "Investment Management", "Finance, Insurance", "Housing, Apartments", "Rental, Leasing",\
+        "Investment ", "Finance, Insurance", "Housing, Apartments", "Rental, Leasing",\
             "Health Care", "Arts, Entertainment", "Restaurants, Food",\
-                    "Communications" ]
+                    "Communications, Technology" ]
 
-
+AD = "We assessed the oral health of the Pine Ridge Oglala Lakota people, described a new oral health assessment tool for Indigenous people, and suggested ways to improve Native oral health."
+AE = 'a technology company. The Company develops, licenses, and supports a range of software products, services and devices.'
+AF = 's an aerospace company, which engages in the manufacture of commercial jetliners and defense, space and security systems. It operates through the following segments: Commercial Airplanes; Defense, Space and Security; Global Services; and Boeing Capital.'
+AG = 'sports broadcasting world. The company is the leading cable sports broadcaster, reaching about 100 million US viewers per month with its stable of channels'
+AH = 'vertically integrated to find, extract and supply oil, natural gas and petroleum. Part of the sixth largest non state-owned energy companies, BP also owns a convenience store chain that is attached to their gas stations'
 # print(Useful_Industry_Words_Stemmed)
-print(get_relevant_sentence_desc(YY))
-# print(cosine("food", "range", model))
-print(find_SEC_branch(YY,List_Codes3,model))   
+# print(get_relevant_sentence_desc(AH))
+# # print(get_relevant_sentence_desc2(B))
+# print(cosine("communications", "systems", model))
+# print(find_SEC_branch(AH ,Industry_Codes,model))   
 # print(check_in_list('applesauce', List_Codes2))
+#ESPN-Arts/Entertainment, Comm/Tech
+#Boeing-Manufacturing, Comm/Tech
+#State Street, Finance/Insurance
+#Bp-Oil, Gas, Extraction / Retail Sales
+#        
+#Take company and what it invests in, classify all the companies, get an overall classification
+#Take researchers and what they do, classify them through their patents and papers,
 
-       
-#Uber --  'Accommodation and Food Services', 
+# Match up companies/Researchers 
 
 
+
+#Want to create a program that can take a list of companies that company invests in, 
+# get their company descriptions, feed it in to the model, and return the top 3 industries, and their
+# percentages 
+
+# In theory, access the edgar forms, and for every one of the companies in a particular companies verticals
+# Make a request to google to type in the "company name" + company description
+
+# You take this information, from the request, and you turn it into a variable called A,
+#You then throw A into 
+#find_Sec_branch(A, Industry_Codes, model)
+
+# Only take top result, for each request you receive a [classification]
+# And then basically you tally up each classification, and how many, store in dictionary
+# Take the top 3 counts and return them/total counts, come up with some kind of classifier
+
+
+from CompanyName import get_comp_description_Dict, B
+
+Comp_Info = get_comp_description_Dict(B)
+Venture_Classification = []
+for x in Comp_Info:
+    xx = find_SEC_branch(x ,Industry_Codes,model)
+    Venture_Classification.append(xx)
+
+print(Venture_Classification)
 

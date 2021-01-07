@@ -868,6 +868,8 @@ import json
 import matplotlib.pyplot as plt
 
 def get_summary(Stock_Symbol):
+  '''
+  '''
   ticker_nm: Ticker = yf.Ticker(Stock_Symbol)
 
   x = ticker_nm.info
@@ -875,16 +877,17 @@ def get_summary(Stock_Symbol):
     if k == "longBusinessSummary":
       return(v)
 
-# print(get_summary("kmx"))      
 
-# def get_comp_description_Dict(Dict):
-
-#   A = Company_Description_Links(Dict)
-#   Websites = []
-#   for x in A.values():
-#     Websites.append(x)
 
 def get_comp_description_Dict(Dict):
+
+  '''
+  Takes in an SEC Dictionary, finds the companies venture has invested in,
+  Finds the symbols of companies through google search,
+  Returns list of company descriptions of given companies through Yahoo Finance
+  If description does not exist, does not return description
+  Will amend to eventually look elsewhere for those missing descriptions
+  '''
 
   A = Company_Description_Links(Dict)
   Websites = []
@@ -905,6 +908,20 @@ def get_comp_description_Dict(Dict):
     desc = get_summary(x)
     if desc != None:
       Summary_List.append(desc)
+    elif desc == None:
+      a = x.split('-')
+      URL = "https://stockanalysis.com/stocks/!/"
+      URL2 = URL.replace('!', a[0])
+      html_text = requests.get(URL2).text
+      soup = BeautifulSoup(html_text, 'html.parser')
+      A = soup.find("div", {"class": "sidew descr"})
+      B = str(A.find('p'))
+
+      C =re.split(r'(?<=\.) ', B)
+      Summary_List.append(C[0])
+
+
+      
   
   return Summary_List
 
