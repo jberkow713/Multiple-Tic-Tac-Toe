@@ -1,24 +1,4 @@
-#The idea is to get keywords used in resume analysis when it comes to how employers filter 
-#What we want to do , is for a given job description, we want to create a model that can figure out 
-# the main theme or themese of the given article
-
-#So we can use the same type of analysis in NLPModels, to take in a given description, and have it filter
-# into the below categories:
-
-#Leadership, Creation, Efficiency, Growth_Boosting, Process_Improving, Management, 
-#Client_Based, Consulting, Research Analysis, Writing/Communication, 
-#Management_Enforcement, and Goal Oriented
-
-#We call the above the main topic list, and basically write an SEC classification function, only 
-#instead using job topics
-
-#with company description, they were generally a paragraph long, we want to filter a page or so job 
-#description, and turn it into 5-10 different paragraphs/sentences, and then judge each one accordingly
-#Figuring out how to parse the resume and turn it into a topic, or several topics is one of the main 
-#objectives for this project...but once we do this, we can compare these to the categories listed above
-
-
-
+from NLPModels import *
 
 Leadership_Keywords = ['haired','Controlled','Coordinated','Executed','Headed','Operated','Orchestrated',\
     'Organized','Oversaw','Planned','Produced','Programmed']
@@ -70,3 +50,39 @@ Management_Enforcement_Keywords = ['Authorized','Blocked','Delegated','Dispatche
 
 Goal_Oriented_Keywords = ['Attained','Awarded','Completed','Demonstrated','Earned','Exceeded','Outperformed',\
     'Reached','Showcased','Succeeded','Surpassed','Targeted']
+
+Type_Classifier = ["Goal", "Enforcement", "Writing, Communication", "Research, Analysis",\
+    "Consulting", "Management", 'Client', 'Process improving', 'Growth Boosting', 'Efficiency',\
+        'Leadership']
+
+#Goal is to analyze a resume, figure out which of the list of keywords has highest value upon resume
+# We're going to use the NLPModel from SEC to start
+
+Lst_Types = [Goal_Oriented_Keywords, Management_Enforcement_Keywords, Writing_Communication_Keywords,\
+    Research_Analysis_Keywords, Consulting_Keywords, Management_Keywords, Client_Based_Keywords, \
+        Process_Improving_Keywords, Growth_Boosting_Keywords, Efficiency_Keywords,\
+            Leadership_Keywords]
+# print(Lst_Types[0])
+
+Classifier_Dict = dict(zip(Type_Classifier, Lst_Types))
+ 
+HR = "Human resources specialists are responsible for recruiting, screening, interviewing and placing workers. They may also handle employee relations, payroll, benefits, and training. Human resources managers plan, direct and coordinate the administrative functions of an organization."    
+B = "work with organisations to help them improve their processes and systems. They conduct research and analysis in order to come up with solutions to business problems and help to introduce these systems to businesses and their clients."
+# A = find_SEC_branch(B, Type_Classifier, model)
+# print(get_relevant_sentence_desc(B))
+# print(A)
+
+def Find_Useful_Keywords(Description, Keyword_List, model):
+    A = find_SEC_branch(Description, Keyword_List, model)
+    Keywords = []
+    for x in A[2]:
+        for k,v in Classifier_Dict.items():
+            if x == k:
+                for x in v:
+                    x = x.lower()
+                    Keywords.append(x)
+    return Keywords
+
+C = Find_Useful_Keywords(HR, Type_Classifier, model)
+print(C)    
+
