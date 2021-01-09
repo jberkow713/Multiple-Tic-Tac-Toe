@@ -36,19 +36,16 @@ soup = BeautifulSoup(html_text, 'html.parser')
 A = soup.find("div", {"class": "W(100%)"})
 B = (A.get_text())
 C =(B.split())
-Option_Names = []
+Contract_Names = []
 for x in C:
-    if "FB2101" in x:
-        Option_Names.append(x)
-Options_Better = []
-for x in Option_Names:
-    a = x.split('%')
-    b = a[-1].split('FB')
-    contract_name = ''.join(('FB',b[-1][0:15]))
-    Options_Better.append(contract_name)
-    # Options_Better.append(contract_name)
-    # Options_Better.append(b[-1][0:15])
-print(Options_Better)
+    if "FB" in x:
+
+        a = x.split('%')
+        b = a[-1].split('FB')
+        contract_name = ''.join(('FB',b[-1][0:15]))
+        Contract_Names.append(contract_name)
+Contract_Names = Contract_Names[1:]        
+print(Contract_Names)
 
 #Options_Better is a list of Contract Names:
 # More to come     
