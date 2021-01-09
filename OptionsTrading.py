@@ -37,6 +37,9 @@ A = soup.find("div", {"class": "W(100%)"})
 B = (A.get_text())
 C =(B.split())
 Contract_Names = []
+Trading_Data = []
+Trading_Times = []
+Last_Trading_Date = []
 for x in C:
     if "FB" in x:
 
@@ -44,8 +47,65 @@ for x in C:
         b = a[-1].split('FB')
         contract_name = ''.join(('FB',b[-1][0:15]))
         Contract_Names.append(contract_name)
-Contract_Names = Contract_Names[1:]        
-print(Contract_Names)
+       
+    for y in Contract_Names:
+        if y in x or "AM" in x or "PM" in x or "EST" in x:
+            if x not in Trading_Data:
+                Trading_Data.append(x)
+for x in C:
+    if ":" in x:
+        if "AM" in x or "PM" in x:
+            Trading_Times.append(x)
+Trading_Times = Trading_Times[1:]
+for x in Trading_Data:
+    for y in Contract_Names:
+        if y in x:
+            if x not in Last_Trading_Date:
+                a = x.split('%')
+                Last_Trading_Date.append(a[-1])
+Last_Trading_Date = Last_Trading_Date[1:]
+Contract_Names = Contract_Names[1:] 
+# print(Contract_Names)
+# print(Last_Trading_Date)
+# print(Trading_Times)    
+# print(Trading_Data)
+cleaned_contracts = []
+for y in Last_Trading_Date:
+    for x in Contract_Names:
+            
+        if x in y:
+            z = y.replace(x,'')
+            cleaned_contracts.append(z)
+# print(cleaned_contracts)
+cleaned_contracts_final = []
+for x in cleaned_contracts:
+    x = x.replace("Volatility", '')
+    cleaned_contracts_final.append(x)
+
+Last_Trade_Date = [i + ' ' + j + ' ' + 'EST' for i, j in zip(cleaned_contracts_final, Trading_Times)] 
+print(Contract_Names)                     
+print(Last_Trade_Date)
+print(len(Contract_Names))
+print(len(Last_Trade_Date))
+print(len(Trading_Times))
+    # y = x.replace('.good','')
+
+
+
+
+
+#Trading times is Time of day in last trade date
+          
+                        
+
+
+
+
+Contract_Names = Contract_Names[1:]
+
+# print(Trading_Data)
+   
+
 
 #Options_Better is a list of Contract Names:
 # More to come     
