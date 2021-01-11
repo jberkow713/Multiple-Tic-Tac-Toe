@@ -31,6 +31,7 @@ from numpy.linalg import norm
 
 
 
+
 def hasNumbers(inputString):
     return inputString.isalpha()
     # return any(char.isalpha() for char in inputString)
@@ -497,26 +498,26 @@ def Advanced_cosine_sentence(v1,v2, model):
     else:
         return 0.0
 
-A = "engages in retail and wholesale business. The Company offers an assortment of merchandise and services at everyday low prices. ... The Walmart International segment manages supercenters, supermarkets, hypermarkets, warehouse clubs, and cash & carry outside of the United States."
-B = "designs, manufactures and markets mobile communication and media devices, personal computers and portable digital music players. The Company sells a range of related software, services, accessories, networking solutions, and third-party digital content and applications"
+# A = "engages in retail and wholesale business. The Company offers an assortment of merchandise and services at everyday low prices. ... The Walmart International segment manages supercenters, supermarkets, hypermarkets, warehouse clubs, and cash & carry outside of the United States."
+# B = "designs, manufactures and markets mobile communication and media devices, personal computers and portable digital music players. The Company sells a range of related software, services, accessories, networking solutions, and third-party digital content and applications"
 
-C = "world's leading specialist in providing institutional investors with investment servicing, investment management and investment research and trading services"
-D = "general merchandise retailer selling products through its stores and digital channels. The Company's general merchandise stores offer an edited food assortment, including perishables, dry grocery, dairy and frozen items"
-E = 'Department Stores'
-F = 'electronic computers'
-G = 'STATE COMMERCIAL BANKS'
-H = 'retail-variety stores'
+# C = "world's leading specialist in providing institutional investors with investment servicing, investment management and investment research and trading services"
+# D = "general merchandise retailer selling products through its stores and digital channels. The Company's general merchandise stores offer an edited food assortment, including perishables, dry grocery, dairy and frozen items"
+# E = 'Department Stores'
+# F = 'electronic computers'
+# G = 'STATE COMMERCIAL BANKS'
+# H = 'retail-variety stores'
 
-I = "fast food, limited service restaurant with more than 35,000 restaurants in over 100 countries."
-J = "Fast-food restaurant, chain"
-K = "vast Internet-based enterprise that sells books, music, movies, housewares, electronics, toys, and many other goods, either directly or as the middleman between other retailers "
-L = "RETAIL-CATALOG & MAIL-ORDER HOUSES"
-M = " is one of the computer chip companies, Intel offers platform products that incorporate various components and technologies, including a microprocessor and chipset, a stand-alone SoC, or a multichip package."
-N = 'Semiconductors and Related Devices'
-O = "engages in the provision of health care services. It operates through the following segments: Pharmacy Services, Retail or Long Term Care, Health Care Benefits, and Corporate. ... The Retail or Long Term Care segment includes selling of prescription drugs and assortment of general merchandise."
-P = "RETAIL-DRUG STORES AND PROPRIETARY STORES"
-Q = " operates an international chain of membership warehouses, mainly under the 'Costco Wholesale' name, that carry quality, brand-name merchandise at substantially lower prices than are typically found at conventional wholesale or retail sources."
-R = "Variety Stores"
+# I = "fast food, limited service restaurant with more than 35,000 restaurants in over 100 countries."
+# J = "Fast-food restaurant, chain"
+# K = "vast Internet-based enterprise that sells books, music, movies, housewares, electronics, toys, and many other goods, either directly or as the middleman between other retailers "
+# L = "RETAIL-CATALOG & MAIL-ORDER HOUSES"
+# M = " is one of the computer chip companies, Intel offers platform products that incorporate various components and technologies, including a microprocessor and chipset, a stand-alone SoC, or a multichip package."
+# N = 'Semiconductors and Related Devices'
+# O = "engages in the provision of health care services. It operates through the following segments: Pharmacy Services, Retail or Long Term Care, Health Care Benefits, and Corporate. ... The Retail or Long Term Care segment includes selling of prescription drugs and assortment of general merchandise."
+# P = "RETAIL-DRUG STORES AND PROPRIETARY STORES"
+# Q = " operates an international chain of membership warehouses, mainly under the 'Costco Wholesale' name, that carry quality, brand-name merchandise at substantially lower prices than are typically found at conventional wholesale or retail sources."
+# R = "Variety Stores"
 # print(get_relevant_sentence_desc(K))
 # print(get_relevant_sentence_industry(L))
 # # print(get_relevant_sentence_industry(J))
@@ -596,27 +597,27 @@ def find_SEC_branch(company_descript, industry_list, model):
                         if x == v:
                             if k not in Final_returned_keys:
                                 Final_returned_keys.append(k)
-        # return  Top_Choice, Top2_Scores[0], Final_returned_keys
-        return [Top_Choice]
+        return  Top_Choice, Top2_Scores[0], Final_returned_keys
+        # return [Top_Choice]
 
 
-Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
-ZZ = "operates as a technology platform for people and things mobility. The firm offers multi-modal people transportation, restaurant food delivery, and connecting freight carriers and shippers."
-YY = "We partner with biopharma companies, care providers, pharmacies, manufacturers, governments and others to deliver the right medicines, medical products and healthcare services to the patients who need them, when they need them — safely and cost-effectively."
-AB = " is a holding company. The Company is a provider of telecommunications, media and technology services globally. The Company operates through four segments: Communication segment, WarnerMedia segment, Latin America segment and Xandr segment. ... The Xandr segment provides advertising services."
-# print(get_relevant_sentence_desc(I))
-AC = "  vehicle builder that makes and sells a range of RVs, from motor homes to travel trailers, as well as related parts. "
+# Z = " operates as a chain of restaurants. The Company offers sandwiches, wraps, salads, drinks, breads, and other food services. Subway Restaurants serves customers worldwide."            
+# ZZ = "operates as a technology platform for people and things mobility. The firm offers multi-modal people transportation, restaurant food delivery, and connecting freight carriers and shippers."
+# YY = "We partner with biopharma companies, care providers, pharmacies, manufacturers, governments and others to deliver the right medicines, medical products and healthcare services to the patients who need them, when they need them — safely and cost-effectively."
+# AB = " is a holding company. The Company is a provider of telecommunications, media and technology services globally. The Company operates through four segments: Communication segment, WarnerMedia segment, Latin America segment and Xandr segment. ... The Xandr segment provides advertising services."
+# # print(get_relevant_sentence_desc(I))
+# AC = "  vehicle builder that makes and sells a range of RVs, from motor homes to travel trailers, as well as related parts. "
 Industry_Codes = ["Agriculture, Forestry, Fishing,  Hunting", "Mining, Quarrying,  Oil, Gas Extraction" ,\
         "Utilities", "Construction" , "Manufacturing", "Transportation", "Wholesale Trade", "Retail Sales ",
         "Investment ", "Finance, Insurance", "Housing, Apartments", "Rental, Leasing",\
             "Health Care", "Arts, Entertainment", "Restaurants, Food",\
                     "Communications, Technology" ]
 
-AD = "We assessed the oral health of the Pine Ridge Oglala Lakota people, described a new oral health assessment tool for Indigenous people, and suggested ways to improve Native oral health."
-AE = 'a technology company. The Company develops, licenses, and supports a range of software products, services and devices.'
-AF = 's an aerospace company, which engages in the manufacture of commercial jetliners and defense, space and security systems. It operates through the following segments: Commercial Airplanes; Defense, Space and Security; Global Services; and Boeing Capital.'
-AG = 'sports broadcasting world. The company is the leading cable sports broadcaster, reaching about 100 million US viewers per month with its stable of channels'
-AH = 'vertically integrated to find, extract and supply oil, natural gas and petroleum. Part of the sixth largest non state-owned energy companies, BP also owns a convenience store chain that is attached to their gas stations'
+# AD = "We assessed the oral health of the Pine Ridge Oglala Lakota people, described a new oral health assessment tool for Indigenous people, and suggested ways to improve Native oral health."
+# AE = 'a technology company. The Company develops, licenses, and supports a range of software products, services and devices.'
+# AF = 's an aerospace company, which engages in the manufacture of commercial jetliners and defense, space and security systems. It operates through the following segments: Commercial Airplanes; Defense, Space and Security; Global Services; and Boeing Capital.'
+# AG = 'sports broadcasting world. The company is the leading cable sports broadcaster, reaching about 100 million US viewers per month with its stable of channels'
+# AH = 'vertically integrated to find, extract and supply oil, natural gas and petroleum. Part of the sixth largest non state-owned energy companies, BP also owns a convenience store chain that is attached to their gas stations'
 # print(Useful_Industry_Words_Stemmed)
 # print(get_relevant_sentence_desc(AH))
 # # print(get_relevant_sentence_desc2(B))
@@ -651,13 +652,14 @@ AH = 'vertically integrated to find, extract and supply oil, natural gas and pet
 # Take the top 3 counts and return them/total counts, come up with some kind of classifier
 
 
-from CompanyName import get_comp_description_Dict, B
+# from CompanyName import get_comp_description_Dict, B
 
-Comp_Info = get_comp_description_Dict(B)
-Venture_Classification = []
-for x in Comp_Info:
-    xx = find_SEC_branch(x ,Industry_Codes,model)
-    Venture_Classification.append(xx)
+# Comp_Info = get_comp_description_Dict(B)
 
-print(Venture_Classification)
+# Venture_Classification = []
+# for x in Comp_Info:
+#     xx = find_SEC_branch(x ,Industry_Codes,model)
+#     Venture_Classification.append(xx)
+
+# print(Venture_Classification)
 

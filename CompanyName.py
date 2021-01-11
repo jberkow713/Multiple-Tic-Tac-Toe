@@ -1,5 +1,5 @@
 from googlesearch import search
-
+from NLPModels import *
 #goal is to create function that parses this and returns a list of company names:
 #The get_13F function returns a dictionary
 
@@ -59,243 +59,243 @@ B = {
   },
   "query": {
     "from": 0,
-    "size": 5
+    "size": 10
   },
   "filings": [
     {
-      "id": "7f0f4bef0462d7deba0f0a9c210eef17",
-      "accessionNo": "0001558370-21-000043",
-      "cik": "84129",
-      "ticker": "RAD",
-      "companyName": "RITE AID CORP",
-      "companyNameLong": "RITE AID CORP (Filer)",
+      "id": "859e1b4499eea7884c84b93a272b839a",
+      "accessionNo": "0001171843-21-000188",
+      "cik": "1071840",
+      "ticker": "WNDW",
+      "companyName": "SolarWindow Technologies, Inc.",
+      "companyNameLong": "SolarWindow Technologies, Inc. (Filer)",
       "formType": "10-Q",
       "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
-      "filedAt": "2021-01-06T13:21:11-05:00",
-      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/0001558370-21-000043.txt",
-      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/0001558370-21-000043-index.htm",
+      "filedAt": "2021-01-08T16:22:40-05:00",
+      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/0001171843-21-000188.txt",
+      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/0001171843-21-000188-index.htm",
       "linkToXbrl": "",
-      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/rad-20201128x10q.htm",
+      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/f10q_010821.htm",
       "entities": [
         {
-          "companyName": "RITE AID CORP (Filer)",
-          "cik": "84129",
-          "irsNo": "231614034",
-          "stateOfIncorporation": "DE",
-          "fiscalYearEnd": "0227",
+          "companyName": "SolarWindow Technologies, Inc. (Filer)",
+          "cik": "1071840",
+          "irsNo": "593509694",
+          "stateOfIncorporation": "NV",
+          "fiscalYearEnd": "0831",
           "type": "10-Q",
           "act": "34",
-          "fileNo": "001-05742",
-          "filmNo": "21509809",
-          "sic": "5912 Retail-Drug Stores and Proprietary Stores"
+          "fileNo": "333-127953",
+          "filmNo": "21517710",
+          "sic": "2860 Industrial Organic Chemicals"
         }
       ],
       "documentFormatFiles": [
         {
           "sequence": "1",
-          "description": "10-Q",
-          "documentUrl": "https://www.sec.gov/ix?doc=/Archives/edgar/data/84129/000155837021000043/rad-20201128x10q.htm",
+          "description": "FORM 10-Q",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/f10q_010821.htm",
           "type": "10-Q",
-          "size": "3482254"
+          "size": "325479"
         },
         {
           "sequence": "2",
-          "description": "EX-22",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/rad-20201128xex22.htm",
-          "type": "EX-22",
-          "size": "55534"
+          "description": "EXHIBIT 10.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/exh_101.htm",
+          "type": "EX-10.1",
+          "size": "74311"
         },
         {
           "sequence": "3",
-          "description": "EX-31.1",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/rad-20201128xex31d1.htm",
+          "description": "EXHIBIT 31.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/exh_311.htm",
           "type": "EX-31.1",
-          "size": "11353"
+          "size": "9158"
         },
         {
           "sequence": "4",
-          "description": "EX-31.2",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/rad-20201128xex31d2.htm",
+          "description": "EXHIBIT 31.2",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/exh_312.htm",
           "type": "EX-31.2",
-          "size": "11958"
+          "size": "9102"
         },
         {
           "sequence": "5",
-          "description": "EX-32",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/rad-20201128xex32.htm",
-          "type": "EX-32",
-          "size": "9740"
+          "description": "EXHIBIT 32.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/exh_321.htm",
+          "type": "EX-32.1",
+          "size": "4720"
         },
         {
           "sequence": " ",
           "description": "Complete submission text file",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/0001558370-21-000043.txt",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/0001171843-21-000188.txt",
           "type": " ",
-          "size": "13922672"
+          "size": "2604647"
         }
       ],
       "dataFiles": [
         {
           "sequence": "6",
-          "description": "EX-101.SCH",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/rad-20201128.xsd",
-          "type": "EX-101.SCH",
-          "size": "70854"
+          "description": "XBRL INSTANCE FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/wndw-20201130.xml",
+          "type": "EX-101.INS",
+          "size": "423389"
         },
         {
           "sequence": "7",
-          "description": "EX-101.CAL",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/rad-20201128_cal.xml",
-          "type": "EX-101.CAL",
-          "size": "111725"
+          "description": "XBRL SCHEMA FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/wndw-20201130.xsd",
+          "type": "EX-101.SCH",
+          "size": "35517"
         },
         {
           "sequence": "8",
-          "description": "EX-101.DEF",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/rad-20201128_def.xml",
-          "type": "EX-101.DEF",
-          "size": "275802"
+          "description": "XBRL CALCULATION FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/wndw-20201130_cal.xml",
+          "type": "EX-101.CAL",
+          "size": "39050"
         },
         {
           "sequence": "9",
-          "description": "EX-101.LAB",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/rad-20201128_lab.xml",
-          "type": "EX-101.LAB",
-          "size": "688943"
+          "description": "XBRL DEFINITION FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/wndw-20201130_def.xml",
+          "type": "EX-101.DEF",
+          "size": "120515"
         },
         {
           "sequence": "10",
-          "description": "EX-101.PRE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/rad-20201128_pre.xml",
-          "type": "EX-101.PRE",
-          "size": "528958"
+          "description": "XBRL LABEL FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/wndw-20201130_lab.xml",
+          "type": "EX-101.LAB",
+          "size": "219540"
         },
         {
           "sequence": "11",
-          "description": "EXTRACTED XBRL INSTANCE DOCUMENT",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/84129/000155837021000043/rad-20201128x10q_htm.xml",
-          "type": "XML",
-          "size": "3154466"
+          "description": "XBRL PRESENTATION FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1071840/000117184321000188/wndw-20201130_pre.xml",
+          "type": "EX-101.PRE",
+          "size": "195851"
         }
       ],
       "seriesAndClassesContractsInformation": [],
-      "periodOfReport": "2020-11-28",
-      "effectivenessDate": "2020-11-28"
+      "periodOfReport": "2020-11-30",
+      "effectivenessDate": "2020-11-30"
     },
     {
-      "id": "fe65438f11236353eb781e137076ecf1",
-      "accessionNo": "0001140361-21-000322",
-      "cik": "1820144",
-      "ticker": "TINV",
-      "companyName": "Tiga Acquisition Corp.",
-      "companyNameLong": "Tiga Acquisition Corp. (Filer)",
+      "id": "1a7b6053e5d254ab4d13e6ed3832b3b4",
+      "accessionNo": "0001104659-21-002471",
+      "cik": "1820201",
+      "ticker": "SGAM",
+      "companyName": "Seaport Global Acquisition Corp",
+      "companyNameLong": "Seaport Global Acquisition Corp (Filer)",
       "formType": "10-Q",
       "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
-      "filedAt": "2021-01-06T13:00:38-05:00",
-      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/0001140361-21-000322.txt",
-      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/0001140361-21-000322-index.htm",
+      "filedAt": "2021-01-08T16:10:37-05:00",
+      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/0001104659-21-002471.txt",
+      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/0001104659-21-002471-index.htm",
       "linkToXbrl": "",
-      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/brhc10018625_10q.htm",
+      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/tm211914d1_10q.htm",
       "entities": [
         {
-          "companyName": "Tiga Acquisition Corp. (Filer)",
-          "cik": "1820144",
-          "irsNo": "000000000",
-          "stateOfIncorporation": "E9",
+          "companyName": "Seaport Global Acquisition Corp (Filer)",
+          "cik": "1820201",
+          "irsNo": "852157010",
+          "stateOfIncorporation": "DC",
           "fiscalYearEnd": "1231",
           "type": "10-Q",
           "act": "34",
-          "fileNo": "001-39714",
-          "filmNo": "21509728",
+          "fileNo": "001-39741",
+          "filmNo": "21517587",
           "sic": "6770 Blank Checks"
         }
       ],
       "documentFormatFiles": [
         {
           "sequence": "1",
-          "description": "10-Q",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/brhc10018625_10q.htm",
+          "description": "FORM 10-Q",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/tm211914d1_10q.htm",
           "type": "10-Q",
-          "size": "249226"
+          "size": "191643"
         },
         {
           "sequence": "2",
           "description": "EXHIBIT 31.1",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/brhc10018625_ex31-1.htm",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/tm211914d1_ex31-1.htm",
           "type": "EX-31.1",
-          "size": "13920"
+          "size": "11568"
         },
         {
           "sequence": "3",
           "description": "EXHIBIT 31.2",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/brhc10018625_ex31-2.htm",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/tm211914d1_ex31-2.htm",
           "type": "EX-31.2",
-          "size": "12636"
+          "size": "11488"
         },
         {
           "sequence": "4",
           "description": "EXHIBIT 32.1",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/brhc10018625_ex32-1.htm",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/tm211914d1_ex32-1.htm",
           "type": "EX-32.1",
-          "size": "5634"
+          "size": "4742"
         },
         {
           "sequence": "5",
-          "description": "EXHIBIT 32.2",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/brhc10018625_ex32-2.htm",
-          "type": "EX-32.2",
-          "size": "5093"
+          "description": "EXHIBIT 32.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/tm211914d1_ex32-2.htm",
+          "type": "EX-32.1",
+          "size": "4715"
         },
         {
           "sequence": " ",
           "description": "Complete submission text file",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/0001140361-21-000322.txt",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/0001104659-21-002471.txt",
           "type": " ",
-          "size": "2171286"
+          "size": "1629175"
         }
       ],
       "dataFiles": [
         {
           "sequence": "6",
           "description": "XBRL INSTANCE DOCUMENT",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/tinv-20200930.xml",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/sgam-20200930.xml",
           "type": "EX-101.INS",
-          "size": "200281"
+          "size": "135113"
         },
         {
           "sequence": "7",
           "description": "XBRL TAXONOMY EXTENSION SCHEMA",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/tinv-20200930.xsd",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/sgam-20200930.xsd",
           "type": "EX-101.SCH",
-          "size": "32148"
+          "size": "30156"
         },
         {
           "sequence": "8",
           "description": "XBRL TAXONOMY EXTENSION CALCULATION LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/tinv-20200930_cal.xml",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/sgam-20200930_cal.xml",
           "type": "EX-101.CAL",
-          "size": "13387"
+          "size": "11269"
         },
         {
           "sequence": "9",
           "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/tinv-20200930_def.xml",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/sgam-20200930_def.xml",
           "type": "EX-101.DEF",
-          "size": "213082"
+          "size": "117891"
         },
         {
           "sequence": "10",
           "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/tinv-20200930_lab.xml",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/sgam-20200930_lab.xml",
           "type": "EX-101.LAB",
-          "size": "316102"
+          "size": "193571"
         },
         {
           "sequence": "11",
           "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820144/000114036121000322/tinv-20200930_pre.xml",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1820201/000110465921002471/sgam-20200930_pre.xml",
           "type": "EX-101.PRE",
-          "size": "247283"
+          "size": "183244"
         }
       ],
       "seriesAndClassesContractsInformation": [],
@@ -303,395 +303,1035 @@ B = {
       "effectivenessDate": "2020-09-30"
     },
     {
-      "id": "7a5ab1a5a0d37c761c0c3b2dac186891",
-      "accessionNo": "0001564590-21-000354",
-      "cik": "33002",
-      "ticker": "EBF",
-      "companyName": "ENNIS, INC.",
-      "companyNameLong": "ENNIS, INC. (Filer)",
+      "id": "a816c6a1d66db040f2fbd0e78ce68eee",
+      "accessionNo": "0001161697-21-000045",
+      "cik": "1543066",
+      "ticker": "EWST",
+      "companyName": "E-WASTE CORP.",
+      "companyNameLong": "E-WASTE CORP. (Filer)",
       "formType": "10-Q",
       "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
-      "filedAt": "2021-01-06T11:48:33-05:00",
-      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/0001564590-21-000354.txt",
-      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/0001564590-21-000354-index.htm",
+      "filedAt": "2021-01-08T14:40:47-05:00",
+      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/0001161697-21-000045.txt",
+      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/0001161697-21-000045-index.htm",
       "linkToXbrl": "",
-      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/ebf-10q_20201130.htm",
+      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/form_10-q.htm",
       "entities": [
         {
-          "companyName": "ENNIS, INC. (Filer)",
-          "cik": "33002",
-          "irsNo": "750256410",
-          "stateOfIncorporation": "TX",
+          "companyName": "E-WASTE CORP. (Filer)",
+          "cik": "1543066",
+          "irsNo": "454390042",
+          "stateOfIncorporation": "FL",
           "fiscalYearEnd": "0228",
           "type": "10-Q",
           "act": "34",
-          "fileNo": "001-05807",
-          "filmNo": "21509540",
-          "sic": "2761 Manifold Business Forms"
+          "fileNo": "333-180251",
+          "filmNo": "21517108",
+          "sic": "4953 Refuse Systems"
         }
       ],
       "documentFormatFiles": [
         {
           "sequence": "1",
-          "description": "10-Q",
-          "documentUrl": "https://www.sec.gov/ix?doc=/Archives/edgar/data/33002/000156459021000354/ebf-10q_20201130.htm",
+          "description": "FORM 10-Q QUARTERLY REPORT FOR 11-30-2020",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/form_10-q.htm",
           "type": "10-Q",
-          "size": "2243969"
+          "size": "394630"
         },
         {
           "sequence": "2",
-          "description": "EX-31.1",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/ebf-ex311_7.htm",
-          "type": "EX-31.1",
-          "size": "16163"
+          "description": "PROMISSORY NOTE DATED 11-25-2020 - HOMETOWN INTERNATIONAL, INC.",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/ex_4-1.htm",
+          "type": "EX-4",
+          "size": "25662"
         },
         {
           "sequence": "3",
-          "description": "EX-31.2",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/ebf-ex312_8.htm",
-          "type": "EX-31.2",
-          "size": "16204"
+          "description": "CONSULTING AGREEMENT WITH TRYON CAPITAL, LLC, DATED 09-25-2020",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/ex_10-1.htm",
+          "type": "EX-10",
+          "size": "22564"
         },
         {
           "sequence": "4",
-          "description": "EX-32.1",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/ebf-ex321_9.htm",
-          "type": "EX-32.1",
-          "size": "6723"
+          "description": "CONSULTING AGREEMENT WITH BENZIONS LLC DATED 12-01-2020",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/ex_10-2.htm",
+          "type": "EX-10",
+          "size": "21806"
         },
         {
           "sequence": "5",
-          "description": "EX-32.2",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/ebf-ex322_6.htm",
-          "type": "EX-32.2",
-          "size": "6794"
+          "description": "RULE 13(A)-14(A)/15(D)-14(A) CERTIFICATION OF PRINCIPAL EXECUTIVE AND FINANCIAL ",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/ex_31-1.htm",
+          "type": "EX-31",
+          "size": "6264"
+        },
+        {
+          "sequence": "6",
+          "description": "RULE 1350 CERTIFICATION OF CHIEF EXECUTIVE AND FINANCIAL OFFICER",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/ex_32-1.htm",
+          "type": "EX-32",
+          "size": "4846"
         },
         {
           "sequence": " ",
           "description": "Complete submission text file",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/0001564590-21-000354.txt",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/0001161697-21-000045.txt",
           "type": " ",
-          "size": "7806976"
+          "size": "1698673"
         }
       ],
       "dataFiles": [
-        {
-          "sequence": "6",
-          "description": "XBRL TAXONOMY EXTENSION SCHEMA",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/ebf-20201130.xsd",
-          "type": "EX-101.SCH",
-          "size": "45530"
-        },
         {
           "sequence": "7",
-          "description": "XBRL TAXONOMY EXTENSION CALCULATION LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/ebf-20201130_cal.xml",
-          "type": "EX-101.CAL",
-          "size": "71574"
-        },
-        {
-          "sequence": "8",
-          "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/ebf-20201130_def.xml",
-          "type": "EX-101.DEF",
-          "size": "121576"
-        },
-        {
-          "sequence": "9",
-          "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/ebf-20201130_lab.xml",
-          "type": "EX-101.LAB",
-          "size": "367590"
-        },
-        {
-          "sequence": "10",
-          "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/ebf-20201130_pre.xml",
-          "type": "EX-101.PRE",
-          "size": "289158"
-        },
-        {
-          "sequence": "11",
-          "description": "EXTRACTED XBRL INSTANCE DOCUMENT",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/33002/000156459021000354/ebf-10q_20201130_htm.xml",
-          "type": "XML",
-          "size": "1487173"
-        }
-      ],
-      "seriesAndClassesContractsInformation": [],
-      "periodOfReport": "2020-11-30",
-      "effectivenessDate": "2020-11-30"
-    },
-    {
-      "id": "0e08a2ba15eb92aa139949ec6466c5db",
-      "accessionNo": "0001477932-21-000050",
-      "cik": "1517389",
-      "ticker": "JFIL",
-      "companyName": "Jubilant Flame International, Ltd",
-      "companyNameLong": "Jubilant Flame International, Ltd (Filer)",
-      "formType": "10-Q",
-      "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
-      "filedAt": "2021-01-06T10:16:56-05:00",
-      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/0001477932-21-000050.txt",
-      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/0001477932-21-000050-index.htm",
-      "linkToXbrl": "",
-      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil_10q.htm",
-      "entities": [
-        {
-          "companyName": "Jubilant Flame International, Ltd (Filer)",
-          "cik": "1517389",
-          "irsNo": "272775885",
-          "stateOfIncorporation": "NV",
-          "fiscalYearEnd": "0228",
-          "type": "10-Q",
-          "act": "34",
-          "fileNo": "000-55543",
-          "filmNo": "21509320",
-          "sic": "7371 Services-Computer Programming Services"
-        }
-      ],
-      "documentFormatFiles": [
-        {
-          "sequence": "1",
-          "description": "FORM 10-Q",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil_10q.htm",
-          "type": "10-Q",
-          "size": "261163"
-        },
-        {
-          "sequence": "2",
-          "description": "CERTIFICATION",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil_ex311.htm",
-          "type": "EX-31.1",
-          "size": "10975"
-        },
-        {
-          "sequence": "3",
-          "description": "CERTIFICATION",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil_ex312.htm",
-          "type": "EX-31.2",
-          "size": "10632"
-        },
-        {
-          "sequence": "4",
-          "description": "CERTIFICATION",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil_ex321.htm",
-          "type": "EX-32.1",
-          "size": "4295"
-        },
-        {
-          "sequence": "5",
-          "description": "CERTIFICATION",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil_ex322.htm",
-          "type": "EX-32.2",
-          "size": "4316"
-        },
-        {
-          "sequence": " ",
-          "description": "Complete submission text file",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/0001477932-21-000050.txt",
-          "type": " ",
-          "size": "993017"
-        }
-      ],
-      "dataFiles": [
-        {
-          "sequence": "6",
-          "description": "XBRL INSTANCE DOCUMENT",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil-20201130.xml",
+          "description": "XBRL INSTANCE FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/ewst-20201130.xml",
           "type": "EX-101.INS",
-          "size": "74728"
-        },
-        {
-          "sequence": "7",
-          "description": "XBRL TAXONOMY EXTENSION SCHEMA",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil-20201130.xsd",
-          "type": "EX-101.SCH",
-          "size": "15282"
+          "size": "223332"
         },
         {
           "sequence": "8",
-          "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil-20201130_lab.xml",
-          "type": "EX-101.LAB",
-          "size": "90330"
+          "description": "XBRL SCHEMA FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/ewst-20201130.xsd",
+          "type": "EX-101.SCH",
+          "size": "19727"
         },
         {
           "sequence": "9",
-          "description": "XBRL TAXONOMY EXTENSION CALCULATION LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil-20201130_cal.xml",
+          "description": "XBRL CALCULATION FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/ewst-20201130_cal.xml",
           "type": "EX-101.CAL",
-          "size": "22281"
+          "size": "23370"
         },
         {
           "sequence": "10",
-          "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil-20201130_pre.xml",
-          "type": "EX-101.PRE",
-          "size": "73871"
+          "description": "XBRL DEFINITION FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/ewst-20201130_def.xml",
+          "type": "EX-101.DEF",
+          "size": "45342"
         },
         {
           "sequence": "11",
-          "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1517389/000147793221000050/jfil-20201130_def.xml",
-          "type": "EX-101.DEF",
-          "size": "28634"
-        }
-      ],
-      "seriesAndClassesContractsInformation": [],
-      "periodOfReport": "2020-11-30",
-      "effectivenessDate": "2020-11-30"
-    },
-    {
-      "id": "8398dd7730ce727993390c0469120523",
-      "accessionNo": "0001170010-21-000003",
-      "cik": "1170010",
-      "ticker": "KMX",
-      "companyName": "CARMAX INC",
-      "companyNameLong": "CARMAX INC (Filer)",
-      "formType": "10-Q",
-      "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
-      "filedAt": "2021-01-06T10:01:52-05:00",
-      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/0001170010-21-000003.txt",
-      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/0001170010-21-000003-index.htm",
-      "linkToXbrl": "",
-      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/kmx-20201130.htm",
-      "entities": [
-        {
-          "companyName": "CARMAX INC (Filer)",
-          "cik": "1170010",
-          "irsNo": "541821055",
-          "stateOfIncorporation": "VA",
-          "fiscalYearEnd": "0228",
-          "type": "10-Q",
-          "act": "34",
-          "fileNo": "001-31420",
-          "filmNo": "21509305",
-          "sic": "5500 Retail-Auto Dealers &amp; Gasoline Stations"
-        }
-      ],
-      "documentFormatFiles": [
-        {
-          "sequence": "1",
-          "description": "10-Q",
-          "documentUrl": "https://www.sec.gov/ix?doc=/Archives/edgar/data/1170010/000117001021000003/kmx-20201130.htm",
-          "type": "10-Q",
-          "size": "2288307"
-        },
-        {
-          "sequence": "2",
-          "description": "EX-10.1",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/exhibit101-consultingagree.htm",
-          "type": "EX-10.1",
-          "size": "40633"
-        },
-        {
-          "sequence": "3",
-          "description": "EX-31.1",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/q3fy21ex311.htm",
-          "type": "EX-31.1",
-          "size": "10244"
-        },
-        {
-          "sequence": "4",
-          "description": "EX-31.2",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/q3fy21ex312.htm",
-          "type": "EX-31.2",
-          "size": "10173"
-        },
-        {
-          "sequence": "5",
-          "description": "EX-32.1",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/q3fy21ex321.htm",
-          "type": "EX-32.1",
-          "size": "6660"
-        },
-        {
-          "sequence": "6",
-          "description": "EX-32.2",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/q3fy21ex322.htm",
-          "type": "EX-32.2",
-          "size": "7402"
+          "description": "XBRL LABEL FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/ewst-20201130_lab.xml",
+          "type": "EX-101.LAB",
+          "size": "128620"
         },
         {
           "sequence": "12",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/kmx-20201130_g1.jpg",
-          "type": "GRAPHIC",
-          "size": "30546"
+          "description": "XBRL PRESENTATION FILE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1543066/000116169721000045/ewst-20201130_pre.xml",
+          "type": "EX-101.PRE",
+          "size": "101688"
+        }
+      ],
+      "seriesAndClassesContractsInformation": [],
+      "periodOfReport": "2020-11-30",
+      "effectivenessDate": "2020-11-30"
+    },
+    {
+      "id": "090a04819aec640dd99e39916099adc3",
+      "accessionNo": "0000723254-21-000002",
+      "cik": "723254",
+      "ticker": "CTAS",
+      "companyName": "CINTAS CORP",
+      "companyNameLong": "CINTAS CORP (Filer)",
+      "formType": "10-Q",
+      "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
+      "filedAt": "2021-01-08T13:10:39-05:00",
+      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/0000723254-21-000002.txt",
+      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/0000723254-21-000002-index.htm",
+      "linkToXbrl": "",
+      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-20201130.htm",
+      "entities": [
+        {
+          "companyName": "CINTAS CORP (Filer)",
+          "cik": "723254",
+          "irsNo": "311188630",
+          "stateOfIncorporation": "WA",
+          "fiscalYearEnd": "0531",
+          "type": "10-Q",
+          "act": "34",
+          "fileNo": "000-11399",
+          "filmNo": "21516730",
+          "sic": "2320 Men&apos;s &amp; Boys&apos; Furnishgs, Work Clothg, &amp; Allied Garments"
+        }
+      ],
+      "documentFormatFiles": [
+        {
+          "sequence": "1",
+          "description": "10-Q",
+          "documentUrl": "https://www.sec.gov/ix?doc=/Archives/edgar/data/723254/000072325421000002/ctas-20201130.htm",
+          "type": "10-Q",
+          "size": "1631625"
         },
         {
-          "sequence": "13",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/kmx-20201130_g2.jpg",
+          "sequence": "5",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-20201130_g1.jpg",
           "type": "GRAPHIC",
-          "size": "21894"
+          "size": "1501255"
         },
         {
-          "sequence": "14",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/kmx-20201130_g3.jpg",
-          "type": "GRAPHIC",
-          "size": "39542"
+          "sequence": "8",
+          "description": "EX-31.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-ex311x2020x11x30x10q.htm",
+          "type": "EX-31.1",
+          "size": "13750"
         },
         {
-          "sequence": "15",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/kmx-20201130_g4.jpg",
-          "type": "GRAPHIC",
-          "size": "20911"
+          "sequence": "9",
+          "description": "EX-31.2",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-ex312x2020x11x30x10q.htm",
+          "type": "EX-31.2",
+          "size": "12538"
+        },
+        {
+          "sequence": "10",
+          "description": "EX-32.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-ex321x2020x11x30x10q.htm",
+          "type": "EX-32.1",
+          "size": "5966"
+        },
+        {
+          "sequence": "11",
+          "description": "EX-32.2",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-ex322x2020x11x30x10q.htm",
+          "type": "EX-32.2",
+          "size": "5971"
         },
         {
           "sequence": " ",
           "description": "Complete submission text file",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/0001170010-21-000003.txt",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/0000723254-21-000002.txt",
           "type": " ",
-          "size": "10065247"
+          "size": "10523381"
+        }
+      ],
+      "dataFiles": [
+        {
+          "sequence": "2",
+          "description": "XBRL TAXONOMY EXTENSION SCHEMA DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-20201130.xsd",
+          "type": "EX-101.SCH",
+          "size": "40799"
+        },
+        {
+          "sequence": "3",
+          "description": "XBRL TAXONOMY EXTENSION CALCULATION LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-20201130_cal.xml",
+          "type": "EX-101.CAL",
+          "size": "95413"
+        },
+        {
+          "sequence": "4",
+          "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-20201130_def.xml",
+          "type": "EX-101.DEF",
+          "size": "175760"
+        },
+        {
+          "sequence": "6",
+          "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-20201130_lab.xml",
+          "type": "EX-101.LAB",
+          "size": "508096"
+        },
+        {
+          "sequence": "7",
+          "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-20201130_pre.xml",
+          "type": "EX-101.PRE",
+          "size": "319945"
+        },
+        {
+          "sequence": "12",
+          "description": "EXTRACTED XBRL INSTANCE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723254/000072325421000002/ctas-20201130_htm.xml",
+          "type": "XML",
+          "size": "1483498"
+        }
+      ],
+      "seriesAndClassesContractsInformation": [],
+      "periodOfReport": "2020-11-30",
+      "effectivenessDate": "2020-11-30"
+    },
+    {
+      "id": "ff94d449bfdc28147f5ef1b2d5c35eba",
+      "accessionNo": "0000723125-21-000012",
+      "cik": "723125",
+      "ticker": "MU",
+      "companyName": "MICRON TECHNOLOGY INC",
+      "companyNameLong": "MICRON TECHNOLOGY INC (Filer)",
+      "formType": "10-Q",
+      "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
+      "filedAt": "2021-01-08T12:49:12-05:00",
+      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/0000723125-21-000012.txt",
+      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/0000723125-21-000012-index.htm",
+      "linkToXbrl": "",
+      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/mu-20201203.htm",
+      "entities": [
+        {
+          "companyName": "MICRON TECHNOLOGY INC (Filer)",
+          "cik": "723125",
+          "irsNo": "751618004",
+          "stateOfIncorporation": "DE",
+          "fiscalYearEnd": "0902",
+          "type": "10-Q",
+          "act": "34",
+          "fileNo": "001-10658",
+          "filmNo": "21516617",
+          "sic": "3674 Semiconductors &amp; Related Devices"
+        }
+      ],
+      "documentFormatFiles": [
+        {
+          "sequence": "1",
+          "description": "10-Q",
+          "documentUrl": "https://www.sec.gov/ix?doc=/Archives/edgar/data/723125/000072312521000012/mu-20201203.htm",
+          "type": "10-Q",
+          "size": "1504983"
+        },
+        {
+          "sequence": "2",
+          "description": "EX-31.1 CEO CERT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/a2021q1ex31-1xceocert.htm",
+          "type": "EX-31.1",
+          "size": "10001"
+        },
+        {
+          "sequence": "3",
+          "description": "EX-31.2 CFO CERT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/a2021q1ex31-2xcfocert.htm",
+          "type": "EX-31.2",
+          "size": "10026"
+        },
+        {
+          "sequence": "4",
+          "description": "EX-32.1 906 CEO CERT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/a2021q1ex32-1x906ceocert.htm",
+          "type": "EX-32.1",
+          "size": "3787"
+        },
+        {
+          "sequence": "5",
+          "description": "EX-32.2 906 CFO CERT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/a2021q1ex32-2x906cfocert.htm",
+          "type": "EX-32.2",
+          "size": "3789"
+        },
+        {
+          "sequence": "11",
+          "description": "GRAPHIC",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/mu-20201203_g1.jpg",
+          "type": "GRAPHIC",
+          "size": "1338945"
+        },
+        {
+          "sequence": "12",
+          "description": "GRAPHIC",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/mu-20201203_g2.jpg",
+          "type": "GRAPHIC",
+          "size": "89246"
+        },
+        {
+          "sequence": "13",
+          "description": "GRAPHIC",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/mu-20201203_g3.jpg",
+          "type": "GRAPHIC",
+          "size": "487126"
+        },
+        {
+          "sequence": " ",
+          "description": "Complete submission text file",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/0000723125-21-000012.txt",
+          "type": " ",
+          "size": "11787689"
+        }
+      ],
+      "dataFiles": [
+        {
+          "sequence": "6",
+          "description": "XBRL TAXONOMY EXTENSION SCHEMA DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/mu-20201203.xsd",
+          "type": "EX-101.SCH",
+          "size": "49672"
+        },
+        {
+          "sequence": "7",
+          "description": "XBRL TAXONOMY EXTENSION CALCULATION LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/mu-20201203_cal.xml",
+          "type": "EX-101.CAL",
+          "size": "98431"
+        },
+        {
+          "sequence": "8",
+          "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/mu-20201203_def.xml",
+          "type": "EX-101.DEF",
+          "size": "220403"
+        },
+        {
+          "sequence": "9",
+          "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/mu-20201203_lab.xml",
+          "type": "EX-101.LAB",
+          "size": "686626"
+        },
+        {
+          "sequence": "10",
+          "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/mu-20201203_pre.xml",
+          "type": "EX-101.PRE",
+          "size": "410536"
+        },
+        {
+          "sequence": "14",
+          "description": "EXTRACTED XBRL INSTANCE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/723125/000072312521000012/mu-20201203_htm.xml",
+          "type": "XML",
+          "size": "1452311"
+        }
+      ],
+      "seriesAndClassesContractsInformation": [],
+      "periodOfReport": "2020-12-03",
+      "effectivenessDate": "2020-12-03"
+    },
+    {
+      "id": "6257342acd6182d243fb65716002acc8",
+      "accessionNo": "0001275187-21-000005",
+      "cik": "1275187",
+      "ticker": "ANGO",
+      "companyName": "ANGIODYNAMICS INC",
+      "companyNameLong": "ANGIODYNAMICS INC (Filer)",
+      "formType": "10-Q",
+      "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
+      "filedAt": "2021-01-08T12:06:30-05:00",
+      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/0001275187-21-000005.txt",
+      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/0001275187-21-000005-index.htm",
+      "linkToXbrl": "",
+      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/ango-20201130.htm",
+      "entities": [
+        {
+          "companyName": "ANGIODYNAMICS INC (Filer)",
+          "cik": "1275187",
+          "irsNo": "113146460",
+          "stateOfIncorporation": "DE",
+          "fiscalYearEnd": "0531",
+          "type": "10-Q",
+          "act": "34",
+          "fileNo": "000-50761",
+          "filmNo": "21516461",
+          "sic": "3841 Surgical &amp; Medical Instruments &amp; Apparatus"
+        }
+      ],
+      "documentFormatFiles": [
+        {
+          "sequence": "1",
+          "description": "10-Q",
+          "documentUrl": "https://www.sec.gov/ix?doc=/Archives/edgar/data/1275187/000127518721000005/ango-20201130.htm",
+          "type": "10-Q",
+          "size": "1465495"
+        },
+        {
+          "sequence": "2",
+          "description": "EX-10.4.6",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/psu2020agreement.htm",
+          "type": "EX-10.4.6",
+          "size": "95422"
+        },
+        {
+          "sequence": "3",
+          "description": "EX-31.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/a11302020-exx311.htm",
+          "type": "EX-31.1",
+          "size": "10737"
+        },
+        {
+          "sequence": "4",
+          "description": "EX-31.2",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/a11302020-exx312.htm",
+          "type": "EX-31.2",
+          "size": "10760"
+        },
+        {
+          "sequence": "5",
+          "description": "EX-32.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/a11302020-exx321.htm",
+          "type": "EX-32.1",
+          "size": "4943"
+        },
+        {
+          "sequence": "6",
+          "description": "EX-32.2",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/a11302020-exx322.htm",
+          "type": "EX-32.2",
+          "size": "4999"
+        },
+        {
+          "sequence": "12",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/ango-20201130_g1.gif",
+          "type": "GRAPHIC",
+          "size": "11810"
+        },
+        {
+          "sequence": "13",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/image1a.jpg",
+          "type": "GRAPHIC",
+          "size": "28516"
+        },
+        {
+          "sequence": "14",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/image3a.jpg",
+          "type": "GRAPHIC",
+          "size": "35014"
+        },
+        {
+          "sequence": "15",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/image_01a.jpg",
+          "type": "GRAPHIC",
+          "size": "32630"
+        },
+        {
+          "sequence": "16",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/image_41a.jpg",
+          "type": "GRAPHIC",
+          "size": "857"
+        },
+        {
+          "sequence": " ",
+          "description": "Complete submission text file",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/0001275187-21-000005.txt",
+          "type": " ",
+          "size": "7077886"
         }
       ],
       "dataFiles": [
         {
           "sequence": "7",
           "description": "XBRL TAXONOMY EXTENSION SCHEMA DOCUMENT",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/kmx-20201130.xsd",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/ango-20201130.xsd",
           "type": "EX-101.SCH",
-          "size": "59449"
+          "size": "49125"
         },
         {
           "sequence": "8",
           "description": "XBRL TAXONOMY EXTENSION CALCULATION LINKBASE DOCUMENT",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/kmx-20201130_cal.xml",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/ango-20201130_cal.xml",
           "type": "EX-101.CAL",
-          "size": "89943"
+          "size": "98703"
         },
         {
           "sequence": "9",
           "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE DOCUMENT",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/kmx-20201130_def.xml",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/ango-20201130_def.xml",
           "type": "EX-101.DEF",
-          "size": "332795"
+          "size": "209151"
         },
         {
           "sequence": "10",
           "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE DOCUMENT",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/kmx-20201130_lab.xml",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/ango-20201130_lab.xml",
           "type": "EX-101.LAB",
-          "size": "685980"
+          "size": "551505"
         },
         {
           "sequence": "11",
           "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE DOCUMENT",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/kmx-20201130_pre.xml",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/ango-20201130_pre.xml",
           "type": "EX-101.PRE",
-          "size": "466424"
+          "size": "355779"
         },
         {
-          "sequence": "16",
+          "sequence": "17",
           "description": "EXTRACTED XBRL INSTANCE DOCUMENT",
-          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1170010/000117001021000003/kmx-20201130_htm.xml",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1275187/000127518721000005/ango-20201130_htm.xml",
           "type": "XML",
-          "size": "2023407"
+          "size": "1214163"
         }
       ],
       "seriesAndClassesContractsInformation": [],
       "periodOfReport": "2020-11-30",
       "effectivenessDate": "2020-11-30"
+    },
+    {
+      "id": "c3c77a7c0a2bb31c4fb9cf133e00852a",
+      "accessionNo": "0000886206-21-000005",
+      "cik": "886206",
+      "ticker": "FC",
+      "companyName": "FRANKLIN COVEY CO",
+      "companyNameLong": "FRANKLIN COVEY CO (Filer)",
+      "formType": "10-Q",
+      "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
+      "filedAt": "2021-01-08T10:45:30-05:00",
+      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/0000886206-21-000005.txt",
+      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/0000886206-21-000005-index.htm",
+      "linkToXbrl": "",
+      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/fc-20201130x10q.htm",
+      "entities": [
+        {
+          "companyName": "FRANKLIN COVEY CO (Filer)",
+          "cik": "886206",
+          "irsNo": "870401551",
+          "stateOfIncorporation": "UT",
+          "fiscalYearEnd": "0831",
+          "type": "10-Q",
+          "act": "34",
+          "fileNo": "001-11107",
+          "filmNo": "21516112",
+          "sic": "8741 Services-Management Services"
+        }
+      ],
+      "documentFormatFiles": [
+        {
+          "sequence": "1",
+          "description": "10-Q",
+          "documentUrl": "https://www.sec.gov/ix?doc=/Archives/edgar/data/886206/000088620621000005/fc-20201130x10q.htm",
+          "type": "10-Q",
+          "size": "2183126"
+        },
+        {
+          "sequence": "2",
+          "description": "EX-31.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/fc-20201130xex31_1.htm",
+          "type": "EX-31.1",
+          "size": "12552"
+        },
+        {
+          "sequence": "3",
+          "description": "EX-31.2",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/fc-20201130xex31_2.htm",
+          "type": "EX-31.2",
+          "size": "13586"
+        },
+        {
+          "sequence": "4",
+          "description": "EX-32",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/fc-20201130xex32.htm",
+          "type": "EX-32",
+          "size": "9180"
+        },
+        {
+          "sequence": "5",
+          "description": "GRAPHIC",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/fc-20201130x10qg001.jpg",
+          "type": "GRAPHIC",
+          "size": "4713"
+        },
+        {
+          "sequence": " ",
+          "description": "Complete submission text file",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/0000886206-21-000005.txt",
+          "type": " ",
+          "size": "7102741"
+        }
+      ],
+      "dataFiles": [
+        {
+          "sequence": "6",
+          "description": "EX-101.SCH",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/fc-20201130.xsd",
+          "type": "EX-101.SCH",
+          "size": "28876"
+        },
+        {
+          "sequence": "7",
+          "description": "EX-101.CAL",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/fc-20201130_cal.xml",
+          "type": "EX-101.CAL",
+          "size": "47421"
+        },
+        {
+          "sequence": "8",
+          "description": "EX-101.DEF",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/fc-20201130_def.xml",
+          "type": "EX-101.DEF",
+          "size": "83296"
+        },
+        {
+          "sequence": "9",
+          "description": "EX-101.LAB",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/fc-20201130_lab.xml",
+          "type": "EX-101.LAB",
+          "size": "236855"
+        },
+        {
+          "sequence": "10",
+          "description": "EX-101.PRE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/fc-20201130_pre.xml",
+          "type": "EX-101.PRE",
+          "size": "217127"
+        },
+        {
+          "sequence": "11",
+          "description": "EXTRACTED XBRL INSTANCE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/886206/000088620621000005/fc-20201130x10q_htm.xml",
+          "type": "XML",
+          "size": "1557573"
+        }
+      ],
+      "seriesAndClassesContractsInformation": [],
+      "periodOfReport": "2020-11-30",
+      "effectivenessDate": "2020-11-30"
+    },
+    {
+      "id": "6c56e5ee502997f571e514b8ff1447eb",
+      "accessionNo": "0000916789-21-000005",
+      "cik": "916789",
+      "ticker": "HELE",
+      "companyName": "HELEN OF TROY LTD",
+      "companyNameLong": "HELEN OF TROY LTD (Filer)",
+      "formType": "10-Q",
+      "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
+      "filedAt": "2021-01-08T10:12:56-05:00",
+      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/0000916789-21-000005.txt",
+      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/0000916789-21-000005-index.htm",
+      "linkToXbrl": "",
+      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/hele-20201130.htm",
+      "entities": [
+        {
+          "companyName": "HELEN OF TROY LTD (Filer)",
+          "cik": "916789",
+          "irsNo": "742692550",
+          "stateOfIncorporation": "D0",
+          "fiscalYearEnd": "0229",
+          "type": "10-Q",
+          "act": "34",
+          "fileNo": "001-14669",
+          "filmNo": "21516037",
+          "sic": "3634 Electric Housewares &amp; Fans"
+        }
+      ],
+      "documentFormatFiles": [
+        {
+          "sequence": "1",
+          "description": "10-Q",
+          "documentUrl": "https://www.sec.gov/ix?doc=/Archives/edgar/data/916789/000091678921000005/hele-20201130.htm",
+          "type": "10-Q",
+          "size": "2490079"
+        },
+        {
+          "sequence": "2",
+          "description": "EX-31.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/fy21_q3xexhibit311.htm",
+          "type": "EX-31.1",
+          "size": "9668"
+        },
+        {
+          "sequence": "3",
+          "description": "EX-31.2",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/fy21_q3xexhibit312.htm",
+          "type": "EX-31.2",
+          "size": "9678"
+        },
+        {
+          "sequence": "4",
+          "description": "EX-32",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/fy21_q3xexhibit32.htm",
+          "type": "EX-32",
+          "size": "6018"
+        },
+        {
+          "sequence": "10",
+          "description": "HELEN OF TROY LOGO",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/hele-20201130_g1.jpg",
+          "type": "GRAPHIC",
+          "size": "50515"
+        },
+        {
+          "sequence": " ",
+          "description": "Complete submission text file",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/0000916789-21-000005.txt",
+          "type": " ",
+          "size": "10164351"
+        }
+      ],
+      "dataFiles": [
+        {
+          "sequence": "5",
+          "description": "XBRL TAXONOMY EXTENSION SCHEMA DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/hele-20201130.xsd",
+          "type": "EX-101.SCH",
+          "size": "48562"
+        },
+        {
+          "sequence": "6",
+          "description": "XBRL TAXONOMY EXTENSION CALCULATION LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/hele-20201130_cal.xml",
+          "type": "EX-101.CAL",
+          "size": "97873"
+        },
+        {
+          "sequence": "7",
+          "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/hele-20201130_def.xml",
+          "type": "EX-101.DEF",
+          "size": "345137"
+        },
+        {
+          "sequence": "8",
+          "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/hele-20201130_lab.xml",
+          "type": "EX-101.LAB",
+          "size": "701952"
+        },
+        {
+          "sequence": "9",
+          "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/hele-20201130_pre.xml",
+          "type": "EX-101.PRE",
+          "size": "474178"
+        },
+        {
+          "sequence": "11",
+          "description": "EXTRACTED XBRL INSTANCE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/916789/000091678921000005/hele-20201130_htm.xml",
+          "type": "XML",
+          "size": "2014150"
+        }
+      ],
+      "seriesAndClassesContractsInformation": [],
+      "periodOfReport": "2020-11-30",
+      "effectivenessDate": "2020-11-30"
+    },
+    {
+      "id": "b30010223c46c423d5a00943359dfd48",
+      "accessionNo": "0001171843-21-000175",
+      "cik": "875582",
+      "ticker": "NTIC",
+      "companyName": "NORTHERN TECHNOLOGIES INTERNATIONAL CORP",
+      "companyNameLong": "NORTHERN TECHNOLOGIES INTERNATIONAL CORP (Filer)",
+      "formType": "10-Q",
+      "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
+      "filedAt": "2021-01-08T09:00:30-05:00",
+      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/0001171843-21-000175.txt",
+      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/0001171843-21-000175-index.htm",
+      "linkToXbrl": "",
+      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/ntic20201130_10q.htm",
+      "entities": [
+        {
+          "companyName": "NORTHERN TECHNOLOGIES INTERNATIONAL CORP (Filer)",
+          "cik": "875582",
+          "irsNo": "410857886",
+          "stateOfIncorporation": "DE",
+          "fiscalYearEnd": "0831",
+          "type": "10-Q",
+          "act": "34",
+          "fileNo": "001-11038",
+          "filmNo": "21515826",
+          "sic": "3470 Coating, Engraving &amp; Allied Services"
+        }
+      ],
+      "documentFormatFiles": [
+        {
+          "sequence": "1",
+          "description": "FORM 10-Q",
+          "documentUrl": "https://www.sec.gov/ix?doc=/Archives/edgar/data/875582/000117184321000175/ntic20201130_10q.htm",
+          "type": "10-Q",
+          "size": "1066970"
+        },
+        {
+          "sequence": "2",
+          "description": "EXHIBIT 31.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/ex_219651.htm",
+          "type": "EX-31.1",
+          "size": "10966"
+        },
+        {
+          "sequence": "3",
+          "description": "EXHIBIT 31.2",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/ex_219652.htm",
+          "type": "EX-31.2",
+          "size": "11476"
+        },
+        {
+          "sequence": "4",
+          "description": "EXHIBIT 32.1",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/ex_219653.htm",
+          "type": "EX-32.1",
+          "size": "5256"
+        },
+        {
+          "sequence": "5",
+          "description": "EXHIBIT 32.2",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/ex_219654.htm",
+          "type": "EX-32.2",
+          "size": "5043"
+        },
+        {
+          "sequence": " ",
+          "description": "Complete submission text file",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/0001171843-21-000175.txt",
+          "type": " ",
+          "size": "5204733"
+        }
+      ],
+      "dataFiles": [
+        {
+          "sequence": "6",
+          "description": "XBRL TAXONOMY EXTENSION SCHEMA",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/ntic-20201130.xsd",
+          "type": "EX-101.SCH",
+          "size": "55309"
+        },
+        {
+          "sequence": "7",
+          "description": "XBRL TAXONOMY EXTENSION CALCULATION LINKBASE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/ntic-20201130_cal.xml",
+          "type": "EX-101.CAL",
+          "size": "46205"
+        },
+        {
+          "sequence": "8",
+          "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/ntic-20201130_def.xml",
+          "type": "EX-101.DEF",
+          "size": "343347"
+        },
+        {
+          "sequence": "9",
+          "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/ntic-20201130_lab.xml",
+          "type": "EX-101.LAB",
+          "size": "303505"
+        },
+        {
+          "sequence": "10",
+          "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/ntic-20201130_pre.xml",
+          "type": "EX-101.PRE",
+          "size": "372012"
+        },
+        {
+          "sequence": "11",
+          "description": "EXTRACTED XBRL INSTANCE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/875582/000117184321000175/ntic20201130_10q_htm.xml",
+          "type": "XML",
+          "size": "754483"
+        }
+      ],
+      "seriesAndClassesContractsInformation": [],
+      "periodOfReport": "2020-11-30",
+      "effectivenessDate": "2020-11-30"
+    },
+    {
+      "id": "cfeba6395ee84d94db928be8db82750d",
+      "accessionNo": "0001477932-21-000120",
+      "cik": "1730869",
+      "ticker": "OBTX",
+      "companyName": "OBITX, Inc.",
+      "companyNameLong": "OBITX, Inc. (Filer)",
+      "formType": "10-Q",
+      "description": "Form 10-Q - Quarterly report [Sections 13 or 15(d)]",
+      "filedAt": "2021-01-08T08:47:42-05:00",
+      "linkToTxt": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/0001477932-21-000120.txt",
+      "linkToHtml": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/0001477932-21-000120-index.htm",
+      "linkToXbrl": "",
+      "linkToFilingDetails": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obitx_10q.htm",
+      "entities": [
+        {
+          "companyName": "OBITX, Inc. (Filer)",
+          "cik": "1730869",
+          "irsNo": "821091922",
+          "stateOfIncorporation": "DE",
+          "fiscalYearEnd": "0131",
+          "type": "10-Q",
+          "act": "34",
+          "fileNo": "000-56142",
+          "filmNo": "21515805",
+          "sic": "7372 Services-Prepackaged Software"
+        }
+      ],
+      "documentFormatFiles": [
+        {
+          "sequence": "1",
+          "description": "FORM 10-Q",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obitx_10q.htm",
+          "type": "10-Q",
+          "size": "489721"
+        },
+        {
+          "sequence": "2",
+          "description": "CERTIFICATION",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obitx_ex311.htm",
+          "type": "EX-31.1",
+          "size": "10942"
+        },
+        {
+          "sequence": "3",
+          "description": "CERTIFICATION",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obitx_ex312.htm",
+          "type": "EX-31.2",
+          "size": "10989"
+        },
+        {
+          "sequence": "4",
+          "description": "CERTIFICATION",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obitx_ex321.htm",
+          "type": "EX-32.1",
+          "size": "5389"
+        },
+        {
+          "sequence": "5",
+          "description": "CERTIFICATION",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obitx_ex322.htm",
+          "type": "EX-32.2",
+          "size": "5467"
+        },
+        {
+          "sequence": " ",
+          "description": "Complete submission text file",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/0001477932-21-000120.txt",
+          "type": " ",
+          "size": "3168033"
+        }
+      ],
+      "dataFiles": [
+        {
+          "sequence": "6",
+          "description": "XBRL INSTANCE DOCUMENT",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obtx-20201031.xml",
+          "type": "EX-101.INS",
+          "size": "583496"
+        },
+        {
+          "sequence": "7",
+          "description": "XBRL TAXONOMY EXTENSION SCHEMA",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obtx-20201031.xsd",
+          "type": "EX-101.SCH",
+          "size": "46259"
+        },
+        {
+          "sequence": "8",
+          "description": "XBRL TAXONOMY EXTENSION LABEL LINKBASE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obtx-20201031_lab.xml",
+          "type": "EX-101.LAB",
+          "size": "231149"
+        },
+        {
+          "sequence": "9",
+          "description": "XBRL TAXONOMY EXTENSION CALCULATION LINKBASE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obtx-20201031_cal.xml",
+          "type": "EX-101.CAL",
+          "size": "36606"
+        },
+        {
+          "sequence": "10",
+          "description": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obtx-20201031_pre.xml",
+          "type": "EX-101.PRE",
+          "size": "217478"
+        },
+        {
+          "sequence": "11",
+          "description": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE",
+          "documentUrl": "https://www.sec.gov/Archives/edgar/data/1730869/000147793221000120/obtx-20201031_def.xml",
+          "type": "EX-101.DEF",
+          "size": "150231"
+        }
+      ],
+      "seriesAndClassesContractsInformation": [],
+      "periodOfReport": "2020-10-31",
+      "effectivenessDate": "2020-10-31"
     }
   ]
 }
@@ -738,7 +1378,7 @@ def Company_Description_Links(Dict):
   Company_Names = Find_Company_Name(Dict)
   lst = []
   for x in Company_Names:
-    y = x + ' '+ "yahoo finance stock symbol"
+    y = x + ' '+ "yahoo finance symbol"
     lst.append(y)
   Link_List = []
   
@@ -896,11 +1536,13 @@ def get_comp_description_Dict(Dict):
   Symbols = []
   for x in Websites:
     a = x.split('/')
+    print(a)
     if '%' not in a[-2]:
-      Symbols.append(a[-2])
+      Symbols.append(a[4])
     else:
-      b = a[-2].split('%')
+      b = a[4].split('%')
       Symbols.append(b[0])
+  print(Symbols)    
 
   #Symbols is a list of all ticker symbols to be fed into yahoo_finance
   Summary_List = []
@@ -926,4 +1568,11 @@ def get_comp_description_Dict(Dict):
   return Summary_List
 
 # print(get_comp_description_Dict(B)) 
-# print(get_summary('TINV-UN'))    
+Comp_Info = get_comp_description_Dict(B)
+
+Venture_Classification = []
+for x in Comp_Info:
+    xx = find_SEC_branch(x ,Industry_Codes,model)
+    Venture_Classification.append(xx)
+
+print(Venture_Classification) 
