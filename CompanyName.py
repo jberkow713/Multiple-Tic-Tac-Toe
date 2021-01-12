@@ -1,5 +1,6 @@
 from googlesearch import search
 from NLPModels import *
+import time
 #goal is to create function that parses this and returns a list of company names:
 #The get_13F function returns a dictionary
 
@@ -7,27 +8,7 @@ from NLPModels import *
 # Which the venture company has invested in 
 
 
-def Find_Company_Name(Dict):
-  Company_Names = []
-  for k,v in Dict.items():
-    if k == 'filings':
-      for x in v:
-        for k,v in x.items():
-          if k == 'entities':
-            for x in v:
-              for k,v in x.items():
-                if k == 'companyName':
-                  Company_Names.append(v)
 
-  Amended_Company_Names = []
-  for x in Company_Names:
-    y = x.split(' ')
-    y = y[:-1]
-    x = str(' '.join(y))
-    if x not in Amended_Company_Names:
-      if x != "PRIVATE ASSET MANAGEMENT INC":
-        Amended_Company_Names.append(x)
-  return(Amended_Company_Names)
 
  
 
@@ -1343,6 +1324,29 @@ import re
 import urllib.parse
 from urllib.parse import urlparse
 
+def Find_Company_Name(Dict):
+  Company_Names = []
+  for k,v in Dict.items():
+    if k == 'filings':
+      for x in v:
+        for k,v in x.items():
+          if k == 'entities':
+            for x in v:
+              for k,v in x.items():
+                if k == 'companyName':
+                  Company_Names.append(v)
+
+  Amended_Company_Names = []
+  for x in Company_Names:
+    y = x.split(' ')
+    y = y[:-1]
+    x = str(' '.join(y))
+    if x not in Amended_Company_Names:
+      if x != "PRIVATE ASSET MANAGEMENT INC":
+        Amended_Company_Names.append(x)
+  return(Amended_Company_Names)
+
+
 def googleSearch(query):
     g_clean = [ ] 
     url = 'https://www.google.com/search?client=ubuntu&channel=fs&q={}&ie=utf-8&oe=utf-8'.format(query)
@@ -1376,18 +1380,13 @@ def Company_Description_Links(Dict):
   yahoo finance company symbol to be used in yahoo finance searching
   '''
   Company_Names = Find_Company_Name(Dict)
-  lst = []
+  Link_List = []
   for x in Company_Names:
     y = x + ' '+ "yahoo finance symbol"
-    lst.append(y)
-  Link_List = []
-  
-  for x in lst:
-    a = googleSearch(x)
-   
+    a = googleSearch(y)
     Link_List.append(a)
-          # break
-    
+  
+      
   Company_Website_Dict = dict(zip(Company_Names, Link_List))  
   return Company_Website_Dict
 
@@ -1501,6 +1500,33 @@ def Company_Description_Links(Dict):
 #     print(str(entry))
 
 
+#Create Proxy list
+def create_Proxy_List():
+
+  from lxml.html import fromstring
+  url = 'https://free-proxy-list.net/'
+  html_text = requests.get(url).text
+  soup = BeautifulSoup(html_text, 'html.parser')
+  IP_addresses = []
+  A = soup.find("div", {"class": "table-responsive"})
+  B = (A.get_text())
+  C =(B.split())
+
+  count = 0
+  for x in C:
+    
+    if 'ago' in x:
+      x = x.lower()
+      x = re.sub('[a-z]', '', x)
+      if  x.endswith('80')== True and x.endswith('8080')==False:
+        x = x[:-2]
+        IP_addresses.append(x)
+        count+=1  
+      
+    if count == 16:
+      break 
+  return(IP_addresses)
+
 
 import yfinance as yf
 from yfinance import Ticker
@@ -1510,6 +1536,7 @@ import matplotlib.pyplot as plt
 def get_summary(Stock_Symbol):
   '''
   '''
+  Stock_Symbol = Stock_Symbol.upper()
   ticker_nm: Ticker = yf.Ticker(Stock_Symbol)
 
   x = ticker_nm.info
@@ -1537,7 +1564,7 @@ def get_comp_description_Dict(Dict):
   for x in Websites:
     a = x.split('/')
     print(a)
-    if '%' not in a[-2]:
+    if '%' not in a[4]:
       Symbols.append(a[4])
     else:
       b = a[4].split('%')
@@ -1548,6 +1575,7 @@ def get_comp_description_Dict(Dict):
   Summary_List = []
   for x in Symbols:
     desc = get_summary(x)
+    
     if desc != None:
       Summary_List.append(desc)
     elif desc == None:
@@ -1567,12 +1595,18 @@ def get_comp_description_Dict(Dict):
   
   return Summary_List
 
-# print(get_comp_description_Dict(B)) 
-Comp_Info = get_comp_description_Dict(B)
+AA = get_comp_description_Dict(B)
+print(AA)
 
-Venture_Classification = []
-for x in Comp_Info:
-    xx = find_SEC_branch(x ,Industry_Codes,model)
-    Venture_Classification.append(xx)
+# for x in AA[0]:
+#   print(get_relevant_sentence_desc(x))
 
-print(Venture_Classification) 
+
+# Comp_Info = get_comp_description_Dict(B)
+
+# Venture_Classification = []
+# for x in Comp_Info:
+#     xx = find_SEC_branch(x ,Industry_Codes,model)
+#     Venture_Classification.append(xx)
+
+# print(Venture_Classification) 
