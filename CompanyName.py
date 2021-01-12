@@ -1545,7 +1545,8 @@ def get_summary(Stock_Symbol):
       return(v)
 
 
-
+import random
+from collections import Counter
 def get_comp_description_Dict(Dict):
 
   '''
@@ -1574,7 +1575,10 @@ def get_comp_description_Dict(Dict):
   #Symbols is a list of all ticker symbols to be fed into yahoo_finance
   Summary_List = []
   for x in Symbols:
+    
     desc = get_summary(x)
+    rand = random.randint(3,5)
+    time.sleep(rand)
     
     if desc != None:
       Summary_List.append(desc)
@@ -1595,18 +1599,41 @@ def get_comp_description_Dict(Dict):
   
   return Summary_List
 
-AA = get_comp_description_Dict(B)
-print(AA)
 
-# for x in AA[0]:
-#   print(get_relevant_sentence_desc(x))
+def Get_General_Classification(Dict, Industry_List):
+  '''
+  This function will combine parsing the SEC reports and the NLP model
+  It will return a general classification of the top 2 industry classifiers for the given list
+  '''
+  Comp_Info = get_comp_description_Dict(Dict)
+
+  Venture_Classification = []
+  for x in Comp_Info:
+    xx = find_SEC_branch(x ,Industry_List, model)
+    Venture_Classification.append(xx)
+  
+  Tallies = []
+  for x in Venture_Classification:
+    for classifier in x:
+      if classifier in Industry_List:
+        Tallies.append(classifier)
+
+  Counter_Dict = Counter(Tallies)
+  tally_list = []
+  for v in Counter_Dict.values():
+    tally_list.append(v)
+  sorted_tallies = sorted(tally_list, reverse=True)
+  Classification = []
+  for k,v in Counter_Dict.items():
+    if v == sorted_tallies[0]:
+      Classification.append(k)
+    if v == sorted_tallies[1]:
+      Classification.append(k)       
+
+  return (Classification)
+
+print(Get_General_Classification(B, Industry_Codes))
+ 
 
 
-# Comp_Info = get_comp_description_Dict(B)
-
-# Venture_Classification = []
-# for x in Comp_Info:
-#     xx = find_SEC_branch(x ,Industry_Codes,model)
-#     Venture_Classification.append(xx)
-
-# print(Venture_Classification) 
+                        
