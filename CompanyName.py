@@ -1371,7 +1371,7 @@ def googleSearch(query):
     except Exception as ex:
       print(str(ex))
     finally:
-      return g_clean[0]
+      return g_clean[0:5]
 # print(googleSearch("CVS"))      
 
 def Company_Description_Links(Dict):
@@ -1558,9 +1558,11 @@ def get_comp_description_Dict(Dict):
   '''
 
   A = Company_Description_Links(Dict)
+  
   Websites = []
   for x in A.values():
-    Websites.append(x)
+    if "quote" in x:
+      Websites.append(x)
   Symbols = []
   for x in Websites:
     a = x.split('/')
@@ -1632,8 +1634,205 @@ def Get_General_Classification(Dict, Industry_List):
 
   return (Classification)
 
-print(Get_General_Classification(B, Industry_Codes))
+def Find_Misfiling_CIK(Company:str):
+  x = Company + ' ' +  "sec.report CIK"
+
+  Findings = [googleSearch(x)]
+  
+  CIK_Findings = []
+  
+  for X in Findings:
+    print(X)
+    if "sec.report/CIK" in X:
+      CIK_Findings.append(X)
+  
+  Potential_CIK_Numbers = []
+  
+  for x in CIK_Findings:
+    
+    B = x.split('/CIK/')
+    Potential_CIK_Numbers.append(B[1])
+  
+  D = {x:Potential_CIK_Numbers.count(x) for x in Potential_CIK_Numbers}
+  CIK_Key = max(D, key=D.get)
+     
+
+  return CIK_Key
+# print(Get_General_Classification(B, Industry_Codes))
  
 
+SEC_DICT = {
+	"status": "ok",
+	"cik_verticals": "successful",
+	"investor info": {
+		"companyName": "Spectrum Equity Management, Inc. (Filer)",
+		"cik": "1657260",
+		"irsNo": "043190022",
+		"stateOfIncorporation": "DE"
+	},
+	"holdings": {
+		"numberOfHoldingsAnalyzed": 3,
+		"totalHoldingsAmount(dollars)": 3243173000,
+		"verticals": {
+			"7374 Services-Computer Processing & Data Preparation": {
+				"totalHoldingsInVertical(dollars)": 112238000,
+				"companies": {
+					"Leaf Group Ltd.": {
+						"amountHeld(dollars)": 112238000,
+						"cik": "1365038",
+						"irsNo": "204731239",
+						"stateOfIncorporation": "DE"
+					}
+				}
+			},
+			"7370 Services-Computer Programming, Data Processing, Etc.": {
+				"totalHoldingsInVertical(dollars)": 454069000,
+				"companies": {
+					"SVMK Inc": {
+						"amountHeld(dollars)": 454069000,
+						"cik": "1739936",
+						"irsNo": "800765058",
+						"stateOfIncorporation": "DE"
+					}
+				}
+			}
+		},
+		"misfiledHoldingsAmounts": {
+			"GoodRx Holdings, Inc.": 2676866000
+		}
+	}
+}
+
+#Get Company and amount invested for SEC Filings
+def Classify_Investor(SEC_DICTIONARY):
+  '''
+  Takes in SEC Dictionary, returns a dictionary:
+  {Amount_Invested: Company Description, Amount_Invested: Company Description, ...}
+  '''
+
+  Company_List = []
+  Invested_Amount = []
+  for x,y in SEC_DICTIONARY.items():
+    if x == "holdings":
+      for z,q in y.items():
+        if z == "verticals":
+          for values in q.values():
+            for k,v in values.items():
+              if k == "companies":
+                for key, value in v.items():
+                  Company_List.append(key)
+                  for k,v in value.items():
+                    if k == 'amountHeld(dollars)':
+                      Invested_Amount.append(v)
+        elif z == "misfiledHoldingsAmounts":
+          for k,v in q.items():
+            Company_List.append(k)
+            Invested_Amount.append(v)
+
+  Symbol_List = []
+  for x in Company_List:
+    y = x + ' '+ "yahoo finance symbol"
+    a = googleSearch(y)
+    Symbol_List.append(a)
+
+      
+  Company_Website_Dict = dict(zip(Company_List, Symbol_List))
+
+  Websites = []
+  for y in Company_Website_Dict.values():
+    for x in y:
+      if "quote" in x:
+        Websites.append(x)
+        break 
+  Symbols = []
+  for x in Websites:
+    a = x.split('/')
+    
+    if '%' not in a[4]:
+      Symbols.append(a[4])
+      
+    else:
+      b = a[4].split('%')
+      Symbols.append(b[0])
+
+  # Symbols is a list of all ticker symbols to be fed into yahoo_finance
+  Summary_List = []
+  E = list(enumerate(Symbols))
+  for symbol in Symbols:
+    
+    
+    desc = get_summary(symbol)
+    rand = random.randint(3,6)
+    time.sleep(rand)
+
+    Summary_List.append(desc)
+
+    if desc == None:
+      a = symbol.split('-')
+      URL = "https://stockanalysis.com/stocks/!/"
+      URL2 = URL.replace('!', a[0])
+      html_text = requests.get(URL2).text
+      soup = BeautifulSoup(html_text, 'html.parser')
+      A = soup.find("div", {"class": "sidew descr"})
+      B = str(A.find('p'))
+
+      C =re.split(r'(?<=\.) ', B)
+      Summary_List.append(C[0])
+      if C[0] == None:
+        for y in E:
+          if symbol in y:
+            position = y[0]
+            del Invested_Amount[position]
+            #In this case, we want to remove from the Invested_Amount list the amount at this position
+
+  # Amount_Classifier_Dict = dict(zip(Invested_Amount, Summary_List))
+  
+  Investment_Tallies = [0] * len(Industry_Codes)
+  Investment_Dict = dict(zip(Industry_Codes, Investment_Tallies))
+  #Investment Dict is going to be a list of industries as keys, and investments as values 
+  Industry_List = []
+  #Industry list is a list of industries based on company descriptions 
+  for x in Summary_List:
+    industry = find_SEC_branch(x, Industry_Codes, model)
+    Industry_List.append(industry)
+  index = 0
+  for sector in Industry_List[0]:
+    investment = Invested_Amount[index]
+    for Industry in Investment_Dict.keys():
+      if sector == Industry:
+        Investment_Dict[Industry] += investment
+        index +=1
+  return Investment_Dict         
+
+
+print(Classify_Investor(SEC_DICT))  
+  # for Industry, Investment in Investment_Dict.items():
+  #   if industry == Industry:
+  #     Investment_Dict[Industry] += k
+
+    
+    # Industry.append(industry)
+    # Amount.append(k)
+  
+  
+
+  #Match up an industry, to the percent of overall investment in a given venture firm
+  #Need to add up Amounts for given industry, and return total amounts first
+  # 
+
+
+
+
+
+
+  #If a summary can not be printed for a given company, then the index where that company was
+  # In the company list, the value at the index where that company was 
+  # in Invested Amount needs to be deleted
+                  
+
+
+
+
+          
 
                         
