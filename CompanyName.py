@@ -1576,6 +1576,7 @@ def get_comp_description_Dict(Dict):
 
   #Symbols is a list of all ticker symbols to be fed into yahoo_finance
   Summary_List = []
+  
   for x in Symbols:
     
     desc = get_summary(x)
@@ -1712,10 +1713,14 @@ def Classify_Investor(SEC_DICTIONARY):
 
   Company_List = []
   Invested_Amount = []
+  Total_Investment = 0
   for x,y in SEC_DICTIONARY.items():
     if x == "holdings":
       for z,q in y.items():
-        if z == "verticals":
+        if z == "totalHoldingsAmount(dollars)":
+          Total_Investment += q
+          
+        elif z == "verticals":
           for values in q.values():
             for k,v in values.items():
               if k == "companies":
@@ -1740,21 +1745,37 @@ def Classify_Investor(SEC_DICTIONARY):
 
   Websites = []
   for y in Company_Website_Dict.values():
+    Individ_Website = []
     for x in y:
       if "quote" in x:
-        Websites.append(x)
-        break 
-  Symbols = []
-  for x in Websites:
-    a = x.split('/')
-    
-    if '%' not in a[4]:
-      Symbols.append(a[4])
-      
-    else:
-      b = a[4].split('%')
-      Symbols.append(b[0])
+        Individ_Website.append(x)
+    Websites.append(Individ_Website)
 
+  # print(Websites)       
+  Symbols = []
+  
+  for x in Websites:
+    Symbols2 = []
+    Symbols3 = []
+    
+    for y in x:
+
+      a = y.split('/')
+    
+      if '%' not in a[4]:
+        Symbols2.append(a[4])
+      
+      else:
+        b = a[4].split('%')
+    Symbols2.append(b[0])
+    for x in Symbols2:
+      x = x.upper()
+      Symbols3.append(x)
+
+    A = (max(set(Symbols3), key = Symbols3.count))
+    #A represents the most common stock symbol in the given Stock Symbol website search 
+    Symbols.append(A)  
+  # print(Symbols)
   # Symbols is a list of all ticker symbols to be fed into yahoo_finance
   Summary_List = []
   E = list(enumerate(Symbols))
@@ -1796,16 +1817,35 @@ def Classify_Investor(SEC_DICTIONARY):
     industry = find_SEC_branch(x, Industry_Codes, model)
     Industry_List.append(industry)
   index = 0
-  for sector in Industry_List[0]:
+  #Investment_list has investment amounts, Industry List relates those investment amounts to 
+  # Specific industry in the Investment dict, which is then added to value in Investment Dict
+  for sector in Industry_List[index]:
     investment = Invested_Amount[index]
     for Industry in Investment_Dict.keys():
       if sector == Industry:
         Investment_Dict[Industry] += investment
         index +=1
-  return Investment_Dict         
+  #Convert to Percentages
+  Final_List = []
+  Final_List2 = []
+  for industry, investment in Investment_Dict.items():
+    
+    if investment > 0:
+      investment = investment/ Total_Investment
+      investment = round(investment, 2)
+      Final_List.append(industry)
+      Final_List2.append(investment)
+
+  Final_Dict = dict(zip(Final_List, Final_List2))  
 
 
-print(Classify_Investor(SEC_DICT))  
+  return Final_Dict
+  # return Investment_Dict         
+
+# print(get_summary("AAPL"))
+print(Classify_Investor(SEC_DICT))
+ 
+   
   # for Industry, Investment in Investment_Dict.items():
   #   if industry == Industry:
   #     Investment_Dict[Industry] += k
