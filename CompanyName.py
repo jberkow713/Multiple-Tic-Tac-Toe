@@ -1537,12 +1537,30 @@ def get_summary(Stock_Symbol):
   '''
   '''
   Stock_Symbol = Stock_Symbol.upper()
+  # if yf.Ticker(Stock_Symbol) == None:
+  #   return "Empty"
+      
   ticker_nm: Ticker = yf.Ticker(Stock_Symbol)
+    
+  try:
+    x = ticker_nm.info
+    for k,v in x.items():
+      if k == "longBusinessSummary":
+           
+        return v
 
-  x = ticker_nm.info
-  for k,v in x.items():
-    if k == "longBusinessSummary":
-      return(v)
+  except Exception as e:
+    A = repr(e)
+    if A == 'KeyError("regularMarketOpen")':
+      return "Empty"
+    # print (repr(e))
+  
+  
+       
+
+  
+    
+    
 
 
 import random
@@ -1789,21 +1807,11 @@ def Classify_Investor(SEC_DICTIONARY):
     Summary_List.append(desc)
 
     if desc == None:
-      a = symbol.split('-')
-      URL = "https://stockanalysis.com/stocks/!/"
-      URL2 = URL.replace('!', a[0])
-      html_text = requests.get(URL2).text
-      soup = BeautifulSoup(html_text, 'html.parser')
-      A = soup.find("div", {"class": "sidew descr"})
-      B = str(A.find('p'))
-
-      C =re.split(r'(?<=\.) ', B)
-      Summary_List.append(C[0])
-      if C[0] == None:
-        for y in E:
-          if symbol in y:
-            position = y[0]
-            del Invested_Amount[position]
+         
+      for y in E:
+        if symbol in y:
+          position = y[0]
+          del Invested_Amount[position]
             #In this case, we want to remove from the Invested_Amount list the amount at this position
 
   # Amount_Classifier_Dict = dict(zip(Invested_Amount, Summary_List))
@@ -1842,8 +1850,10 @@ def Classify_Investor(SEC_DICTIONARY):
   return Final_Dict
   # return Investment_Dict         
 
-# print(get_summary("AAPL"))
-print(Classify_Investor(SEC_DICT))
+print(get_summary("lfgr"))
+# if get_summary("lfgr") == None:
+#   print("hi")
+# print(Classify_Investor(SEC_DICT))
  
    
   # for Industry, Investment in Investment_Dict.items():
