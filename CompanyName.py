@@ -1696,7 +1696,7 @@ SEC_DICT = {
 			"7374 Services-Computer Processing & Data Preparation": {
 				"totalHoldingsInVertical(dollars)": 112238000,
 				"companies": {
-					"Leaf Group Ltd.": {
+					"Nonsense industries inc.": {
 						"amountHeld(dollars)": 112238000,
 						"cik": "1365038",
 						"irsNo": "204731239",
@@ -1760,7 +1760,7 @@ def Classify_Investor(SEC_DICTIONARY):
 
       
   Company_Website_Dict = dict(zip(Company_List, Symbol_List))
-
+  
   Websites = []
   for y in Company_Website_Dict.values():
     Individ_Website = []
@@ -1768,7 +1768,7 @@ def Classify_Investor(SEC_DICTIONARY):
       if "quote" in x:
         Individ_Website.append(x)
     Websites.append(Individ_Website)
-
+ 
   # print(Websites)       
   Symbols = []
   
@@ -1785,35 +1785,52 @@ def Classify_Investor(SEC_DICTIONARY):
       
       else:
         b = a[4].split('%')
-    Symbols2.append(b[0])
+        Symbols2.append(b[0])
     for x in Symbols2:
       x = x.upper()
       Symbols3.append(x)
 
-    A = (max(set(Symbols3), key = Symbols3.count))
-    #A represents the most common stock symbol in the given Stock Symbol website search 
-    Symbols.append(A)  
-  # print(Symbols)
-  # Symbols is a list of all ticker symbols to be fed into yahoo_finance
+    symbols4 = Counter(Symbols3)
+    
+    a= max(symbols4, key=symbols4.get)
+    for k,v in symbols4.items():
+      if k == a:
+        if v>1:
+          
+    
+          A = (max(set(Symbols3), key = Symbols3.count))
+        #A represents the most common stock symbol in the given Stock Symbol website search 
+          Symbols.append(A)
+        else:
+          Symbols.append("zzzzzz")      
+  print(Symbols)
+  
   Summary_List = []
+  
   E = list(enumerate(Symbols))
+  
   for symbol in Symbols:
     
     
     desc = get_summary(symbol)
+    
     rand = random.randint(3,6)
     time.sleep(rand)
+    
+    if desc != None:
+      Summary_List.append(desc)
 
-    Summary_List.append(desc)
-
-    if desc == None:
-         
+    if desc == None:       
       for y in E:
-        if symbol in y:
+        
+        if symbol in y[1]:
           position = y[0]
+          b = Invested_Amount[position]
           del Invested_Amount[position]
+          Total_Investment -= b
             #In this case, we want to remove from the Invested_Amount list the amount at this position
-
+  print(Total_Investment)
+  print(Invested_Amount)
   # Amount_Classifier_Dict = dict(zip(Invested_Amount, Summary_List))
   
   Investment_Tallies = [0] * len(Industry_Codes)
@@ -1823,16 +1840,25 @@ def Classify_Investor(SEC_DICTIONARY):
   #Industry list is a list of industries based on company descriptions 
   for x in Summary_List:
     industry = find_SEC_branch(x, Industry_Codes, model)
+    industry = industry[0]
     Industry_List.append(industry)
-  index = 0
+  
   #Investment_list has investment amounts, Industry List relates those investment amounts to 
   # Specific industry in the Investment dict, which is then added to value in Investment Dict
-  for sector in Industry_List[index]:
-    investment = Invested_Amount[index]
+  print(Industry_List)
+  
+  index = 0
+  while index <= len(Industry_List)-1:
+
+    sector = Industry_List[index]
+    
     for Industry in Investment_Dict.keys():
       if sector == Industry:
-        Investment_Dict[Industry] += investment
-        index +=1
+        Investment_Dict[Industry] += Invested_Amount[index]
+    
+    index +=1     
+        
+  print(Investment_Dict)      
   #Convert to Percentages
   Final_List = []
   Final_List2 = []
@@ -1846,14 +1872,14 @@ def Classify_Investor(SEC_DICTIONARY):
 
   Final_Dict = dict(zip(Final_List, Final_List2))  
 
-
+  print(Total_Investment)
   return Final_Dict
   # return Investment_Dict         
 
-print(get_summary("lfgr"))
+# print(get_summary("lfgr"))
 # if get_summary("lfgr") == None:
 #   print("hi")
-# print(Classify_Investor(SEC_DICT))
+print(Classify_Investor(SEC_DICT))
  
    
   # for Industry, Investment in Investment_Dict.items():
