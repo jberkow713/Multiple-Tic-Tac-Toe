@@ -1555,11 +1555,7 @@ def get_summary(Stock_Symbol):
       return "Empty"
     # print (repr(e))
   
-  
-       
-
-  
-    
+   
     
 
 
@@ -1656,27 +1652,50 @@ def Get_General_Classification(Dict, Industry_List):
 def Find_Misfiling_CIK(Company:str):
   x = Company + ' ' +  "sec.report CIK"
 
-  Findings = [googleSearch(x)]
+  Findings = googleSearch(x)
   
   CIK_Findings = []
-  
+  CIK_Findings_Edgar = []
+
   for X in Findings:
-    print(X)
+    
     if "sec.report/CIK" in X:
       CIK_Findings.append(X)
   
+  for X in Findings:
+    if "edgar/data" in X:
+      CIK_Findings_Edgar.append(X)
+
   Potential_CIK_Numbers = []
   
   for x in CIK_Findings:
     
     B = x.split('/CIK/')
-    Potential_CIK_Numbers.append(B[1])
-  
-  D = {x:Potential_CIK_Numbers.count(x) for x in Potential_CIK_Numbers}
-  CIK_Key = max(D, key=D.get)
-     
+    C = B[1].split('/')
+    Potential_CIK_Numbers.append(C[0])
+  for x in CIK_Findings_Edgar:
+    B = x.split('data/')
+    C = B[1].split('/')
 
-  return CIK_Key
+
+    Potential_CIK_Numbers.append(C[0])
+  Potential_CIK_Numbers1 = []
+  
+  for x in Potential_CIK_Numbers:
+    y =int(x)
+    Potential_CIK_Numbers1.append(y)
+
+  
+  D = {x:Potential_CIK_Numbers1.count(x) for x in Potential_CIK_Numbers1}
+  Counts = []
+  for v in D.values():
+    Counts.append(v)
+  if max(Counts)>1:
+        
+    CIK_Key = max(D, key=D.get)
+    return CIK_Key
+  else:
+    return "non-conclusive"  
 # print(Get_General_Classification(B, Industry_Codes))
  
 
@@ -1728,6 +1747,8 @@ def Classify_Investor(SEC_DICTIONARY):
   Takes in SEC Dictionary, returns a dictionary:
   {Amount_Invested: Company Description, Amount_Invested: Company Description, ...}
   '''
+  Misfiled_Holdings = []
+  CIK_Numbers = []
 
   Company_List = []
   Invested_Amount = []
@@ -1750,9 +1771,16 @@ def Classify_Investor(SEC_DICTIONARY):
         elif z == "misfiledHoldingsAmounts":
           for k,v in q.items():
             Company_List.append(k)
+            Misfiled_Holdings.append(k)
             Invested_Amount.append(v)
-
+  for x in Misfiled_Holdings:
+    CIK = Find_Misfiling_CIK(x)
+    CIK_Numbers.append(CIK)
+  
+  Misfiled_Holdings_Dict = dict(zip(Misfiled_Holdings, CIK_Numbers))
+  
   Symbol_List = []
+  
   for x in Company_List:
     y = x + ' '+ "yahoo finance symbol"
     a = googleSearch(y)
@@ -1803,8 +1831,19 @@ def Classify_Investor(SEC_DICTIONARY):
           Symbols.append(A)
         else:
           Symbols.append("zzzzzz")      
-  print(Symbols)
   
+  # print(Symbols)
+
+  # company_length = len(Company_List)
+  # misfiled_length = len(Misfiled_Holdings)
+  # slicing_length = company_length - misfiled_length
+  # #The slicing length will be used to modify the symbols list, to reflect only the Misfiled Holding company
+  # # symbols, to be used to match up these symbols in the future
+  
+  # Misfiled_Symbols = Symbols[slicing_length:]
+  # #Misfiled Symbols represents every Misfiled Company and it's symbol
+
+    
   Summary_List = []
   
   E = list(enumerate(Symbols))
@@ -1814,7 +1853,7 @@ def Classify_Investor(SEC_DICTIONARY):
     
     desc = get_summary(symbol)
     
-    rand = random.randint(3,6)
+    rand = random.randint(2,5)
     time.sleep(rand)
     
     if desc != None:
@@ -1873,7 +1912,7 @@ def Classify_Investor(SEC_DICTIONARY):
   Final_Dict = dict(zip(Final_List, Final_List2))  
 
   print(Total_Investment)
-  return Final_Dict
+  return Final_Dict, Misfiled_Holdings_Dict
   # return Investment_Dict         
 
 # print(get_summary("lfgr"))
