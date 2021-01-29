@@ -1346,6 +1346,10 @@ def Find_Company_Name(Dict):
         Amended_Company_Names.append(x)
   return(Amended_Company_Names)
 
+# idx_rnd = randint(0, 15)
+
+# Proxies
+
 
 def googleSearch(query):
     g_clean = [ ] 
@@ -1679,11 +1683,15 @@ def Find_Misfiling_CIK(Company:str):
 
 
     Potential_CIK_Numbers.append(C[0])
+  print(Potential_CIK_Numbers)
+  if len(Potential_CIK_Numbers)<1:
+    return "non-conclusive"  
   Potential_CIK_Numbers1 = []
   
   for x in Potential_CIK_Numbers:
-    y =int(x)
-    Potential_CIK_Numbers1.append(y)
+    if x != "Search":
+      y =int(x)
+      Potential_CIK_Numbers1.append(y)
 
   
   D = {x:Potential_CIK_Numbers1.count(x) for x in Potential_CIK_Numbers1}
@@ -1693,8 +1701,10 @@ def Find_Misfiling_CIK(Company:str):
   if max(Counts)>1:
         
     CIK_Key = max(D, key=D.get)
+    print(CIK_Key)
     return CIK_Key
   else:
+    print("non-conclusive")
     return "non-conclusive"  
 # print(Get_General_Classification(B, Industry_Codes))
  
@@ -1740,6 +1750,11 @@ SEC_DICT = {
 		}
 	}
 }
+from scholarly import scholarly
+from scholarly import ProxyGenerator
+from random import randint
+
+# Random Number
 
 #Get Company and amount invested for SEC Filings
 def Classify_Investor(SEC_DICTIONARY):
@@ -1747,12 +1762,53 @@ def Classify_Investor(SEC_DICTIONARY):
   Takes in SEC Dictionary, returns a dictionary:
   {Amount_Invested: Company Description, Amount_Invested: Company Description, ...}
   '''
+
+
+  None_Count = 0
   Misfiled_Holdings = []
   CIK_Numbers = []
-
+  
   Company_List = []
   Invested_Amount = []
   Total_Investment = 0
+  list_of_sec_labels = []
+  for k,v in SEC_DICTIONARY.items():
+    if k == "holdings":
+      for k,v in v.items():
+        if k == "verticals":
+          for k,v in v.items():
+            list_of_sec_labels.append(k)
+  Counts = []
+  for k,v in SEC_DICTIONARY.items():
+    if k == "holdings":
+      for k,v in v.items():
+        if k == "verticals":
+          for k,v in v.items():
+            for x in list_of_sec_labels:
+              if k == x:
+                for k,v in v.items():
+                  if k == "companies":
+                    Counts.append(len(v))
+
+  Default_Label_List = []
+  index = 0
+  while index<len(Counts):
+    a = Counts[index]
+    
+    while a > 0:
+      Default_Label_List.append(list_of_sec_labels[index])
+      a -=1 
+    index+=1
+  
+  print(Default_Label_List)
+  print(len(Default_Label_List))
+          # Have to get a way to count number of companies for each thing in Default DEscription
+          #    
+          # for values in v.values():
+          #   for k,v in values.items():
+          #     if k == "companies":
+          #       Dict_Len.append(v)
+                  
   for x,y in SEC_DICTIONARY.items():
     if x == "holdings":
       for z,q in y.items():
@@ -1771,32 +1827,52 @@ def Classify_Investor(SEC_DICTIONARY):
         elif z == "misfiledHoldingsAmounts":
           for k,v in q.items():
             Company_List.append(k)
+            
             Misfiled_Holdings.append(k)
             Invested_Amount.append(v)
+  # print(len(Invested_Amount))
+  print(Company_List)
+  print(len(Company_List))
+  print(Invested_Amount)
+  print(len(Invested_Amount))
+
+
   for x in Misfiled_Holdings:
     CIK = Find_Misfiling_CIK(x)
+    rand = random.randint(2,4)
+    time.sleep(rand)
+
     CIK_Numbers.append(CIK)
-  
+  # for x in CIK_Numbers:
+  #   y = "sec.report" + " " + str(x)
+  #   a = googleSearch(y)
+  #   Potential_Names_List.append(a)
+  # print(Potential_Names_List)  
+
   Misfiled_Holdings_Dict = dict(zip(Misfiled_Holdings, CIK_Numbers))
   
   Symbol_List = []
   
   for x in Company_List:
-    y = x + ' '+ "yahoo finance symbol"
+    y = x + ' ' + "yahoo finance symbol"
     a = googleSearch(y)
     Symbol_List.append(a)
+    rand = random.randint(2,4)
+    time.sleep(rand)
+
 
       
   Company_Website_Dict = dict(zip(Company_List, Symbol_List))
   
   Websites = []
+  
   for y in Company_Website_Dict.values():
     Individ_Website = []
     for x in y:
       if "quote" in x:
         Individ_Website.append(x)
     Websites.append(Individ_Website)
- 
+  
   # print(Websites)       
   Symbols = []
   
@@ -1817,39 +1893,30 @@ def Classify_Investor(SEC_DICTIONARY):
     for x in Symbols2:
       x = x.upper()
       Symbols3.append(x)
+    #Symbols3 is a list of symbols for a given company
+    #['LUV', 'LUV', 'LUV', 'LUV']
+    Counter2 = 0 
+    if len(Symbols3) == 0:
+      Symbols.append("zzzzzz"+str(Counter2))
+      Counter2+=1
+      
+    if len(Symbols3) > 0:
+      symbols4 = Counter(Symbols3)
+      A= max(symbols4, key=symbols4.get)
 
-    symbols4 = Counter(Symbols3)
-    
-    a= max(symbols4, key=symbols4.get)
-    for k,v in symbols4.items():
-      if k == a:
-        if v>1:
-          
-    
-          A = (max(set(Symbols3), key = Symbols3.count))
-        #A represents the most common stock symbol in the given Stock Symbol website search 
-          Symbols.append(A)
-        else:
-          Symbols.append("zzzzzz")      
-  
-  # print(Symbols)
+      Symbols.append(A)
 
-  # company_length = len(Company_List)
-  # misfiled_length = len(Misfiled_Holdings)
-  # slicing_length = company_length - misfiled_length
-  # #The slicing length will be used to modify the symbols list, to reflect only the Misfiled Holding company
-  # # symbols, to be used to match up these symbols in the future
-  
-  # Misfiled_Symbols = Symbols[slicing_length:]
-  # #Misfiled Symbols represents every Misfiled Company and it's symbol
+                
 
+  print(len(Symbols))
+  print(len(Invested_Amount))
     
   Summary_List = []
   
   E = list(enumerate(Symbols))
   
   for symbol in Symbols:
-    
+    print(len(Summary_List))
     
     desc = get_summary(symbol)
     
@@ -1858,16 +1925,27 @@ def Classify_Investor(SEC_DICTIONARY):
     
     if desc != None:
       Summary_List.append(desc)
-
+      print(desc)
+    
+        
     if desc == None:       
       for y in E:
         
         if symbol in y[1]:
           position = y[0]
-          b = Invested_Amount[position]
-          del Invested_Amount[position]
-          Total_Investment -= b
+          print(position)
+      if position <= len(Default_Label_List)-1:
+          None_Count +=1
+          Summary_List.append(Default_Label_List[position])
+      elif position > len(Default_Label_List)-1:
+        Summary_List.append("Agriculture, Space technology, retail, and clowns")
+        Total_Investment -= Invested_Amount[position]
+        Invested_Amount[position] = 0
+         
+
+          
             #In this case, we want to remove from the Invested_Amount list the amount at this position
+  print(Summary_List)
   print(Total_Investment)
   print(Invested_Amount)
   # Amount_Classifier_Dict = dict(zip(Invested_Amount, Summary_List))
@@ -1879,8 +1957,9 @@ def Classify_Investor(SEC_DICTIONARY):
   #Industry list is a list of industries based on company descriptions 
   for x in Summary_List:
     industry = find_SEC_branch(x, Industry_Codes, model)
-    industry = industry[0]
+    print(industry)
     Industry_List.append(industry)
+    
   
   #Investment_list has investment amounts, Industry List relates those investment amounts to 
   # Specific industry in the Investment dict, which is then added to value in Investment Dict
@@ -1912,38 +1991,52 @@ def Classify_Investor(SEC_DICTIONARY):
   Final_Dict = dict(zip(Final_List, Final_List2))  
 
   print(Total_Investment)
-  return Final_Dict, Misfiled_Holdings_Dict
+  return Final_Dict, Misfiled_Holdings_Dict, None_Count
+  # return Final_Dict
   # return Investment_Dict         
 
 # print(get_summary("lfgr"))
 # if get_summary("lfgr") == None:
 #   print("hi")
-print(Classify_Investor(SEC_DICT))
- 
-   
-  # for Industry, Investment in Investment_Dict.items():
-  #   if industry == Industry:
-  #     Investment_Dict[Industry] += k
+# print(Classify_Investor(SEC_DICT))
 
-    
-    # Industry.append(industry)
-    # Amount.append(k)
-  
-  
+with open('aak_test.json') as f:
+  Berkshire = json.load(f)
 
-  #Match up an industry, to the percent of overall investment in a given venture firm
-  #Need to add up Amounts for given industry, and return total amounts first
-  # 
+print(Classify_Investor(Berkshire))
 
 
 
+# idx_rnd = randint(0, 15)
+
+
+# a = create_Proxy_List()
+
+# pg = ProxyGenerator()
+# proxy_used = 'https://' + a[idx_rnd]
+# pg.SingleProxy(http = proxy_used, https = proxy_used)
+# scholarly.use_proxy(pg)
+
+print(googleSearch('fuck you google'))
 
 
 
-  #If a summary can not be printed for a given company, then the index where that company was
-  # In the company list, the value at the index where that company was 
-  # in Invested Amount needs to be deleted
-                  
+
+
+
+
+
+                
+
+
+                       
+          
+
+
+
+
+
+
 
 
 

@@ -498,7 +498,7 @@ def Advanced_cosine_sentence(v1,v2, model):
     else:
         return 0.0
 
-# A = "engages in retail and wholesale business. The Company offers an assortment of merchandise and services at everyday low prices. ... The Walmart International segment manages supercenters, supermarkets, hypermarkets, warehouse clubs, and cash & carry outside of the United States."
+A = "engages in retail and wholesale business. The Company offers an assortment of merchandise and services at everyday low prices. ... The Walmart International segment manages supercenters, supermarkets, hypermarkets, warehouse clubs, and cash & carry outside of the United States."
 # B = "designs, manufactures and markets mobile communication and media devices, personal computers and portable digital music players. The Company sells a range of related software, services, accessories, networking solutions, and third-party digital content and applications"
 
 # C = "world's leading specialist in providing institutional investors with investment servicing, investment management and investment research and trading services"
@@ -573,31 +573,33 @@ def find_SEC_branch(company_descript, industry_list, model):
     
     x = dict(zip(industry_list, Similarities))
     Similarities = sorted(Similarities, reverse=True)
-    Top2 = Similarities[0:3]
-    Top2_Scores = []
+    # Top2 = Similarities[0:3]
+    # Top2_Scores = []
     Top_Choice = max(x, key=x.get)
-    Top_Choices = []
-    for y in Top2:
-        for k,v in x.items():
-            if y == v:
-                Top2_Scores.append(v)
-                Top_Choices.append(k)
+    return Top_Choice
+    # Top_Choices = []
+    # for y in Top2:
+    #     for k,v in x.items():
+    #         if y == v:
+    #             Top2_Scores.append(v)
+    #             Top_Choices.append(k)
             
-    if Top2_Scores[0] > Top2_Scores[1] * (1.1):
-        return Top_Choice, Top2_Scores[0]
-    else:
-        Final_returned_scores = []
-        Final_returned_keys = []
-        for x in Top2_Scores:
-            if (x / Top2_Scores[0]) >.9:
-                Final_returned_scores.append(x)
-                top_dict = dict(zip(Top_Choices, Top2_Scores))
-                for k,v in top_dict.items():
-                    for x in Final_returned_scores:
-                        if x == v:
-                            if k not in Final_returned_keys:
-                                Final_returned_keys.append(k)
-        return  Top_Choice, Top2_Scores[0], Final_returned_keys
+    # if Top2_Scores[0] > Top2_Scores[1] * (1.1):
+    #     return Top_Choice, Top2_Scores[0]
+    # else:
+    #     Final_returned_scores = []
+    #     Final_returned_keys = []
+    #     for x in Top2_Scores:
+    #         if (x / Top2_Scores[0]) >.9:
+    #             Final_returned_scores.append(x)
+    #             top_dict = dict(zip(Top_Choices, Top2_Scores))
+    #             for k,v in top_dict.items():
+    #                 for x in Final_returned_scores:
+    #                     if x == v:
+    #                         if k not in Final_returned_keys:
+    #                             Final_returned_keys.append(k)
+    #     # return  Top_Choice, Top2_Scores[0], Final_returned_keys
+    #     return Final_returned_keys
         # return [Top_Choice]
 
 
@@ -611,8 +613,8 @@ Industry_Codes = ["Agriculture, Forestry, Fishing,  Hunting", "Mining, Quarrying
         "Utilities", "Construction" , "Manufacturing", "Transportation", "Wholesale Trade", "Retail Sales ",
         "Investment ", "Finance, Insurance", "Housing, Apartments", "Rental, Leasing",\
             "Health Care", "Arts, Entertainment", "Restaurants, Food",\
-                    "Communications, Technology" ]
-
+                    "Communications, Technology"]
+ 
 # AD = "We assessed the oral health of the Pine Ridge Oglala Lakota people, described a new oral health assessment tool for Indigenous people, and suggested ways to improve Native oral health."
 # AE = 'a technology company. The Company develops, licenses, and supports a range of software products, services and devices.'
 # AF = 's an aerospace company, which engages in the manufacture of commercial jetliners and defense, space and security systems. It operates through the following segments: Commercial Airplanes; Defense, Space and Security; Global Services; and Boeing Capital.'
@@ -645,7 +647,7 @@ Industry_Codes = ["Agriculture, Forestry, Fishing,  Hunting", "Mining, Quarrying
 
 # You take this information, from the request, and you turn it into a variable called A,
 #You then throw A into 
-#find_Sec_branch(A, Industry_Codes, model)
+# print(find_SEC_branch(A, Industry_Codes, model))
 
 # Only take top result, for each request you receive a [classification]
 # And then basically you tally up each classification, and how many, store in dictionary
