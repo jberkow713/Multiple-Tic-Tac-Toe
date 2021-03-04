@@ -67,7 +67,7 @@ Lst_Types = [Goal_Oriented_Keywords, Management_Enforcement_Keywords, Writing_Co
 # print(Lst_Types[0])
 
 Classifier_Dict = dict(zip(Type_Classifier, Lst_Types))
- 
+# print(Classifier_Dict) 
 HR = "Human resources specialists are responsible for recruiting, screening, interviewing and placing workers. They may also handle employee relations, payroll, benefits, and training. Human resources managers plan, direct and coordinate the administrative functions of an organization."    
 B = "work with organisations to help them improve their processes and systems. They conduct research and analysis in order to come up with solutions to business problems and help to introduce these systems to businesses and their clients."
 # A = find_SEC_branch(B, Type_Classifier, model)
@@ -76,17 +76,23 @@ B = "work with organisations to help them improve their processes and systems. T
 
 def Find_Useful_Keywords(Description, Keyword_List, model):
     A = find_SEC_branch(Description, Keyword_List, model)
-    print(A)
+    # print(A)
     Keywords = []
-    for x in A[2]:
+    for x in A:
         for k,v in Classifier_Dict.items():
             if x == k:
-                for x in v:
-                    x = x.lower()
-                    Keywords.append(x)
-    return Keywords
+                Keywords.append(v)
 
-# C = Find_Useful_Keywords(HR, Type_Classifier, model)
+    return Keywords       
+    
+
+C = Find_Useful_Keywords(HR, Type_Classifier, model)
+print(C)
+# A = find_SEC_branch(HR, Type_Classifier, model)
+# for x in A:
+#     for k,v in Classifier_Dict.items():
+#         if x == k:
+#             print(v)
 
 #C represents a list of useful words to put in resume, based on the classification of the job description
 # B is a job description, Classify B, find keywords, and now need to put these words into resume
@@ -154,8 +160,11 @@ The work is performed in an office setting.
 Words = ['analyzed', 'assembled', 'assessed', 'audited', 'calculated', 'discovered', 'evaluated', 'examined', 'explored', 'forecasted', 'identified', 'interpreted', 'investigated', 'mapped', 'measured', 'qualified', 'quantified', 'surveyed', 'tested', 'tracked', 'authored', 'briefed', 'campaigned', 'co-authored', 'composed', 'conveyed', 'convinced', 'corresponded', 'counseled', 'critiqued', 'defined', 'documented', 'edited', 'illustrated', 'lobbied', 'persuaded', 'promoted', 'publicized', 'reviewed', 'centralized', 'clarified', 'converted', 'customized', 'influenced', 'integrated', 'merged', 'modified', 'overhauled', 'redesigned', 'refined', 'refocused', 'rehabilitated', 'remodeled', 'reorganized', 'replaced', 'restructured', 'revamped', 'revitalized', 'simplified', 'standardized', 'streamlined', 'strengthened', 'updated', 'upgraded', 'transformed']
 
 
-from pyresparser import ResumeParser
-data = ResumeParser(r'C:/Users/JayBeast/Desktop/JesseBerkowitz-Resume.pdf').get_extracted_data()
-print(data)
-
-# print(D)
+# from pyresparser import ResumeParser
+# data = ResumeParser(r'C:/Users/JayBeast/Desktop/JesseBerkowitz-Resume.pdf').get_extracted_data()
+# Experience_List = []
+# for k,v in data.items():
+#     if k == "experience":
+#         Experience_List.append(v)
+# for x in Experience_List:
+#     print(x)       

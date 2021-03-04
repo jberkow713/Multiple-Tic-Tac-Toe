@@ -27,6 +27,8 @@ import string
 import numpy as np
 from numpy import dot
 from numpy.linalg import norm
+from multiprocessing import Pool
+import concurrent.futures
 
 
 
@@ -573,17 +575,19 @@ def find_SEC_branch(company_descript, industry_list, model):
     
     x = dict(zip(industry_list, Similarities))
     Similarities = sorted(Similarities, reverse=True)
-    # Top2 = Similarities[0:3]
-    # Top2_Scores = []
-    Top_Choice = max(x, key=x.get)
-    return Top_Choice
-    # Top_Choices = []
-    # for y in Top2:
-    #     for k,v in x.items():
-    #         if y == v:
-    #             Top2_Scores.append(v)
-    #             Top_Choices.append(k)
-            
+    Top5 = Similarities[:]
+    
+    # Top_Choice = max(x, key=x.get)
+    # return Top_Choice
+    
+    Top_Choices = []
+    for y in Top5:
+        for k,v in x.items():
+            if y == v:
+                               
+                Top_Choices.append(k)
+    Final_Dict = dict(zip(Top_Choices, Top5))
+    return Final_Dict        
     # if Top2_Scores[0] > Top2_Scores[1] * (1.1):
     #     return Top_Choice, Top2_Scores[0]
     # else:
@@ -664,4 +668,684 @@ Industry_Codes = ["Agriculture, Forestry, Fishing,  Hunting", "Mining, Quarrying
 #     Venture_Classification.append(xx)
 
 # print(Venture_Classification)
+
+#Below is a list of topics, returned through topic modeling
+
+# We want to create a function that finds the mean vector of the given list of words,
+#based on the percentages, and then creates a sentence using these words, compares to SEC labels
+
+
+A = {0: [('galaxies', 0.008033033135050972),
+  ('star', 0.007667390799256399),
+  ('stars', 0.0071363747871880335),
+  ('galaxy', 0.006398559376539289),
+  ('stellar', 0.00590602552411055),
+  ('luminosity', 0.0041811545512308165),
+  ('accretion', 0.00406705561837532),
+  ('galactic', 0.004063655247023988),
+  ('dust', 0.00398506551885823),
+  ('redshift', 0.0038005927547548946)],
+ 1: [('gauge', 0.00665549309258827),
+  ('theory', 0.005724815322517419),
+  ('quark', 0.005655274948655314),
+  ('mass', 0.004727720588864407),
+  ('neutrino', 0.004359592715300164),
+  ('gravity', 0.004038671637448339),
+  ('theories', 0.003966772867577327),
+  ('symmetry', 0.0036889748211034),
+  ('supersymmetric', 0.003510064706527295),
+  ('decays', 0.003504655620496048)],
+ 2: [('power', 0.029975451008550112),
+  ('load', 0.017878218571160055),
+  ('charging', 0.01641773807907874),
+  ('microgrid', 0.014865294901497805),
+  ('electricity', 0.013517226389844489),
+  ('loads', 0.013396071014300558),
+  ('bus', 0.013172744438483213),
+  ('dispatch', 0.011976215628932191),
+  ('voltage', 0.010845902463467009),
+  ('microgrids', 0.008950662340487615)],
+ 3: [('channel', 0.03696932035054989),
+  ('decoding', 0.03160578888897981),
+  ('codes', 0.02927124699603399),
+  ('channels', 0.020848970691399227),
+  ('relay', 0.015116246352972018),
+  ('rate', 0.012016231070576323),
+  ('block', 0.011577822853069552),
+  ('decodable', 0.011047436302189021),
+  ('source', 0.01067780996760743),
+  ('fading', 0.009945501471587187)],
+ 4: [('authentication', 0.04275510285507988),
+  ('iot', 0.03229832025969636),
+  ('security', 0.028507433593069037),
+  ('privacy', 0.02443183908083926),
+  ('wireless', 0.016116545062240674),
+  ('service', 0.011963531659393675),
+  ('secure', 0.011205191667617555),
+  ('protocol', 0.01009286477598365),
+  ('sdp', 0.009604488821004861),
+  ('protocols', 0.009498615048742153)],
+ 5: [('channel', 0.022522214142983533),
+  ('mimo', 0.019498268661763338),
+  ('interference', 0.017705758441225395),
+  ('wireless', 0.01747969595448109),
+  ('antennas', 0.013269760663337215),
+  ('downlink', 0.010809044100844005),
+  ('beamforming', 0.010145708815418712),
+  ('antenna', 0.009990904493017013),
+  ('uplink', 0.008969258304053866),
+  ('transmit', 0.007851261685063294)],
+ 6: [('neurons', 0.03562425110971791),
+  ('synaptic', 0.0329266694360079),
+  ('spiking', 0.028127469391903307),
+  ('spikes', 0.02015479837698916),
+  ('neuron', 0.016187457002103094),
+  ('firing', 0.012786273965412643),
+  ('plasticity', 0.012219957065219077),
+  ('nervous', 0.010959663398925124),
+  ('synapses', 0.009326855547835211),
+  ('neuronal', 0.009302214635533457)],
+ 7: [('brain', 0.0622238290850548),
+  ('neuroimaging', 0.018743291346356727),
+  ('resting', 0.015751152143612675),
+  ('fmri', 0.014214574704109377),
+  ('disorders', 0.013631484615532168),
+  ('neuroelectric', 0.0128834587181267),
+  ('thalamic', 0.0128834587181267),
+  ('healthy', 0.01093507107670872),
+  ('schizophrenia', 0.009628708461543048),
+  ('functional', 0.00931124348803306)],
+ 8: [('consensus', 0.03985417775041625),
+  ('distributed', 0.03848534698055809),
+  ('convergence', 0.024788992974828013),
+  ('agent', 0.016073522804783635),
+  ('failure', 0.012275883269400411),
+  ('agents', 0.01078855130586233),
+  ('multi', 0.01011846624320329),
+  ('network', 0.009255369862107305),
+  ('converge', 0.00880036253914785),
+  ('protocol', 0.008644710027184243)],
+ 9: [('social', 0.027974589925207027),
+  ('tweets', 0.02569996915423065),
+  ('media', 0.021467748934648038),
+  ('twitter', 0.01893681937680153),
+  ('embedding', 0.018226100958195397),
+  ('sentiment', 0.016790357879280772),
+  ('textual', 0.01169390423435208),
+  ('posts', 0.010688392341484297),
+  ('network', 0.010188271864123426),
+  ('embeddings', 0.009832374971658769)],
+ 10: [('language', 0.024604287297867632),
+  ('word', 0.019055035692256056),
+  ('embeddings', 0.013505484689028499),
+  ('embedding', 0.012267091195072025),
+  ('semantic', 0.01212366740413955),
+  ('corpus', 0.010784312982212404),
+  ('sentence', 0.010104649124082833),
+  ('words', 0.00998142950097481),
+  ('sentences', 0.007805864702682391),
+  ('linguistic', 0.0075421771693835885)]}
+
+Lst_words = []
+Percentages = []
+for k,v in A.items():
+    if k == 6:
+        for x in v:
+            Lst_words.append(x[0])
+            Percentages.append(x[1])
+Topic_Dict = dict(zip(Lst_words, Percentages))
+sorted_Percentages = sorted(Percentages, reverse=True)
+# print(sorted_Percentages)
+Words = []
+for k,v in Topic_Dict.items():
+    if v in sorted_Percentages[0:4]:
+        Words.append(k)
+        Words.append(k)
+    else:
+        Words.append(k)
+Sentence_0 = ' '.join(Words)
+         
+
+def Advanced_Avg_sentence_vec_desc_2(sentence, model):
+    '''
+    Helper function used to find the average vector for all words in sentence
+    Will improve using parts of speech, etc
+    '''
+    sentence = sentence 
+    #Have to turn this list of relevant words into a new string
+    
+    Vectors = get_w2v(sentence,model)
+    if len(Vectors)>0:
+        Avg_Vector =  np.average(Vectors, axis=0)
+        return Avg_Vector
+    else:
+        return np.zeros(300)
+
+def Advanced_cosine_sentence_2(v1,v2, model):
+    '''
+    Finds cosine similarity between 2 sentences
+    v1:First input is the company description
+    v2:Second input is the industry description, aka SIC Code, etc...
+    '''
+    v1 = Advanced_Avg_sentence_vec_desc_2(v1, model)
+    v2 = Advanced_Avg_sentence_vec_industry(v2, model)
+
+    if norm(v1) > 0 and norm(v2) > 0:
+        return dot(v1, v2) / (norm(v1) * norm(v2))
+    else:
+        return 0.0
+import time
+def find_SEC_branch_2(company_descript, industry_list, model):
+    '''
+    Compares company description to List of SEC industry branches, finds and returns top 2 closest matches
+    '''
+    start = time.time()
+
+    
+
+    Similarities = []
+    Count = 0
+    for x in industry_list:
+        # with Pool(4) as p:
+        #     y = p.starmap_async(Advanced_cosine_sentence_2(company_descript, x, model), industry_list)
+        # with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        #     y = executor.map(Advanced_cosine_sentence_2(company_descript, x, model), industry_list, timeout=1, chunksize=4)
+        # # with ThreadPoolExecutor(max_workers=1) as executor:
+        # #     future = executor.submit(pow, 323, 1235)
+        # #     print(future.result())
+        # #     map(func, *iterables, timeout=None, chunksize=1)
+        #     # a = y.result()
+        #     print(y)
+        #     Similarities.append(y)
+            
+        
+        
+        
+        y = Advanced_cosine_sentence_2(company_descript, x, model)
+        print(y)
+        Count +=1
+        print(Count)
+        Similarities.append(y)
+
+    x = dict(zip(industry_list, Similarities))
+    Similarities = sorted(Similarities, reverse=True)
+    # Top2 = Similarities[0:3]
+    # Top2_Scores = []
+    Top_Choice = max(x, key=x.get)
+    end = time.time()
+    for k,v in x.items():
+        if Top_Choice == k:
+            Highest_Percentage = v
+    return Top_Choice, Highest_Percentage, (end - start)
+
+Patent_Labels1 = []
+with open('PatentDictwords.json') as f:
+  Patents  = json.load(f)
+
+for k,v in Patents.items():
+    Patent_Labels1.append(v)
+
+
+#model is running on topic with these words, evaluating it relative to 
+
+Patent_Labels = []
+with open('Patents_Dict2.json') as f:
+  Patents  = json.load(f)
+
+for k,v in Patents.items():
+    Patent_Labels.append(v)
+
+words_to_remove = ['in', 'or', 'of', 'for', 'by', 'e.g.', 'a', 'to', 'the', 'and', 'eg']
+Amended_Patent_Labels = []
+
+for x in Patent_Labels:
+    x = x.split(' ')
+
+    for a in x:
+        if "-" in a:
+            b = a.split('-')
+            x.remove(a)
+            for c in b:
+                x.append(c)
+    x = ' '.join(x)            
+
+    inpt = tokenize(x)
+    for y in list(inpt):
+        y = y.lower()
+        if y in words_to_remove or y.isalpha==False:
+            inpt.remove(y)
+        
+    X = ' '.join(inpt)           
+    Amended_Patent_Labels.append(X)        
+# print(len(Patent_Labels))
+# print(len(Amended_Patent_Labels))
+# print(Amended_Patent_Labels[-2:-1])
+
+list_of_abstracts = ['A pesticide used to destroy weeds','A physical noise source is used to develop a first sequence of random bits.',\
+     'An RNG circuit is connected to the parallel port of a computer. The circuit includes a flat source of white noise and a CMOS amplifier circuit compensated in the high frequency range.']
+
+from sklearn.cluster import KMeans
+import numpy as np
+
+
+def Cluster_Labels(Label_List, model):
+    
+    list_of_vectors = []
+    for x in Label_List:
+        vector = Advanced_Avg_sentence_vec_desc_2(x, model)
+        vec_to_list = vector.tolist()
+        list_of_vectors.append(vec_to_list)
+            
+    nparray = np.array(list_of_vectors)    
+    
+    kmeans = KMeans(n_clusters=25, random_state=0).fit(nparray)
+    categorized_list = kmeans.labels_
+    string_list = []
+    for x in categorized_list:
+        y = str(x)
+        string_list.append(y)
+
+    Categorized_Dict = dict(zip(Label_List, string_list))
+    return Categorized_Dict
+
+def Cluster_Label_with_Abstract(Label_list, List_of_Abstracts, model):
+
+    Combined_List = Label_list + List_of_Abstracts
+
+    list_of_vectors = []
+    for x in Label_list:
+        vector = Advanced_Avg_sentence_vec_desc_2(x, model)
+        vec_to_list = vector.tolist()
+        list_of_vectors.append(vec_to_list)
+    for x in List_of_Abstracts:
+        vector = Advanced_Avg_sentence_vec_desc_2(x, model)
+        vec_to_list = vector.tolist()
+        list_of_vectors.append(vec_to_list)
+
+    nparray = np.array(list_of_vectors)    
+    
+    kmeans = KMeans(n_clusters=25, random_state=0).fit(nparray)
+    categorized_list = kmeans.labels_
+    string_list = []
+    for x in categorized_list:
+        y = str(x)
+        string_list.append(y)
+
+    Categorized_Dict = dict(zip(Combined_List, string_list))
+    return Categorized_Dict
+
+# a = (Cluster_Labels(Amended_Patent_Labels, model))
+# with open('Label_Clustering.json', 'w') as fp:
+#     json.dump(a, fp)
+with open('Label_Clustering.json') as f:
+    Vector_Dictionary = json.load(f)
+
+def find_possible_label_words(Cluster_Value, Cluster_Dictionary):
+    '''
+    Takes Cluster Dictionary and specific Cluster value, creates list of possible label words
+    for this cluster
+    '''
+    string_value = str(Cluster_Value)
+    category = []
+    for k,v in Cluster_Dictionary.items():
+        if v == string_value:
+            y = tokenize(k)
+            for x in y:
+                category.append(x)
+    keys = []
+    values = []
+    Word_Count = Counter(category)
+    for k,v in Word_Count.items():
+        if v>1:
+            values.append(v)
+            keys.append(k)
+
+    Possible_Label_Words = dict(zip(keys, values))        
+    return Possible_Label_Words  
+
+
+def Classify_Researcher(List_of_Patents, Patent_Labels, Industry_Labels, model):
+    '''
+    input: Patent list of abstracts, in the form of strings, List of Patent Labels, List of Industry Labels, and a model
+    output: Dictionary: {SEC_Field: Score, SEC_Field: Score, etc...}
+    '''
+    words_to_remove = ['in', 'or', 'of', 'for', 'by', 'e.g.', 'a', 'to', 'the', 'and', 'eg']
+    Amended_Patent_List = []
+    for x in List_of_Patents:
+        x = x.split(' ')
+
+        for a in x:
+            if "-" in a:
+                b = a.split('-')
+                x.remove(a)
+                for c in b:
+                    x.append(c)
+        x = ' '.join(x)            
+
+        inpt = tokenize(x)
+        for y in list(inpt):
+            y = y.lower()
+            if y in words_to_remove or y.isalpha==False:
+                inpt.remove(y)
+        
+        X = ' '.join(inpt)
+        Amended_Patent_List.append(X) 
+    
+    Categorized_Dictionary = Cluster_Label_with_Abstract(Patent_Labels,Amended_Patent_List,model)
+    
+    #We have now clustered each abstract with all of the patent labels...we can now operate on this
+    Classification_List = []
+    for x in Amended_Patent_List:
+        for k,v in Categorized_Dictionary.items():
+            if x == k:
+                Classification_List.append(v)
+    # print(Classification_List)            
+    
+    Classification_List2 = []
+    index = 0 
+    length = len(Classification_List)
+    while length >0:
+
+        relevant_labels = []
+        
+        for k,v in Categorized_Dictionary.items():
+            if v == Classification_List[index]:
+                if k!= Amended_Patent_List[index]:
+                    relevant_labels.append(k)
+        
+        # print(relevant_labels)
+        print(len(relevant_labels))               
+        
+        x = Amended_Patent_List[index]
+
+        outcome= find_SEC_branch_2(x, relevant_labels, model)
+        SEC_Conversion_Dict = find_SEC_branch(outcome[0], Industry_Labels, model)
+        Classification_List2.append(SEC_Conversion_Dict)
+        
+        relevant_labels.clear()
+        length -=1
+        index +=1
+
+
+    
+    SEC_Tallies = [0] * len(Industry_Labels)
+    SEC_Dict = dict(zip(Industry_Labels, SEC_Tallies))
+
+    for x in Classification_List2:
+        for k,v in x.items():
+            for a, b in SEC_Dict.items():
+                if a == k:
+                    SEC_Dict[a]+=v
+
+    return SEC_Dict 
+
+
+
+# print(Classify_Researcher(list_of_abstracts, Amended_Patent_Labels, Industry_Codes, model))
+
+
+# ("output.csv"), glove.42B.300d.vocab, glove.42b.300d.npy, Patents_Dict2.json,
+
+#Need to find a way to consolidate patent labels
+'''
+Ideas:
+Currently list of 654 patent labels in Amended_Patent_Labels list
+Can set threshold, pair values together if they cross a specific threshold, say .70
+
+Need to cluster them
+
+'''
+def find_SEC_branch_3(Single_Label, Patent_Label_List, model):
+    '''
+    Compares company description to List of SEC industry branches, finds and returns top 2 closest matches
+    '''
+       
+
+    Similarities = []
+    Count = 0
+    for x in Patent_Label_List:
+       
+        
+        
+        y = Advanced_cosine_sentence_2(Single_Label, x, model)
+        print(y)
+        Count +=1
+        print(Count)
+        Similarities.append(y)
+
+    Score_Dict = dict(zip(Patent_Label_List, Similarities))
+    # Top2 = Similarities[0:3]
+    # Top2_Scores = []
+    Related_Keys = []
+
+    for k,v in Score_Dict.items():
+        if v>=.70 and k!=Single_Label:
+            Related_Keys.append(k)
+    return Single_Label, Related_Keys
+
+# print(find_SEC_branch_3(Amended_Patent_Labels[0], Amended_Patent_Labels, model))
+from sklearn.cluster import KMeans
+import numpy as np
+
+def Organize_Sec_Dict(Dict):
+  '''
+  Takes in SEC Dictionary, returns a Dictionary as follows:
+  {Vertical:[[CIK, Company, Investment]], Vertical:[[CIK, Company, Investment], [CIK, Company, Investment], etc], etc}
+  Misfiled_Holding_Dictionary: {Misfiled_Company: Investment, Misfiled_Company: Investment, etc}
+  '''
+
+
+  
+  Invested_Amount = []
+  CIK_Numbers = []
+  
+  list_of_sec_labels = []
+  for k,v in Dict.items():
+    if k == "holdings":
+      for k,v in v.items():
+        if k == "verticals":
+          for k,v in v.items():
+            list_of_sec_labels.append(k)
+        elif k == "misfiledHoldingsAmounts":
+          Misfiled_Dict = v     
+  Counts = []
+  Companies = []
+  for k,v in Dict.items():
+    if k == "holdings":
+      for k,v in v.items():
+        if k == "verticals":
+          for k,v in v.items():
+            for x in list_of_sec_labels:
+              if k == x:
+                for k,v in v.items():
+                  if k == "companies":
+                    Counts.append(len(v))
+                                  
+                    for a,b in v.items():
+                      Companies.append(a)
+                      for k,v in b.items():
+                        if k == 'amountHeld(dollars)':
+                          Invested_Amount.append(str(v))
+                        if k == 'cik':
+                          CIK_Numbers.append(v)  
+
+                      
+                      
+                      
+
+  Default_Label_List = []
+  index = 0
+  while index<len(Counts):
+    a = Counts[index]
+    
+    while a > 0:
+      Default_Label_List.append(list_of_sec_labels[index])
+      a -=1 
+    index+=1
+
+  vertical_dict = dict(zip(Companies, Default_Label_List))
+
+
+  Vertical_List = []  
+  for x in Default_Label_List:
+    if x not in Vertical_List:
+      Vertical_List.append(x)
+
+  Vertical_List_of_Lists = []
+  for x in Vertical_List:
+    Individ_List = []
+    for y in Default_Label_List:
+      if y ==x:
+        Individ_List.append(y)
+    Vertical_List_of_Lists.append(Individ_List)
+
+  List_of_Name_Lists = []
+  for x in Vertical_List_of_Lists:
+    Name_List = []
+    for y in x:
+      for k,v in vertical_dict.items():
+        if v == y:
+          if k not in Name_List:
+            Name_List.append(k)
+    List_of_Name_Lists.append(Name_List)
+  Verticals = []
+  for x in Vertical_List_of_Lists:
+    for y in x:
+      if y not in Verticals:
+        Verticals.append(y)
+  
+  Company_Investment = [', '.join(x) for x in zip(Companies, Invested_Amount)]
+
+  CIK_Dict = dict(zip(CIK_Numbers, Company_Investment))
+
+
+  CIK_Combined_List = []
+  for k,v in CIK_Dict.items():
+    combined = []
+    combined.append(k)
+    combined.append(v)
+    CIK_Combined_List.append(combined)
+
+  Final_Final_List = []
+  for x in List_of_Name_Lists:
+    Final_Combined_List = []
+    for y in x:
+      
+      for a in CIK_Combined_List:
+        for b in a:
+          if y in b:
+            Final_Combined_List.append(a)
+    Final_Final_List.append(Final_Combined_List)
+
+  Vertical_Final_Dict = dict(zip(Verticals, Final_Final_List))
+  return Vertical_Final_Dict, Misfiled_Dict
+
+with open('aak_test.json') as f:
+  Berkshire = json.load(f)
+
+def Classify_Investor(SEC_DICT, Industry_Labels, model):
+
+    Organized = Organize_Sec_Dict(SEC_DICT)
+    Sectors = []
+    Amounts = []
+    Amounts_odd = []
+    lenlist = []
+    for k,v in Organized[0].items():
+        Sectors.append(k)
+        Sub_Amounts = []
+        a = len(v)
+        lenlist.append(a)
+        for x in v:
+            
+            for lst in x:
+                Sub_Amounts.append(lst)
+            
+        Amounts.append(Sub_Amounts)
+
+    for x in Amounts:
+        a = list(enumerate(x))
+        for x in a:
+            if x[0] %2 !=0:
+                result = x[1].split(',')
+                result = result[1].replace(' ', '')
+                Amounts_odd.append(result)
+                
+
+    #amounts_odd represents all investments
+    #lenlist represents how many items in amounts odd to add to smaller list, before moving on to next list
+    length = len(lenlist)
+    index = 0
+    Vertical_Sums_Total = []
+    smallindex = 0
+    while length >0:
+        a = lenlist[index]
+        
+        Vertical_Sums = []
+        
+        while a >0:
+            
+            Vertical_Sums.append(int(Amounts_odd[smallindex]))
+            smallindex+=1
+            a -=1
+        
+        Vertical_Sums_Total.append(sum(Vertical_Sums))
+        Vertical_Sums.clear()
+        length -=1
+        index +=1
+
+    Total_Sum = sum(Vertical_Sums_Total)
+    Vertical_Percentages = []
+    for x in Vertical_Sums_Total:
+        y = float(x/Total_Sum)
+        Vertical_Percentages.append(y)
+    
+    len_sectors = len(Sectors)
+    index = 0
+    Dictionary_List = []
+    while len_sectors >0:
+
+
+        a = Sectors[index]
+        y = find_SEC_branch(a, Industry_Labels, model)
+        b = Vertical_Percentages[index]
+
+        updated_list = []
+        for k,v in y.items():
+            c = v*b 
+            updated_list.append(c)
+        updated_dict = dict(zip(Industry_Labels, updated_list))
+        Dictionary_List.append(updated_dict)
+        print("One Down, many to go")
+
+        index +=1
+        len_sectors -=1
+
+
+
+    SEC_Tallies = [0] * len(Industry_Labels)
+    SEC_Dict = dict(zip(Industry_Labels, SEC_Tallies))
+
+    for x in Dictionary_List:
+        for k,v in x.items():
+            for a, b in SEC_Dict.items():
+                if a == k:
+                    SEC_Dict[a]+=v
+
+    return SEC_Dict 
+
+print(Classify_Investor(Berkshire, Industry_Codes, model))
+
+
+
+    
+    
+    
+
+    
+
+
+
+       
+
+        
 

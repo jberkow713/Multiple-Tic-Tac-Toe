@@ -1837,19 +1837,19 @@ def Classify_Investor(SEC_DICTIONARY):
   print(len(Invested_Amount))
 
 
-  for x in Misfiled_Holdings:
-    CIK = Find_Misfiling_CIK(x)
-    rand = random.randint(2,4)
-    time.sleep(rand)
+  # for x in Misfiled_Holdings:
+  #   CIK = Find_Misfiling_CIK(x)
+  #   rand = random.randint(2,4)
+  #   time.sleep(rand)
 
-    CIK_Numbers.append(CIK)
-  # for x in CIK_Numbers:
-  #   y = "sec.report" + " " + str(x)
-  #   a = googleSearch(y)
-  #   Potential_Names_List.append(a)
-  # print(Potential_Names_List)  
+  #   CIK_Numbers.append(CIK)
+  # # for x in CIK_Numbers:
+  # #   y = "sec.report" + " " + str(x)
+  # #   a = googleSearch(y)
+  # #   Potential_Names_List.append(a)
+  # # print(Potential_Names_List)  
 
-  Misfiled_Holdings_Dict = dict(zip(Misfiled_Holdings, CIK_Numbers))
+  # Misfiled_Holdings_Dict = dict(zip(Misfiled_Holdings, CIK_Numbers))
   
   Symbol_List = []
   
@@ -1984,15 +1984,15 @@ def Classify_Investor(SEC_DICTIONARY):
     
     if investment > 0:
       investment = investment/ Total_Investment
-      investment = round(investment, 2)
+      investment = round(investment, 3)
       Final_List.append(industry)
       Final_List2.append(investment)
 
   Final_Dict = dict(zip(Final_List, Final_List2))  
 
   print(Total_Investment)
-  return Final_Dict, Misfiled_Holdings_Dict, None_Count
-  # return Final_Dict
+  # return Final_Dict, Misfiled_Holdings_Dict, None_Count
+  return Final_Dict
   # return Investment_Dict         
 
 # print(get_summary("lfgr"))
@@ -2002,22 +2002,128 @@ def Classify_Investor(SEC_DICTIONARY):
 
 with open('aak_test.json') as f:
   Berkshire = json.load(f)
+print(Berkshire)  
 
-print(Classify_Investor(Berkshire))
+# print(Classify_Investor(Berkshire))
+
+def Organize_Sec_Dict(Dict):
+  '''
+  Takes in SEC Dictionary, returns a Dictionary as follows:
+  {Vertical:[[CIK, Company, Investment]], Vertical:[[CIK, Company, Investment], [CIK, Company, Investment], etc], etc}
+  Misfiled_Holding_Dictionary: {Misfiled_Company: Investment, Misfiled_Company: Investment, etc}
+  '''
+
+
+  
+  Invested_Amount = []
+  CIK_Numbers = []
+  
+  list_of_sec_labels = []
+  for k,v in Dict.items():
+    if k == "holdings":
+      for k,v in v.items():
+        if k == "verticals":
+          for k,v in v.items():
+            list_of_sec_labels.append(k)
+        elif k == "misfiledHoldingsAmounts":
+          Misfiled_Dict = v     
+  Counts = []
+  Companies = []
+  for k,v in Dict.items():
+    if k == "holdings":
+      for k,v in v.items():
+        if k == "verticals":
+          for k,v in v.items():
+            for x in list_of_sec_labels:
+              if k == x:
+                for k,v in v.items():
+                  if k == "companies":
+                    Counts.append(len(v))
+                                  
+                    for a,b in v.items():
+                      Companies.append(a)
+                      for k,v in b.items():
+                        if k == 'amountHeld(dollars)':
+                          Invested_Amount.append(str(v))
+                        if k == 'cik':
+                          CIK_Numbers.append(v)  
+
+                      
+                      
+                      
+
+  Default_Label_List = []
+  index = 0
+  while index<len(Counts):
+    a = Counts[index]
+    
+    while a > 0:
+      Default_Label_List.append(list_of_sec_labels[index])
+      a -=1 
+    index+=1
+
+  vertical_dict = dict(zip(Companies, Default_Label_List))
+
+
+  Vertical_List = []  
+  for x in Default_Label_List:
+    if x not in Vertical_List:
+      Vertical_List.append(x)
+
+  Vertical_List_of_Lists = []
+  for x in Vertical_List:
+    Individ_List = []
+    for y in Default_Label_List:
+      if y ==x:
+        Individ_List.append(y)
+    Vertical_List_of_Lists.append(Individ_List)
+
+  List_of_Name_Lists = []
+  for x in Vertical_List_of_Lists:
+    Name_List = []
+    for y in x:
+      for k,v in vertical_dict.items():
+        if v == y:
+          if k not in Name_List:
+            Name_List.append(k)
+    List_of_Name_Lists.append(Name_List)
+  Verticals = []
+  for x in Vertical_List_of_Lists:
+    for y in x:
+      if y not in Verticals:
+        Verticals.append(y)
+  
+  Company_Investment = [', '.join(x) for x in zip(Companies, Invested_Amount)]
+
+  CIK_Dict = dict(zip(CIK_Numbers, Company_Investment))
+
+
+  CIK_Combined_List = []
+  for k,v in CIK_Dict.items():
+    combined = []
+    combined.append(k)
+    combined.append(v)
+    CIK_Combined_List.append(combined)
+
+  Final_Final_List = []
+  for x in List_of_Name_Lists:
+    Final_Combined_List = []
+    for y in x:
+      
+      for a in CIK_Combined_List:
+        for b in a:
+          if y in b:
+            Final_Combined_List.append(a)
+    Final_Final_List.append(Final_Combined_List)
+
+  Vertical_Final_Dict = dict(zip(Verticals, Final_Final_List))
+  return Vertical_Final_Dict, Misfiled_Dict
+  
+
+print(Organize_Sec_Dict(Berkshire))  
 
 
 
-# idx_rnd = randint(0, 15)
-
-
-# a = create_Proxy_List()
-
-# pg = ProxyGenerator()
-# proxy_used = 'https://' + a[idx_rnd]
-# pg.SingleProxy(http = proxy_used, https = proxy_used)
-# scholarly.use_proxy(pg)
-
-print(googleSearch('fuck you google'))
 
 
 
