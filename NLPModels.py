@@ -575,7 +575,7 @@ def find_SEC_branch(company_descript, industry_list, model):
     
     x = dict(zip(industry_list, Similarities))
     Similarities = sorted(Similarities, reverse=True)
-    Top5 = Similarities[:]
+    Top5 = Similarities[0:6]
     
     # Top_Choice = max(x, key=x.get)
     # return Top_Choice
@@ -928,6 +928,7 @@ from sklearn.cluster import KMeans
 import numpy as np
 
 
+
 def Cluster_Labels(Label_List, model):
     
     list_of_vectors = []
@@ -938,7 +939,11 @@ def Cluster_Labels(Label_List, model):
             
     nparray = np.array(list_of_vectors)    
     
-    kmeans = KMeans(n_clusters=25, random_state=0).fit(nparray)
+    length = len(list_of_vectors)
+    clusters = int(math.floor(math.sqrt(length)))
+    print(clusters)
+
+    kmeans = KMeans(n_clusters=clusters, random_state=0).fit(nparray)
     categorized_list = kmeans.labels_
     string_list = []
     for x in categorized_list:
@@ -964,7 +969,11 @@ def Cluster_Label_with_Abstract(Label_list, List_of_Abstracts, model):
 
     nparray = np.array(list_of_vectors)    
     
-    kmeans = KMeans(n_clusters=25, random_state=0).fit(nparray)
+    length = len(Combined_List)
+    clusters = int(math.floor(math.sqrt(length)))
+    print(clusters)
+    kmeans = KMeans(n_clusters=clusters, random_state=0).fit(nparray)
+    
     categorized_list = kmeans.labels_
     string_list = []
     for x in categorized_list:
@@ -974,11 +983,6 @@ def Cluster_Label_with_Abstract(Label_list, List_of_Abstracts, model):
     Categorized_Dict = dict(zip(Combined_List, string_list))
     return Categorized_Dict
 
-# a = (Cluster_Labels(Amended_Patent_Labels, model))
-# with open('Label_Clustering.json', 'w') as fp:
-#     json.dump(a, fp)
-with open('Label_Clustering.json') as f:
-    Vector_Dictionary = json.load(f)
 
 def find_possible_label_words(Cluster_Value, Cluster_Dictionary):
     '''
@@ -992,6 +996,7 @@ def find_possible_label_words(Cluster_Value, Cluster_Dictionary):
             y = tokenize(k)
             for x in y:
                 category.append(x)
+           
     keys = []
     values = []
     Word_Count = Counter(category)
@@ -999,19 +1004,35 @@ def find_possible_label_words(Cluster_Value, Cluster_Dictionary):
         if v>1:
             values.append(v)
             keys.append(k)
+    keys2 = []
+    values2 = []
+    if len(keys)<5:
+        for k,v in Word_Count.items():
+            keys2.append(k)
+            values2.append(v)
+        Possible_Label_Words = dict(zip(keys2, values2))
+        return Possible_Label_Words    
 
     Possible_Label_Words = dict(zip(keys, values))        
-    return Possible_Label_Words  
+    return Possible_Label_Words
 
 
-def Classify_Researcher(List_of_Patents, Patent_Labels, Industry_Labels, model):
-    '''
-    input: Patent list of abstracts, in the form of strings, List of Patent Labels, List of Industry Labels, and a model
-    output: Dictionary: {SEC_Field: Score, SEC_Field: Score, etc...}
-    '''
-    words_to_remove = ['in', 'or', 'of', 'for', 'by', 'e.g.', 'a', 'to', 'the', 'and', 'eg']
-    Amended_Patent_List = []
-    for x in List_of_Patents:
+
+#Now we want all possible combinations of each clusters words as a key, from 1-5 words long,  want an average 300d vector representation
+#as a value, this will give us an initial possible list of labels to be used on potential future clusters,
+#
+#Next, we want to cluster a given set of abstracts, and we want to then find which of the combinations of words is closest related to the
+#average vector representation of the cluster that is created
+
+#Finally, take the list of labels you have created, and dependeing on which cluster a label fell into, run that label against ALL 
+# newly created labels within that cluster...do the same for all labels within the cluster, run them all against all new labels,
+# Find which label, 1-5 words, has the highest average cosine similarity among the actual labels of the cluster, 
+# And THIS will be the new representation of that cluster, in terms of a label
+
+def tokenize_input(LIST):
+    words_to_remove = ['in', 'or', 'of', 'for', 'by', 'e.g.', 'a', 'to', 'the', 'and', 'eg', 'an', 'is', 'not']
+    Amended_List = []
+    for x in LIST:
         x = x.split(' ')
 
         for a in x:
@@ -1029,9 +1050,82 @@ def Classify_Researcher(List_of_Patents, Patent_Labels, Industry_Labels, model):
                 inpt.remove(y)
         
         X = ' '.join(inpt)
-        Amended_Patent_List.append(X) 
+        Amended_List.append(X)
+    return Amended_List     
+
+
+def Words_by_Cluster(Label_List, model):
+    '''
+    Takes in a list of Patent Labels, Cleans the labels, Clusters them, returns for 
+    each cluster a dictionary of the significant words, and their counts
+    '''
+    Fixed_List = tokenize_input(Label_List)
+    Clustered_Dictionary = Cluster_Labels(Fixed_List, model)
+
+    clusterlist = []
+    for k,v in Clustered_Dictionary.items():
+        if int(v) not in clusterlist:
+            clusterlist.append(int(v))
+    clusterlist = sorted(clusterlist)
     
-    Categorized_Dictionary = Cluster_Label_with_Abstract(Patent_Labels,Amended_Patent_List,model)
+    important_words = []
+    for i in range(len(clusterlist)):
+        labels = find_possible_label_words(i, Clustered_Dictionary)
+        important_words.append(labels)
+    
+    Dict_of_Important_Words = dict(zip(clusterlist, important_words))
+    
+    with open('List_of_Clustered_Words.json', 'w') as fp:
+        json.dump(Dict_of_Important_Words, fp)
+    
+    return Dict_of_Important_Words
+
+# Words_by_Cluster(Amended_Patent_Labels, model)
+
+with open('List_of_Clustered_Words.json') as f:
+    Vector_Dictionary = json.load(f)
+
+def find_words_by_cluster(Cluster_Dictionary):
+
+    keys = []
+    lengths = []
+    for k,v in Cluster_Dictionary.items():
+        if k not in keys:
+            keys.append(k)
+    keys2=[]
+    for x in keys:
+        x= int(x)
+        keys2.append(x)
+    keys = sorted((keys2))
+    print(keys)
+    for k,v in Cluster_Dictionary.items():
+        for x in keys:
+            if str(x) == k:
+                lengths.append(len(v))
+    Words_Per_Cluster = dict(zip(keys, lengths))
+    return Words_Per_Cluster
+
+print(find_words_by_cluster(Vector_Dictionary))                
+        
+#So now we have words of usefulness in each cluster by count in our Clustered Label Dictionary
+#Want to now find a way to combine words, given the size of each of these lists of clusters
+
+
+
+
+
+
+def Classify_Researcher(List_of_Patents, Patent_Labels, Industry_Labels, model):
+    '''
+    input: Patent list of abstracts, in the form of strings, List of Patent Labels, List of Industry Labels, and a model
+    output: Dictionary: {SEC_Field: Score, SEC_Field: Score, etc...}
+    '''
+    
+    Amended_Patent_List = tokenize_input(List_of_Patents)
+    print(Amended_Patent_List)
+    Amended_Label_List = tokenize_input(Patent_Labels) 
+    
+    Categorized_Dictionary = Cluster_Label_with_Abstract(Amended_Label_List, Amended_Patent_List, model)
     
     #We have now clustered each abstract with all of the patent labels...we can now operate on this
     Classification_List = []
@@ -1077,24 +1171,32 @@ def Classify_Researcher(List_of_Patents, Patent_Labels, Industry_Labels, model):
                 if a == k:
                     SEC_Dict[a]+=v
 
-    return SEC_Dict 
+    Final_Sec_Dict = {}
+    values = []
+    
+    for v in SEC_Dict.values():
+        values.append(v)
+    summed = sum(values)
+    for k,v in SEC_Dict.items():
+        a = v / summed 
+        Final_Sec_Dict[k]=a
+
+    return Final_Sec_Dict 
+
+# patent_list = ['mug for drinking stuff', 'gardenhose spigot']
+# patent_labels = ['kitchenwares', 'gardening']
+# # print(Cluster_Label_with_Abstract(patent_labels, patent_list, model))
 
 
+# # print(Classify_Researcher(patent_list, patent_labels, Industry_Codes, model))
 
 # print(Classify_Researcher(list_of_abstracts, Amended_Patent_Labels, Industry_Codes, model))
 
 
-# ("output.csv"), glove.42B.300d.vocab, glove.42b.300d.npy, Patents_Dict2.json,
 
-#Need to find a way to consolidate patent labels
-'''
-Ideas:
-Currently list of 654 patent labels in Amended_Patent_Labels list
-Can set threshold, pair values together if they cross a specific threshold, say .70
 
-Need to cluster them
 
-'''
+
 def find_SEC_branch_3(Single_Label, Patent_Label_List, model):
     '''
     Compares company description to List of SEC industry branches, finds and returns top 2 closest matches
@@ -1123,7 +1225,7 @@ def find_SEC_branch_3(Single_Label, Patent_Label_List, model):
             Related_Keys.append(k)
     return Single_Label, Related_Keys
 
-# print(find_SEC_branch_3(Amended_Patent_Labels[0], Amended_Patent_Labels, model))
+
 from sklearn.cluster import KMeans
 import numpy as np
 
@@ -1330,16 +1432,23 @@ def Classify_Investor(SEC_DICT, Industry_Labels, model):
             for a, b in SEC_Dict.items():
                 if a == k:
                     SEC_Dict[a]+=v
-
-    return SEC_Dict 
-
-print(Classify_Investor(Berkshire, Industry_Codes, model))
-
-
-
     
+    Final_Sec_Dict = {}
+    values = []
     
+    for v in SEC_Dict.values():
+        values.append(v)
+    summed = sum(values)
+    for k,v in SEC_Dict.items():
+        a = v / summed 
+        Final_Sec_Dict[k]=a
+
+    return Final_Sec_Dict 
     
+
+# print(Classify_Investor(Berkshire, Industry_Codes, model))
+
+
 
     
 
