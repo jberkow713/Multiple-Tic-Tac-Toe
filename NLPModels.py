@@ -575,7 +575,7 @@ def find_SEC_branch(company_descript, industry_list, model):
     
     x = dict(zip(industry_list, Similarities))
     Similarities = sorted(Similarities, reverse=True)
-    Top5 = Similarities[0:6]
+    Top5 = Similarities[0:7]
     
     # Top_Choice = max(x, key=x.get)
     # return Top_Choice
@@ -1001,7 +1001,7 @@ def find_possible_label_words(Cluster_Value, Cluster_Dictionary):
     values = []
     Word_Count = Counter(category)
     for k,v in Word_Count.items():
-        if v>1:
+        if v>2:
             values.append(v)
             keys.append(k)
     keys2 = []
@@ -1054,6 +1054,7 @@ def tokenize_input(LIST):
     return Amended_List     
 
 
+
 def Words_by_Cluster(Label_List, model):
     '''
     Takes in a list of Patent Labels, Cleans the labels, Clusters them, returns for 
@@ -1080,10 +1081,9 @@ def Words_by_Cluster(Label_List, model):
     
     return Dict_of_Important_Words
 
-# Words_by_Cluster(Amended_Patent_Labels, model)
+# print(Words_by_Cluster(Amended_Patent_Labels, model))
 
-with open('List_of_Clustered_Words.json') as f:
-    Vector_Dictionary = json.load(f)
+
 
 def find_words_by_cluster(Cluster_Dictionary):
 
@@ -1094,21 +1094,241 @@ def find_words_by_cluster(Cluster_Dictionary):
             keys.append(k)
     keys2=[]
     for x in keys:
-        x= int(x)
+        
         keys2.append(x)
-    keys = sorted((keys2))
-    print(keys)
+    
+    # print(keys)
     for k,v in Cluster_Dictionary.items():
         for x in keys:
-            if str(x) == k:
+            if x == k:
                 lengths.append(len(v))
     Words_Per_Cluster = dict(zip(keys, lengths))
-    return Words_Per_Cluster
+    return Words_Per_Cluster, keys
 
-print(find_words_by_cluster(Vector_Dictionary))                
+def put_words_in_list(Dictionary):
+    List = []
+    for k,v in Dictionary.items():
+        if type(k) == str:
+            List.append(k)
+        if type(v) == str:
+            List.append(v)
+    return List 
+
+from itertools import permutations 
+from itertools import combinations
+
+with open('List_of_Clustered_Words.json') as f:
+    Vector_Dictionary = json.load(f)
+
+# Cluster_Count_Dict = find_words_by_cluster(Vector_Dictionary)   
+# print(Cluster_Count_Dict)
+
+
+
+def create_possible_labels(Cluster_Dictionary):
+    '''
+    For given Clustered Dictionary of possible words to use, we return 
+    Dictionary of {cluster: [List of all possible terms], cluster:[List of all possible terms], etc...}
+    '''
+
+    Cluster_Count_Dict = find_words_by_cluster(Cluster_Dictionary)
+    List_greater_Than_5 = []
+    List_Less_Than_5 = []
+    List_Less_Than_5_Counts = []
+    Master_List = Cluster_Count_Dict[1]
+    
+    
+    for k,v in Cluster_Count_Dict[0].items():
         
-#So now we have words of usefulness in each cluster by count in our Clustered Label Dictionary
-#Want to now find a way to combine words, given the size of each of these lists of clusters
+        if v >4:
+            List_greater_Than_5.append(k)
+        else:
+            List_Less_Than_5.append(k)
+            List_Less_Than_5_Counts.append(v)
+            
+    Master_List_Big = []
+    for x in Master_List:
+        if x in List_greater_Than_5:
+
+            List_of_possible_Labels = []
+            for k,v in Cluster_Dictionary.items():
+                if k == str(x):
+                    a = put_words_in_list(v)
+                    
+            for i in range(1,4):
+                y = combinations(a,i)
+            
+                y = (' '.join(w) for w in y)
+                y = list(y)
+                for x in y:
+                    List_of_possible_Labels.append(x)
+            Master_List_Big.append(List_of_possible_Labels)
+        
+        elif x in List_Less_Than_5:
+
+            Count = List_Less_Than_5_Counts[0]
+
+            List_of_possible_Labels = []
+            for k,v in Cluster_Dictionary.items():
+                if k == str(x[0]):
+                    a = put_words_in_list(v)
+                    
+            for i in range(1,Count+1):
+                y = combinations(a,i)
+            
+                y = (' '.join(w) for w in y)
+                y = list(y)
+                for x in y:
+                    List_of_possible_Labels.append(x)
+            Master_List_Big.append(List_of_possible_Labels)
+            del List_Less_Than_5_Counts[0]
+
+    
+    Master_Dict = dict(zip(Master_List, Master_List_Big))    
+
+    return Master_Dict
+
+
+
+
+# Giant_Dict = create_possible_labels(Vector_Dictionary)
+# # # # print(Giant_Dict['1'])
+# # # # Dict = dict(zip(Giant_Dict[0][0], Giant_Dict[1]))
+# # # # # print(Giant_Dict[0][0],Giant_Dict[1], Giant_Dict[2])
+# # # # print(Dict)
+# with open('Possible_Labels.json', 'w') as fp:
+#     json.dump(Giant_Dict, fp)
+
+with open('Possible_Labels.json') as f:
+    Label_Dictionary = json.load(f)
+
+keys =[]
+for k,v in Label_Dictionary.items():
+    if k not in keys:
+        keys.append(k)
+lengths = []
+for k,v in Label_Dictionary.items():
+    for x in keys:
+        if x == k:
+            lengths.append(len(v))
+print(lengths)
+print(Label_Dictionary['0'])
+
+
+
+
+# print(Label_Dictionary['20'])                   
+
+#We now have dictionary with all possible combinations, 2 word combinations, of possible labels
+#Need to generate all possible labels for a given cluster, compare each labels cosine similarity to all labels
+# that fell into that cluster, return the label with the lowest average distance for that cluster
+#So need to find the average point for all given labels in that cluster
+
+
+# A = Cluster_Labels(Amended_Patent_Labels, model)
+# print(A)
+# with open('Labels_by_Cluster.json', 'w') as fp:
+#     json.dump(A, fp)
+with open('Labels_by_Cluster.json') as f:
+    Labels_by_Cluster = json.load(f)
+
+def find_max_cluster_number(Cluster_Dictionary):
+
+    Clusters = []
+    
+    for v in Cluster_Dictionary.values():
+        if v not in Clusters:
+            Clusters.append(v)
+           
+    Cluster_Int = []
+
+    for x in Clusters:
+        y = int(x)
+        Cluster_Int.append(y)
+    
+    max_cluster = max(Cluster_Int)
+    return max_cluster 
+
+def find_avg_vectors_by_cluster(Cluster_Dictionary, model):
+    '''
+    Takes in Clustered Dictionary of Labels, and returns ONE average vector for each cluster, ordered
+    by the amount of clusters
+    '''
+    maximum = find_max_cluster_number(Cluster_Dictionary)
+
+    Avg_Vector_List= []
+
+    for i in range(maximum+1):
+        a = ''
+        string = str(i)
+        for k,v in Cluster_Dictionary.items():
+            if v == string:
+                a += k + " "
+        A = Advanced_Avg_sentence_vec_desc_2(a, model)        
+        Avg_Vector_List.append(A)
+    
+    return Avg_Vector_List
+                 
+# print(find_avg_vectors_by_cluster(Labels_by_Cluster, model))
+'''
+
+Step 1)
+Get a list of Labels:
+In this case, the list of labels is called Amended_Patent_Labels 
+
+A = Cluster_Labels(Amended_Patent_Labels, model)
+We then dump A into a dictionary like so: 
+with open('Labels_by_Cluster.json', 'w') as fp:
+    json.dump(A, fp)
+
+#Then we use B = find_avg_vectors_by_cluster(Labels_by_Cluster, model)
+to find the average vector, for a given cluster of labels
+
+Step 2)
+
+C = Words_by_Cluster(Amended_Patent_Labels, model)
+This will find significant words and arrange them by cluster, and store this file in
+'List_of_Clusters_Words.json' 
+
+We then access this dictionary by opening the file, and saving this as Vector Dictionary:
+
+with open('List_of_Clustered_Words.json') as f:
+    Vector_Dictionary = json.load(f)
+    
+Cluster_Count_Dict = find_words_by_cluster(Vector_Dictionary)
+This will show us how many signficant words make up each Cluster of Labels which have been boiled down to 
+clusters of words
+
+3)
+
+Now, we take this Vector Dictionary, and run: 
+
+D = create_possible_labels(Vector_Dictionary)
+
+We store this file however we see fit, in this case 
+with open('Possible_Labels.json', 'w') as fp:
+    json.dump(D, fp)
+
+D represents a Dictionary with ALL possible combinations of words for a given cluster, ORDERED
+
+4)
+
+Now that we have an ordered dictionary of possible labels by cluster, and an average vector by cluster,
+We want to find which one of the labels in this ordered dictionary of possible labels, for a given cluster, 
+has the closest cosine similarity to that cluster's average vector....
+
+Once we find this, we can find the best label to represent that cluster 
+
+
+
+
+'''
+  
+
+
+
+
+
 
 
 
@@ -1340,7 +1560,7 @@ def Organize_Sec_Dict(Dict):
     Final_Final_List.append(Final_Combined_List)
 
   Vertical_Final_Dict = dict(zip(Verticals, Final_Final_List))
-  return Vertical_Final_Dict, Misfiled_Dict
+  return Vertical_Final_Dict
 
 with open('aak_test.json') as f:
   Berkshire = json.load(f)
@@ -1444,7 +1664,110 @@ def Classify_Investor(SEC_DICT, Industry_Labels, model):
         Final_Sec_Dict[k]=a
 
     return Final_Sec_Dict 
-    
+
+with open('sec_yearly_split_13f_response.json') as f:
+  Yearly = json.load(f)
+def Classify_Investor_Updated(SEC_DICT, Industry_Labels, model):
+
+    Verticals = []
+    Invested_Amounts = []
+    for k,v in SEC_DICT.items():
+        if k == 'yearly_holdings':
+            for k,v in v.items():
+                for k,v in v.items():
+                    if k == 'verticals':
+                        for k,v in v.items():
+                            Verticals.append(k)
+                            for k,v in v.items():
+                                if k == 'totalHoldingsInVertical(dollars)':
+                                    Invested_Amounts.append(v)
+    # print(Verticals, len(Verticals),  Invested_Amounts, len(Invested_Amounts))                                
+    Vertical_Set = set()
+    for x in Verticals:
+        Vertical_Set.add(x)
+    print(len(Vertical_Set))
+    print(Vertical_Set)
+    Vertical_Tallies = [0] * len(Vertical_Set)
+    Vertical_Dict = dict(zip(Vertical_Set, Vertical_Tallies))
+
+    len_sectors = len(Verticals)
+    index = 0
+
+    while len_sectors>0:
+
+        a = Verticals[index]
+        b = Invested_Amounts[index]
+
+        for k,v in Vertical_Dict.items():
+            if k == a:
+                
+                Vertical_Dict[a] += b
+            
+        len_sectors -=1
+        index +=1
+
+    print(Vertical_Dict)
+    Verticals_Updated = []
+    Invested_Amounts_Updated = []
+
+    for k,v in Vertical_Dict.items():
+        Verticals_Updated.append(k)
+        Invested_Amounts_Updated.append(v)  
+
+
+    len_sectors = len(Verticals_Updated)
+    index = 0
+    Total = sum(Invested_Amounts_Updated)
+    Dictionary_List = []
+    while len_sectors >0:
+
+
+        a = Verticals_Updated[index]
+        y = find_SEC_branch(a, Industry_Labels, model)
+        b = Invested_Amounts_Updated[index]
+        Percentage = b / Total
+
+
+        updated_list = []
+        for k,v in y.items():
+            c = v*Percentage
+            updated_list.append(c)
+        updated_dict = dict(zip(Industry_Labels, updated_list))
+        Dictionary_List.append(updated_dict)
+        print("One Down, many to go")
+
+        index +=1
+        len_sectors -=1
+
+
+
+    SEC_Tallies = [0] * len(Industry_Labels)
+    SEC_Dict = dict(zip(Industry_Labels, SEC_Tallies))
+
+    for x in Dictionary_List:
+        for k,v in x.items():
+            for a, b in SEC_Dict.items():
+                if a == k:
+                    SEC_Dict[a]+=v
+
+    Final_Sec_Dict = {}
+    values = []
+
+    for v in SEC_Dict.values():
+        values.append(v)
+    summed = sum(values)
+    for k,v in SEC_Dict.items():
+        a = v / summed 
+        Final_Sec_Dict[k]=a
+
+    return Final_Sec_Dict
+print(Classify_Investor_Updated(Yearly, Industry_Codes, model))
+
+
+
+# print(Organize_Sec_Dict(Yearly))
+
+
 
 # print(Classify_Investor(Berkshire, Industry_Codes, model))
 
