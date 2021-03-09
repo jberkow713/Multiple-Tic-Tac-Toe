@@ -499,6 +499,7 @@ def Advanced_cosine_sentence(v1,v2, model):
         return dot(v1, v2) / (norm(v1) * norm(v2))
     else:
         return 0.0
+      
 
 A = "engages in retail and wholesale business. The Company offers an assortment of merchandise and services at everyday low prices. ... The Walmart International segment manages supercenters, supermarkets, hypermarkets, warehouse clubs, and cash & carry outside of the United States."
 # B = "designs, manufactures and markets mobile communication and media devices, personal computers and portable digital music players. The Company sells a range of related software, services, accessories, networking solutions, and third-party digital content and applications"
@@ -834,6 +835,17 @@ def Advanced_cosine_sentence_2(v1,v2, model):
         return dot(v1, v2) / (norm(v1) * norm(v2))
     else:
         return 0.0
+
+def Cosine_Similarity(v1, v2, model):
+    v1 = v1
+    v2 = Advanced_Avg_sentence_vec_desc_2(v2, model)
+
+    if norm(v1) > 0 and norm(v2) > 0:
+        return dot(v1, v2) / (norm(v1) * norm(v2))
+    else:
+        return 0.0
+
+
 import time
 def find_SEC_branch_2(company_descript, industry_list, model):
     '''
@@ -886,40 +898,7 @@ for k,v in Patents.items():
     Patent_Labels1.append(v)
 
 
-#model is running on topic with these words, evaluating it relative to 
 
-Patent_Labels = []
-with open('Patents_Dict2.json') as f:
-  Patents  = json.load(f)
-
-for k,v in Patents.items():
-    Patent_Labels.append(v)
-
-words_to_remove = ['in', 'or', 'of', 'for', 'by', 'e.g.', 'a', 'to', 'the', 'and', 'eg']
-Amended_Patent_Labels = []
-
-for x in Patent_Labels:
-    x = x.split(' ')
-
-    for a in x:
-        if "-" in a:
-            b = a.split('-')
-            x.remove(a)
-            for c in b:
-                x.append(c)
-    x = ' '.join(x)            
-
-    inpt = tokenize(x)
-    for y in list(inpt):
-        y = y.lower()
-        if y in words_to_remove or y.isalpha==False:
-            inpt.remove(y)
-        
-    X = ' '.join(inpt)           
-    Amended_Patent_Labels.append(X)        
-# print(len(Patent_Labels))
-# print(len(Amended_Patent_Labels))
-# print(Amended_Patent_Labels[-2:-1])
 
 list_of_abstracts = ['A pesticide used to destroy weeds','A physical noise source is used to develop a first sequence of random bits.',\
      'An RNG circuit is connected to the parallel port of a computer. The circuit includes a flat source of white noise and a CMOS amplifier circuit compensated in the high frequency range.']
@@ -941,7 +920,7 @@ def Cluster_Labels(Label_List, model):
     
     length = len(list_of_vectors)
     clusters = int(math.floor(math.sqrt(length)))
-    print(clusters)
+    # print(clusters)
 
     kmeans = KMeans(n_clusters=clusters, random_state=0).fit(nparray)
     categorized_list = kmeans.labels_
@@ -1016,18 +995,6 @@ def find_possible_label_words(Cluster_Value, Cluster_Dictionary):
     Possible_Label_Words = dict(zip(keys, values))        
     return Possible_Label_Words
 
-
-
-#Now we want all possible combinations of each clusters words as a key, from 1-5 words long,  want an average 300d vector representation
-#as a value, this will give us an initial possible list of labels to be used on potential future clusters,
-#
-#Next, we want to cluster a given set of abstracts, and we want to then find which of the combinations of words is closest related to the
-#average vector representation of the cluster that is created
-
-#Finally, take the list of labels you have created, and dependeing on which cluster a label fell into, run that label against ALL 
-# newly created labels within that cluster...do the same for all labels within the cluster, run them all against all new labels,
-# Find which label, 1-5 words, has the highest average cosine similarity among the actual labels of the cluster, 
-# And THIS will be the new representation of that cluster, in terms of a label
 
 def tokenize_input(LIST):
     words_to_remove = ['in', 'or', 'of', 'for', 'by', 'e.g.', 'a', 'to', 'the', 'and', 'eg', 'an', 'is', 'not']
@@ -1117,8 +1084,8 @@ def put_words_in_list(Dictionary):
 from itertools import permutations 
 from itertools import combinations
 
-with open('List_of_Clustered_Words.json') as f:
-    Vector_Dictionary = json.load(f)
+# with open('List_of_Clustered_Words.json') as f:
+#     Vector_Dictionary = json.load(f)
 
 # Cluster_Count_Dict = find_words_by_cluster(Vector_Dictionary)   
 # print(Cluster_Count_Dict)
@@ -1187,51 +1154,6 @@ def create_possible_labels(Cluster_Dictionary):
     Master_Dict = dict(zip(Master_List, Master_List_Big))    
 
     return Master_Dict
-
-
-
-
-# Giant_Dict = create_possible_labels(Vector_Dictionary)
-# # # # print(Giant_Dict['1'])
-# # # # Dict = dict(zip(Giant_Dict[0][0], Giant_Dict[1]))
-# # # # # print(Giant_Dict[0][0],Giant_Dict[1], Giant_Dict[2])
-# # # # print(Dict)
-# with open('Possible_Labels.json', 'w') as fp:
-#     json.dump(Giant_Dict, fp)
-
-with open('Possible_Labels.json') as f:
-    Label_Dictionary = json.load(f)
-
-keys =[]
-for k,v in Label_Dictionary.items():
-    if k not in keys:
-        keys.append(k)
-lengths = []
-for k,v in Label_Dictionary.items():
-    for x in keys:
-        if x == k:
-            lengths.append(len(v))
-print(lengths)
-print(Label_Dictionary['0'])
-
-
-
-
-# print(Label_Dictionary['20'])                   
-
-#We now have dictionary with all possible combinations, 2 word combinations, of possible labels
-#Need to generate all possible labels for a given cluster, compare each labels cosine similarity to all labels
-# that fell into that cluster, return the label with the lowest average distance for that cluster
-#So need to find the average point for all given labels in that cluster
-
-
-# A = Cluster_Labels(Amended_Patent_Labels, model)
-# print(A)
-# with open('Labels_by_Cluster.json', 'w') as fp:
-#     json.dump(A, fp)
-with open('Labels_by_Cluster.json') as f:
-    Labels_by_Cluster = json.load(f)
-
 def find_max_cluster_number(Cluster_Dictionary):
 
     Clusters = []
@@ -1268,61 +1190,170 @@ def find_avg_vectors_by_cluster(Cluster_Dictionary, model):
         Avg_Vector_List.append(A)
     
     return Avg_Vector_List
-                 
-# print(find_avg_vectors_by_cluster(Labels_by_Cluster, model))
-'''
 
-Step 1)
-Get a list of Labels:
-In this case, the list of labels is called Amended_Patent_Labels 
+def find_length_of_clustered_labels(Labeled_Dictionary):
+
+    keys =[]
+    for k,v in Labeled_Dictionary.items():
+        if k not in keys:
+            keys.append(k)
+    lengths = []
+    for k,v in Labeled_Dictionary.items():
+        for x in keys:
+            if x == k:
+                lengths.append(len(v))
+    return lengths    
+
+'''
+#1)
+
+Patent_Labels = []
+with open('Patents_Dict2.json') as f:
+  Patents  = json.load(f)
+
+for k,v in Patents.items():
+    Patent_Labels.append(v)
+#open file and save the labels to a list
+     
+#2)
+
+Amended_Patent_Labels = tokenize_input(Patent_Labels)
+# Create an updated and cleaned list of labels 
+#3) 
 
 A = Cluster_Labels(Amended_Patent_Labels, model)
-We then dump A into a dictionary like so: 
+#Map each label to a particular cluster, based on average vector position of that label
+
+
+
 with open('Labels_by_Cluster.json', 'w') as fp:
     json.dump(A, fp)
+#Save mapping to dictionary    
+with open('Labels_by_Cluster.json') as f:
+    Labels_by_Cluster = json.load(f)    
 
-#Then we use B = find_avg_vectors_by_cluster(Labels_by_Cluster, model)
-to find the average vector, for a given cluster of labels
+B = find_avg_vectors_by_cluster(Labels_by_Cluster, model)       
+# We now find the average vector position of each cluster by opening saved dictionary and mapping average
+#vector position of each cluster
+print(B)
 
-Step 2)
+#4)
 
-C = Words_by_Cluster(Amended_Patent_Labels, model)
-This will find significant words and arrange them by cluster, and store this file in
-'List_of_Clusters_Words.json' 
 
-We then access this dictionary by opening the file, and saving this as Vector Dictionary:
+
+Clustered = Words_by_Cluster(Amended_Patent_Labels, model)
+#Now we find the individual words that make up each cluster, save them to 'list of clustered words'
+
+#5)
 
 with open('List_of_Clustered_Words.json') as f:
     Vector_Dictionary = json.load(f)
-    
-Cluster_Count_Dict = find_words_by_cluster(Vector_Dictionary)
-This will show us how many signficant words make up each Cluster of Labels which have been boiled down to 
-clusters of words
+#open this file, save to Variable    
 
-3)
+Giant_Dict = create_possible_labels(Vector_Dictionary)
+# Create a list of all possible labels for the dictionary of clustered words
 
-Now, we take this Vector Dictionary, and run: 
-
-D = create_possible_labels(Vector_Dictionary)
-
-We store this file however we see fit, in this case 
 with open('Possible_Labels.json', 'w') as fp:
-    json.dump(D, fp)
+    json.dump(Giant_Dict, fp)
+#Save this to file
+    
+#6)
 
-D represents a Dictionary with ALL possible combinations of words for a given cluster, ORDERED
+with open('Possible_Labels.json') as f:
+    Label_Dictionary = json.load(f)
+#Open file of all possible labels for the words from the tokenized list of labels    
 
-4)
-
-Now that we have an ordered dictionary of possible labels by cluster, and an average vector by cluster,
-We want to find which one of the labels in this ordered dictionary of possible labels, for a given cluster, 
-has the closest cosine similarity to that cluster's average vector....
-
-Once we find this, we can find the best label to represent that cluster 
-
+lengths = find_length_of_clustered_labels(Label_Dictionary)
+print(lengths)
+#Finding the lengths of each one of the clusters of labeled words, in the possible labels dictionary
+#Lengths represents a list, ordered by cluster, of the total amount of labels in that cluster
+#We want to find out which one of the newly created labels, in each cluster, 
+# is closest to the average vector of the labels from the original tokenized list, which made up the clusters
 
 
 
+#7)
 '''
+
+Patent_Labels = []
+with open('Patents_Dict2.json') as f:
+  Patents  = json.load(f)
+
+for k,v in Patents.items():
+    Patent_Labels.append(v)
+#open file and save the labels to a list
+     
+#2)
+
+Amended_Patent_Labels = tokenize_input(Patent_Labels)
+# Create an updated and cleaned list of labels 
+#3) 
+
+A = Cluster_Labels(Amended_Patent_Labels, model)
+#Map each label to a particular cluster, based on average vector position of that label
+
+
+
+with open('Labels_by_Cluster.json', 'w') as fp:
+    json.dump(A, fp)
+#Save mapping to dictionary    
+with open('Labels_by_Cluster.json') as f:
+    Labels_by_Cluster = json.load(f)    
+
+B = find_avg_vectors_by_cluster(Labels_by_Cluster, model)       
+# We now find the average vector position of each cluster by opening saved dictionary and mapping average
+#vector position of each cluster
+# print(B[0])
+
+with open('Possible_Labels.json') as f:
+    Label_Dictionary = json.load(f)
+
+Cosine_Similarities = []
+Labels = []
+#This list represents each one of the new labels, in a given cluster, and its similarity to the average
+# of the labels that inititally made up that cluster
+for k,v in Label_Dictionary.items():
+    if k == '10':
+        for x in v:
+            cosine_sim = Cosine_Similarity(B[10], x, model)
+            print(cosine_sim)
+            Cosine_Similarities.append(cosine_sim)
+            Labels.append(x)
+Cosine_Dict = dict(zip(Labels, Cosine_Similarities))
+Max = max(Cosine_Dict, key=Cosine_Dict.get)
+print(Max)
+#This label represents a generic label, with closest cosine similarity, to all the labels inside of the
+# Original list of clustered labels             
+
+
+
+
+
+
+
+# with open('Possible_Labels.json') as f:
+#     Label_Dictionary = json.load(f)
+
+# for k,v in Label_Dictionary.items():
+#     if k == '0':
+#         A = Cluster_Labels(v, model)
+#         print(A)
+#         B = find_avg_vectors_by_cluster(A, model)     
+#         print(B)
+
+
+       
+
+
+
+
+
+
+
+
+
+
+
   
 
 
@@ -1761,7 +1792,7 @@ def Classify_Investor_Updated(SEC_DICT, Industry_Labels, model):
         Final_Sec_Dict[k]=a
 
     return Final_Sec_Dict
-print(Classify_Investor_Updated(Yearly, Industry_Codes, model))
+# print(Classify_Investor_Updated(Yearly, Industry_Codes, model))
 
 
 
