@@ -576,7 +576,8 @@ def find_SEC_branch(company_descript, industry_list, model):
     
     x = dict(zip(industry_list, Similarities))
     Similarities = sorted(Similarities, reverse=True)
-    Top5 = Similarities[0:6]
+    Top5 = Similarities[0:2]
+    
     
     # Top_Choice = max(x, key=x.get)
     # return Top_Choice
@@ -619,7 +620,18 @@ Industry_Codes = ["Agriculture, Forestry, Fishing,  Hunting", "Mining, Quarrying
         "Investment ", "Finance, Insurance", "Housing, Apartments", "Rental, Leasing",\
             "Health Care", "Arts, Entertainment", "Restaurants, Food",\
                     "Communications, Technology"]
- 
+
+
+
+#TODO divide words up, based on their individual meaning, into groups, 
+
+
+
+
+
+
+
+print(find_SEC_branch(A, Industry_Codes, model)) 
 # AD = "We assessed the oral health of the Pine Ridge Oglala Lakota people, described a new oral health assessment tool for Indigenous people, and suggested ways to improve Native oral health."
 # AE = 'a technology company. The Company develops, licenses, and supports a range of software products, services and devices.'
 # AF = 's an aerospace company, which engages in the manufacture of commercial jetliners and defense, space and security systems. It operates through the following segments: Commercial Airplanes; Defense, Space and Security; Global Services; and Boeing Capital.'
@@ -938,6 +950,23 @@ def Cluster_Labels(Label_List, model):
     Categorized_Dict = dict(zip(Label_List, string_list))
     return Categorized_Dict
 
+def Cluster_Labels_From_List(List, Referral_List, clusters, random_state,  model):
+    
+
+    nparray = np.array(List)    
+    
+    # print(clusters)
+
+    kmeans = KMeans(n_clusters=clusters, random_state=random_state).fit(nparray)
+    categorized_list = kmeans.labels_
+    string_list = []
+    for x in categorized_list:
+        y = str(x)
+        string_list.append(y)
+
+    Categorized_Dict = dict(zip(Referral_List, string_list))
+    return Categorized_Dict, categorized_list    
+
 def Cluster_Label_with_Abstract(Label_list, List_of_Abstracts, model):
 
     Combined_List = Label_list + List_of_Abstracts
@@ -1057,11 +1086,7 @@ def tokenize_input_2(LIST):
                 if len(v)>2:
                     New_String+= k + " "
         New_List.append(New_String)
-
-
-
-
-        
+    
 
 
 
@@ -1277,93 +1302,6 @@ def find_best_label_by_cluster(Average_Vector_List, Labeled_Dictionary, cluster_
     Max = max(Cosine_Dict, key=Cosine_Dict.get)
     return Max
 
-
-
-
-
-
-'''
-#1)
-
-Patent_Labels = []
-with open('Patents_Dict2.json') as f:
-  Patents  = json.load(f)
-
-for k,v in Patents.items():
-    Patent_Labels.append(v)
-#open file and save the labels to a list
-     
-#2)
-
-Amended_Patent_Labels = tokenize_input(Patent_Labels)
-# Create an updated and cleaned list of labels 
-#3) 
-
-A = Cluster_Labels(Amended_Patent_Labels, model)
-#Map each label to a particular cluster, based on average vector position of that label
-
-
-
-with open('Labels_by_Cluster.json', 'w') as fp:
-    json.dump(A, fp)
-#Save mapping to dictionary    
-with open('Labels_by_Cluster.json') as f:
-    Labels_by_Cluster = json.load(f)    
-
-B = find_avg_vectors_by_cluster(Labels_by_Cluster, model)       
-# We now find the average vector position of each cluster by opening saved dictionary and mapping average
-#vector position of each cluster
-print(B)
-
-#4)
-
-
-
-Clustered = Words_by_Cluster(Amended_Patent_Labels, model)
-#Now we find the individual words that make up each cluster, save them to 'list of clustered words'
-
-#5)
-
-with open('List_of_Clustered_Words.json') as f:
-    Vector_Dictionary = json.load(f)
-#open this file, save to Variable    
-
-Giant_Dict = create_possible_labels(Vector_Dictionary)
-# Create a list of all possible labels for the dictionary of clustered words
-
-with open('Possible_Labels.json', 'w') as fp:
-    json.dump(Giant_Dict, fp)
-#Save this to file
-    
-#6)
-
-with open('Possible_Labels.json') as f:
-    Label_Dictionary = json.load(f)
-#Open file of all possible labels for the words from the tokenized list of labels    
-
-lengths = find_length_of_clustered_labels(Label_Dictionary)
-print(lengths)
-#Finding the lengths of each one of the clusters of labeled words, in the possible labels dictionary
-#Lengths represents a list, ordered by cluster, of the total amount of labels in that cluster
-#We want to find out which one of the newly created labels, in each cluster, 
-# is closest to the average vector of the labels from the original tokenized list, which made up the clusters
-
-
-
-#7)
-'''
-
-# with open('List_of_Clustered_Words.json') as f:
-#     Vector_Dictionary = json.load(f)
-  
-
-# Giant_Dict = create_possible_labels(Vector_Dictionary)
-# print(Giant_Dict)
-
-
-
-
-
 import time
 
 Patent_Labels = []
@@ -1374,7 +1312,7 @@ for k,v in Patents.items():
     Patent_Labels.append(v)
 #open file and save the labels to a list
      
-#2)
+
 def Create_Labels(Label_List, model):
 
     Amended_Patent_Labels = tokenize_input_2(Label_List)
@@ -1418,12 +1356,12 @@ def Create_Labels(Label_List, model):
 
     end = time.time()
     print(end - start)
-    print(cluster_label_dict)
+    # print(cluster_label_dict)
     with open('New_Label_List.json', 'w') as fp:
         json.dump(cluster_label_dict,  fp)
     return cluster_label_dict     
 
-print(Create_Labels(Patent_Labels, model))
+# print(Create_Labels(Patent_Labels, model))
 
 #For cluster with less than 2000 labels, we return a dictionary of the cluster, and the label
 # Otherwise, we need to recluster the labels in lists >2000, find the avg vector position of each cluster,
@@ -1452,63 +1390,6 @@ Cosine_Dict = dict(zip(Labels, Cosine_Similarities))
 Max = max(Cosine_Dict, key=Cosine_Dict.get)
 print(Max)
 '''
-#This label represents a generic label, with closest cosine similarity, to all the labels inside of the
-# Original list of clustered labels             
-
-
-
-
-
-
-
-# with open('Possible_Labels.json') as f:
-#     Label_Dictionary = json.load(f)
-
-# for k,v in Label_Dictionary.items():
-#     if k == '0':
-#         A = Cluster_Labels(v, model)
-#         print(A)
-#         B = find_avg_vectors_by_cluster(A, model)     
-#         print(B)
-
-
-       
-# nlp = spacy.load("en_core_web_sm")
-
-# inpt = 'Hello my name is Peter, such that I am a tiger means'
-# inpt = tokenize(inpt)
-# inpt = ' '.join(word for word in inpt)
-# print(inpt) 
-
-# doc = nlp(inpt)
-# x = [token.pos_ for token in doc]
-# text = inpt.split()
-# # text = input_str.split()
-
-# Text_Dict = dict(zip(text, x))
-# print(Text_Dict)
-# Acceptable_POS = ['ADJ', 'ADV', 'NOUN', 'PROPN', 'VERB', 'PRON' ] 
-# Acceptable_POS = ['NOUN', 'PRON', 'VERB', 'ADJ' ]
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
 
 
 def Classify_Researcher(List_of_Patents, Patent_Labels, Industry_Labels, model):
@@ -1516,12 +1397,13 @@ def Classify_Researcher(List_of_Patents, Patent_Labels, Industry_Labels, model):
     input: Patent list of abstracts, in the form of strings, List of Patent Labels, List of Industry Labels, and a model
     output: Dictionary: {SEC_Field: Score, SEC_Field: Score, etc...}
     '''
-    print(Industry_Labels)
-    Amended_Patent_List = tokenize_input(List_of_Patents)
-    print(Amended_Patent_List)
-    Amended_Label_List = tokenize_input(Patent_Labels) 
+    # print(Industry_Labels)
+    Amended_Patent_List = tokenize_input_2(List_of_Patents)
+    # print(Amended_Patent_List)
+    Amended_Label_List = tokenize_input_2(Patent_Labels) 
     
     Categorized_Dictionary = Cluster_Label_with_Abstract(Amended_Label_List, Amended_Patent_List, model)
+    print(Categorized_Dictionary)
     
     #We have now clustered each abstract with all of the patent labels...we can now operate on this
     Classification_List = []
@@ -1548,7 +1430,23 @@ def Classify_Researcher(List_of_Patents, Patent_Labels, Industry_Labels, model):
         
         x = Amended_Patent_List[index]
 
+        #Need to change this 
+        '''
+        updated_values = []
+        updated_keys  = []
+        for k,v in y.items():
+            c = v*Percentage
+            updated_values.append(c)
+            updated_keys.append(k)
+        print(updated_values)    
+
+        updated_dict = dict(zip(updated_keys, updated_values))
+        print(updated_dict)
+        Dictionary_List.append(updated_dict)
+        '''
+
         outcome= find_SEC_branch_2(x, relevant_labels, model)
+        print(outcome[0])
         SEC_Conversion_Dict = find_SEC_branch(outcome[0], Industry_Labels, model)
         Classification_List2.append(SEC_Conversion_Dict)
         
@@ -1576,11 +1474,12 @@ def Classify_Researcher(List_of_Patents, Patent_Labels, Industry_Labels, model):
     for k,v in SEC_Dict.items():
         a = v / summed 
         Final_Sec_Dict[k]=a
+    print(Final_Sec_Dict) 
+    return Final_Sec_Dict
+    
 
-    return Final_Sec_Dict 
-
-patent_list = ['mug for drinking stuff', 'gardenhose spigot']
-patent_labels = ['kitchenwares', 'gardening']
+# patent_list = ['mug for drinking stuff', 'gardenhose spigot']
+# patent_labels = ['kitchenwares', 'gardening']
 # # print(Cluster_Label_with_Abstract(patent_labels, patent_list, model))
 
 
@@ -1590,9 +1489,9 @@ Industry_Codes_New = ["Agriculture - Forestry - Fishing -  Hunting", "Mining - Q
         "Investment ", "Finance - Insurance", "Housing - Apartments", "Rental - Leasing",\
             "Health Care", "Arts - Entertainment", "Restaurants - Food",\
                     "Communications - Technology"]  
-a = Patent_Labels1
-b = tokenize_input(a)
-c = tokenize_input_2(a)
+# a = Patent_Labels1
+# b = tokenize_input(a)
+# c = tokenize_input_2(a)
 
 # d = list(enumerate(b))
 # e = list(enumerate(c))
@@ -1606,12 +1505,6 @@ c = tokenize_input_2(a)
 # a = Patent_Labels1
 # b = tokenize_input(a)
 # c = tokenize_input(b)
-# if b == c:
-#     print('True')
-
-
-
-
 
 
 def find_SEC_branch_3(Single_Label, Patent_Label_List, model):
@@ -1633,14 +1526,9 @@ def find_SEC_branch_3(Single_Label, Patent_Label_List, model):
         Similarities.append(y)
 
     Score_Dict = dict(zip(Patent_Label_List, Similarities))
-    # Top2 = Similarities[0:3]
-    # Top2_Scores = []
-    Related_Keys = []
-
-    for k,v in Score_Dict.items():
-        if v>=.70 and k!=Single_Label:
-            Related_Keys.append(k)
-    return Single_Label, Related_Keys
+    
+        
+    return max(Score_Dict, key=Score_Dict.get)
 
 
 from sklearn.cluster import KMeans
@@ -1887,74 +1775,36 @@ INVESTED_AMOUNTS = Create_Verticals_and_Amounts(Yearly)[1]
 
 def Classify_Investor_Updated(Verticals, Invested_Amounts, Industry_Labels, model):
 
-    # Verticals = []
-    # Invested_Amounts = []
-    # for k,v in SEC_DICT.items():
-    #     if k == 'yearly_holdings':
-    #         for k,v in v.items():
-    #             for k,v in v.items():
-    #                 if k == 'verticals':
-    #                     for k,v in v.items():
-    #                         Verticals.append(k)
-    #                         for k,v in v.items():
-    #                             if k == 'totalHoldingsInVertical(dollars)':
-    #                                 Invested_Amounts.append(v)
-    # print(Verticals, len(Verticals),  Invested_Amounts, len(Invested_Amounts))                                
-    
 
-    Vertical_Set = set()
-    for x in Verticals:
-        Vertical_Set.add(x)
-    print(len(Vertical_Set))
-    print(Vertical_Set)
-    Vertical_Tallies = [0] * len(Vertical_Set)
-    Vertical_Dict = dict(zip(Vertical_Set, Vertical_Tallies))
 
     len_sectors = len(Verticals)
     index = 0
-
-    while len_sectors>0:
-
-        a = Verticals[index]
-        b = Invested_Amounts[index]
-
-        for k,v in Vertical_Dict.items():
-            if k == a:
-                
-                Vertical_Dict[a] += b
-            
-        len_sectors -=1
-        index +=1
-
-    print(Vertical_Dict)
-    Verticals_Updated = []
-    Invested_Amounts_Updated = []
-
-    for k,v in Vertical_Dict.items():
-        Verticals_Updated.append(k)
-        Invested_Amounts_Updated.append(v)  
-
-
-    len_sectors = len(Verticals_Updated)
-    index = 0
-    Total = sum(Invested_Amounts_Updated)
+    Total = sum(Invested_Amounts)
     Dictionary_List = []
     while len_sectors >0:
 
 
-        a = Verticals_Updated[index]
+        a = Verticals[index]
         y = find_SEC_branch(a, Industry_Labels, model)
-        b = Invested_Amounts_Updated[index]
+        # print(y)
+        b = Invested_Amounts[index]
+        print(b)
+        print(Total)
         Percentage = b / Total
+        
 
-
-        updated_list = []
+        updated_values = []
+        updated_keys  = []
         for k,v in y.items():
             c = v*Percentage
-            updated_list.append(c)
-        updated_dict = dict(zip(Industry_Labels, updated_list))
+            updated_values.append(c)
+            updated_keys.append(k)
+        print(updated_values)    
+
+        updated_dict = dict(zip(updated_keys, updated_values))
+        print(updated_dict)
         Dictionary_List.append(updated_dict)
-        print("One Down, many to go")
+        print(len_sectors)
 
         index +=1
         len_sectors -=1
@@ -1990,10 +1840,340 @@ def Classify_Investor_Updated(Verticals, Invested_Amounts, Industry_Labels, mode
 
 
 # print(Classify_Investor(Berkshire, Industry_Codes, model))
+'''
+Create function to parse Researcher.json
+Return a list of each Researcher corresponding to a list with 2 abstracts and 8 titles 
+Run Classify Researcher on each one
+Cluster Results
+
+'''
+    
+# with open('researchers_filtered.json') as f:
+#     Abstract_Dictionary = json.load(f)
+# Researchers = []
+# Big_List = []
+# Abstract_List = []
+# #Abstract list is list of each researchers list of abstracts
+
+# for item in Abstract_Dictionary:
+
+#     for k,v in item.items():
+#         if k == 'dict':
+            
+#             for  k,v in v.items():
+#                 if k == 'name':
+#                     Researchers.append(v)
+                
+#                 if k == 'publications':
+#                     Abstracts = []
+#                     Titles = []
+#                     count = 0
+#                     for dictionary in v:
+#                         for k,v in dictionary.items():
+#                             if k == 'bib':
+                                
+#                                 for k,v in v.items():
+                                                                        
+#                                     if k == 'abstract':
+#                                         Abstracts.append(v)
+#                                     if count >=50:
+                                            
+                                            
+#                                             break     
+#                                     elif k == 'title':
+#                                         Titles.append(v)
+#                                         count +=1
+                                        
+
+                                        
+                                        
+                                
+                                        
+
+#                     Abstract_List.append(Abstracts)
+#                     Added_List = Titles+ Abstracts
+#                     Big_List.append(Added_List)
+# Big_List_Condensed = []
+# for x in Big_List:
+#     b = ' '.join(x)
+#     Big_List_Condensed.append(b)
+    
+# print(Big_List_Condensed[0])
+# print(len(Big_List_Condensed))    
+# print(Abstract_List)
+# # print(len(Abstract_List))
 
 
+
+
+
+# Classifications = []
+# Researchers_Dict = dict(zip(Researchers, Big_List_Condensed))
+
+
+# Classifications = []
+# for k,v in Researchers_Dict.items():
+#     abstract = []
+#     abstract.append(v)
+#     classification = Classify_Researcher(abstract, Patent_Labels, Industry_Codes, model)
+#     Classifications.append(classification)
+
+
+# Researcher_Classification_27_2 = dict(zip(Researchers, Classifications))
+# with open('Researcher_Classification_27_2.json', 'w') as fp:
+#         json.dump(Researcher_Classification_27_2,  fp)
+
+
+
+
+
+
+
+
+# # # print(Researchers)
+# # print(len(Abstract_List))
+
+# Classifications = []
+# for x in Abstract_List:
+#     b = ' '.join(x)
+#     classification = find_SEC_branch_3(b, Fields, model)
+#     Classifications.append(classification)
+#     print(f'{classification}, one down')
+
+# Researcher_Classifier = dict(zip(Researchers, Classifications))
+# with open('Researcher_Classification_27_Fields.json', 'w') as fp:
+#         json.dump(Researcher_Classifier,  fp)
+# print(Researcher_Classifier)        
+
+
+
+
+
+   
+
+
+
+
+
+# with open('New_Label_List.json') as f:
+#     Experimental_Labels = json.load(f)
+# Experimental_Labels_List = []
+# for k,v in Experimental_Labels.items():
+#     Experimental_Labels_List.append(v)
+
+# print(Researchers)
+
+
+
+# Researcher_Matchup_Dict = dict(zip(Researchers, researchers))
+# print(Researcher_Matchup_Dict)
+
+
+# Researchers_Dict = dict(zip(Researchers, Big_List))
+# Classifications = []
+# for k,v in Researchers_Dict.items():
+#     classification = Classify_Researcher(v, Patent_Labels, Experimental_Labels_List, model)
+#     Classifications.append(classification)
+
+# Researcher_Classifications = dict(zip(Researchers, Classifications))
+# with open('Researcher_Classification_27.json', 'w') as fp:
+#         json.dump(Researcher_Classifications,  fp)
+
+'''
+
+with open('Researcher_Classification_27.json') as f:
+    Label_Dictionary = json.load(f)
+
+Referal_LIST = []
+
+for k,v in Label_Dictionary.items():
+    Referal_LIST.append(k)
 
     
+big_list =[]   
+count = 0
+length  = len(Referal_LIST)
+while length> 0:
+    individ = []
+    for k,v in Label_Dictionary.items():
+        if k == Referal_LIST[count]:
+            for k,v in v.items():
+                            
+                individ.append(v)
+
+    big_list.append(individ)
+    count +=1
+    length -=1
+           
+print(Cluster_Labels_From_List(big_list, Referal_LIST, 4, 0,  model))
+
+print(17/27)
+        
+        
+    
+# print(Referal_LIST, Vector_LIST)        
+
+'''
+
+
+
+# with open('Researcher_Classification_27_2.json') as f:
+#     Label_Dictionary = json.load(f)
+
+# Referal_LIST = []
+
+# for k,v in Label_Dictionary.items():
+#     Referal_LIST.append(k)
+
+    
+# big_list =[]   
+# count = 0
+# length  = len(Referal_LIST)
+# while length> 0:
+#     individ = []
+#     for k,v in Label_Dictionary.items():
+#         if k == Referal_LIST[count]:
+#             for k,v in v.items():
+                            
+#                 individ.append(v)
+
+#     big_list.append(individ)
+#     count +=1
+#     length -=1
+           
+# print(Cluster_Labels_From_List(big_list, Referal_LIST, 2, 0,  model))
+
+'''
+df = pd.read_csv("sec_portfolios.csv")
+col_one_list = df['Investor_CIK'].tolist()
+CIK_LIST = []
+CIK_set = set()
+for x in col_one_list:
+    CIK_set.add(x)
+Vertical_IDs = []
+Investment_Amounts = []
+
+for x in CIK_set:
+    CIK_LIST.append(x)
+print(CIK_LIST)    
+
+
+for x in CIK_LIST:
+    A = df.loc[df['Investor_CIK']==x]
+        
+    columns = A[["Beneficiary_Vertical_ID","Investment_Amount"]]
+    Vertical_IDS = columns["Beneficiary_Vertical_ID"].tolist()
+    Investments = columns["Investment_Amount"].tolist()
+    Vertical_IDs.append(Vertical_IDS)
+    Investment_Amounts.append(Investments)
+
+a = len(Vertical_IDs)
+index = 0
+vertical_dict_list = []
+while a >0:
+    b = Vertical_IDs[index]
+    c = Investment_Amounts[index]
+    d = dict(zip(b, c))
+    vertical_dict_list.append(d)
+    a -=1
+    index +=1
+
+
+CIK_DICT = dict(zip(CIK_LIST, vertical_dict_list))
+with open('SEC_CIK_Keys_Investors.json', 'w') as fp:
+    json.dump(CIK_DICT,  fp)
+'''
+
+# with open('SEC_CIK_Keys_Investors.json') as f:
+#     Investor_Info = json.load(f)
+
+# usable_keys_list = []
+# for k,v in Investor_Info.items():
+#     for v in v.values():
+#         if v != 'unavailable':
+#             if k not in usable_keys_list:
+#                 usable_keys_list.append(k)
+
+
+# CIK_LIST_INVESTOR_CLASSIFICATION = []
+# verticals = []
+# invested_amounts = []
+
+
+# for CIK_Number in usable_keys_list:
+    
+    
+#     investor_dict = Investor_Info[CIK_Number]
+    
+#     for k,v in investor_dict.items():
+        
+#         verticals.append(k)
+        
+#         invested_amounts.append(int(v))
+        
+#     investor_stuff = Classify_Investor_Updated(verticals, invested_amounts, Industry_Codes, model)
+#     print(investor_stuff)
+#     # Individ_CIK_Dict = dict(zip(CIK_Number, investor_stuff))
+#     CIK_LIST_INVESTOR_CLASSIFICATION.append(investor_stuff)
+#     print('ONE CIK DOWN, Many to go!')
+#     print(len(CIK_LIST_INVESTOR_CLASSIFICATION))
+#     verticals.clear()
+#     invested_amounts.clear()
+    
+# Final_Dictionary = dict(zip(usable_keys_list, CIK_LIST_INVESTOR_CLASSIFICATION))
+# with open('Investor_Classification_2.json', 'w') as fp:
+#     json.dump(Final_Dictionary, fp)
+
+'''
+
+def Cosine_Similarity_5(v1, v2):
+    
+    if norm(v1) > 0 and norm(v2) > 0:
+        return dot(v1, v2) / (norm(v1) * norm(v2))
+    else:
+        return 0.0
+
+
+
+with open('CIK_Investors_Classification.json') as f:
+    Investor_Dictionary = json.load(f)
+with open('Researcher_Classification_27_2.json') as f:
+    Researcher_Info = json.load(f)
+
+Researcher_Vectors = []
+Researchers = []
+for k,v in Researcher_Info.items():
+    Researchers.append(k)
+    Individ_Researcher = []
+    for values in v.values():
+        Individ_Researcher.append(values)
+    Researcher_Vectors.append(Individ_Researcher)
+Researcher_Positions = dict(zip(Researchers, Researcher_Vectors))
+# print(Researcher_Positions)
+
+
+Investor_Vectors = []
+Investors = []
+for k,v in Investor_Dictionary.items():
+    Investors.append(k)
+    Individ_Investor = []
+    for values in v.values():
+        Individ_Investor.append(values)
+    Investor_Vectors.append(Individ_Investor)
+Investor_Positions = dict(zip(Investors, Investor_Vectors))
+# print(Investor_Positions)
+# print(len(Investor_Positions))
+# print(len(Researcher_Positions))
+
+test1 = [0.19841684373865992, 0.17312331027463024, 0.1645804679908643, 0.1598398208990325, 0.15523338905150402, 0.14880616804530902, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+test2 = [0.0, 0.1802174227742251, 0.0, 0.16341950524767593, 0.16716154358841695, 0.0, 0.0, 0.0, 0.14711658457264581, 0.0, 0.0, 0.0, 0.16119348898935912, 0.0, 0.0, 0.18089145482767693]
+test3 = [0.19128012391608243, 0.18283390120724163, 0.16788274749932297, 0.15356416573137144, 0.1525882700173531, 0.15185079162862844, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+print(Cosine_Similarity_5(test1, test3))
+
+'''    
+
+     
+
 
 
 
