@@ -263,6 +263,7 @@ class Chatbot:
         self.model = model
         #list of words
         self.words = self.create_words(word_count)
+        self.current_cluster = None 
     def create_words(self, word_count):
         counter = 0
         with open("glove.42B.300d.vocab", 'r',encoding='cp850') as file:
@@ -280,9 +281,12 @@ class Chatbot:
         for k,v in Cluster_Dict.items():
             if v == str(cluster):
                 list_.append(k)
+        self.current_cluster = list_
         return list_
 
 chatty = Chatbot(1000)
-print(chatty.choose_cluster(1))
+chatty.choose_cluster(1)
+print(chatty.current_cluster)
+
 
 
