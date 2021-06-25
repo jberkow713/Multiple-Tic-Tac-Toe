@@ -86,8 +86,7 @@ def load_embeddings_binary(embeddings_path):
 
 model = load_embeddings_binary("glove.42B.300d")
 # with open('Embedding_Model.json', 'w') as fp:
-#     json.dump(model, fp)    
-
+#   json.dump(model, fp)    
 
 def get_w2v2(sentence, model):
     """
@@ -125,15 +124,13 @@ def get_w2v(sentence, model):
         for k, v in model.items():
             if k == word:
                 list_vec.append(v)
-    return list_vec
-    
+    return list_vec    
 
 def vec(word,model):
     #Gets vector for specific word, given specific model
     for k,v in model.items():
         if word == k:
-            return v
-      
+            return v      
 
 def cosine(v1, v2, model):
     #Compares distances between 2 words in terms of cosine similarity 
@@ -184,7 +181,6 @@ def Avg_sentence_vec(sentence, model):
     Avg_Vector =  np.average(Vectors, axis=0)
     return Avg_Vector 
 
-
 def cosine_sentence(v1,v2, model):
     '''
     Finds cosine similarity between 2 sentences
@@ -196,7 +192,6 @@ def cosine_sentence(v1,v2, model):
         return dot(v1, v2) / (norm(v1) * norm(v2))
     else:
         return 0.0
-
 
 def check_in_list(Word, List):
     
@@ -232,7 +227,6 @@ def Vec_for_Clustering(sentence, model):
     else:
         return np.zeros(300)
 
-
 def Cluster_Labels(List, model):
     '''
     Takes a list of words, clusters them based on their average vector
@@ -249,14 +243,6 @@ def Cluster_Labels(List, model):
     Categorized_Dict = dict(zip(List, string_list))
     return Categorized_Dict                
 
-
-# new_list_1 = []
-# Cluster_Dict = Cluster_Labels(list_1, model)
-# for k,v in Cluster_Dict.items():
-#     if v == '1':
-#         new_list_1.append(k)
-
-# print(new_list_1)
 
 class Chatbot:
     def __init__(self, word_count):
