@@ -250,28 +250,39 @@ def Cluster_Labels(List, model):
     return Categorized_Dict                
 
 
+# new_list_1 = []
+# Cluster_Dict = Cluster_Labels(list_1, model)
+# for k,v in Cluster_Dict.items():
+#     if v == '1':
+#         new_list_1.append(k)
 
-#Script to pull words from the vocab file
-counter = 0
-with open("glove.42B.300d.vocab", 'r',encoding='cp850') as log_file_fh:
-    words = []
-    for line in log_file_fh:
-        if counter == 1000:
-            break    
-        line=line.strip()
-        words.append(line)
-        counter +=1
-#script to print words in cluster 1
-list_1 = []
-Cluster_Dict = Cluster_Labels(words, model)
-for k,v in Cluster_Dict.items():
-    if v == '1':
-        list_1.append(k)
+# print(new_list_1)
 
-new_list_1 = []
-Cluster_Dict = Cluster_Labels(list_1, model)
-for k,v in Cluster_Dict.items():
-    if v == '1':
-        new_list_1.append(k)
+class Chatbot:
+    def __init__(self, word_count):
+        self.model = model
+        #list of words
+        self.words = self.create_words(word_count)
+    def create_words(self, word_count):
+        counter = 0
+        with open("glove.42B.300d.vocab", 'r',encoding='cp850') as file:
+            words = []
+            for line in file:
+                if counter == word_count:
+                    break    
+                line=line.strip()
+                words.append(line)
+                counter +=1
+            return words     
+    def choose_cluster(self, cluster):
+        list_ = []
+        Cluster_Dict = Cluster_Labels(self.words, model)
+        for k,v in Cluster_Dict.items():
+            if v == str(cluster):
+                list_.append(k)
+        return list_
 
-print(new_list_1)
+chatty = Chatbot(1000)
+print(chatty.choose_cluster(1))
+
+
