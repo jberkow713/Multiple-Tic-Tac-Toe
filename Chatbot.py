@@ -267,4 +267,11 @@ Cluster_Dict = Cluster_Labels(words, model)
 for k,v in Cluster_Dict.items():
     if v == '1':
         list_1.append(k)
-print(list_1)                                
+
+new_list_1 = []
+Cluster_Dict = Cluster_Labels(list_1, model)
+for k,v in Cluster_Dict.items():
+    if v == '1':
+        new_list_1.append(k)
+
+print(new_list_1)
