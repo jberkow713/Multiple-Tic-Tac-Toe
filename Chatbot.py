@@ -245,11 +245,13 @@ def Cluster_Labels(List, model):
 
 
 class Chatbot:
+    #Class created to initially divide word list into sub categories, to be stored and used by Chatbot
     def __init__(self, word_count):
         self.model = model
         #list of words
         self.words = self.create_words(word_count)
-        self.current_cluster = None 
+        self.cluster = None
+        self.Ordered_Cluster_List = None  
     def create_words(self, word_count):
         counter = 0
         with open("glove.42B.300d.vocab", 'r',encoding='cp850') as file:
@@ -261,28 +263,42 @@ class Chatbot:
                 words.append(line)
                 counter +=1
             return words     
-    def choose_cluster(self, cluster):
-        list_ = []
-        if self.current_cluster != None:
-            Cluster_Dict = Cluster_Labels(self.current_cluster, model)
-            for k,v in Cluster_Dict.items():
-                if v == str(cluster):
-                    list_.append(k)
-            self.current_cluster = list_
-            return list_
-
+    def create_cluster(self):
+               
         Cluster_Dict = Cluster_Labels(self.words, model)
-        for k,v in Cluster_Dict.items():
-            if v == str(cluster):
-                list_.append(k)
-        self.current_cluster = list_
-        return list_
+        self.cluster = Cluster_Dict
+        return Cluster_Dict
+    def create_word_cluster_list(self):
+        vals = set()
+        lst = []
+        for k,v in self.cluster.items():
+            vals.add(int(v))
+        for x in vals:
+            lst.append(x)
+        srted = sorted(lst)    
 
-chatty = Chatbot(6000)
-chatty.choose_cluster(20)
-chatty.choose_cluster(1)
-chatty.choose_cluster(0)
-print(chatty.current_cluster)
+        length = len(srted)
+        index = 0
+        Big_List = []
+        while length >0:
+            curr_list = []
+            for k,v in self.cluster.items():
+                if v == str(srted[index]):
+                    curr_list.append(k)
+            Big_List.append(curr_list)
+            length -=1
+            index +=1
+        self.Ordered_Cluster_List = Big_List
+        
+
+
+
+
+chatty = Chatbot(1000)
+chatty.create_cluster()
+print(chatty.cluster)
+print(chatty.create_word_cluster_list())
+print(chatty.Ordered_Cluster_List)
 
 
 
