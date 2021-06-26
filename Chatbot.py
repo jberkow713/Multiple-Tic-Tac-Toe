@@ -263,6 +263,14 @@ class Chatbot:
             return words     
     def choose_cluster(self, cluster):
         list_ = []
+        if self.current_cluster != None:
+            Cluster_Dict = Cluster_Labels(self.current_cluster, model)
+            for k,v in Cluster_Dict.items():
+                if v == str(cluster):
+                    list_.append(k)
+            self.current_cluster = list_
+            return list_
+
         Cluster_Dict = Cluster_Labels(self.words, model)
         for k,v in Cluster_Dict.items():
             if v == str(cluster):
@@ -270,8 +278,10 @@ class Chatbot:
         self.current_cluster = list_
         return list_
 
-chatty = Chatbot(1000)
+chatty = Chatbot(6000)
+chatty.choose_cluster(20)
 chatty.choose_cluster(1)
+chatty.choose_cluster(0)
 print(chatty.current_cluster)
 
 
