@@ -253,6 +253,7 @@ class Chatbot:
         self.cluster = None
         #List of Lists of ordered clustered words
         self.Ordered_Cluster_List = None
+        self.Ordered_Cluster_Count = 0
         self.Reduced_Cluster_List = None
         self.Final_Cluster_List = []
 
@@ -335,13 +336,34 @@ class Chatbot:
         
         self.Reduced_Cluster_List = Reclustered_List_
 
-chatty = Chatbot(300)
+    def recluster_recursive(self, list_):
+        if self.Ordered_Cluster_Count == len(self.Ordered_Cluster_List):
+                return
+        
+        for x in list_:
+                    
+            if len(x)>2 and len(x)<=10:
+                
+                self.Final_Cluster_List.append(x)
+                
+                if x in self.Ordered_Cluster_List:
+                    self.Ordered_Cluster_Count+=1
+            if len(x)>10:
+                Reclustered_Dict = Cluster_Labels(x, model)
+                Reclustered_List = self.create_word_cluster_list(Reclustered_Dict)
+                
+                if x in self.Ordered_Cluster_List:
+                    self.Ordered_Cluster_Count+=1
+                self.recluster_recursive(Reclustered_List)
+
+
+chatty = Chatbot(700)
 chatty.create_cluster()
 chatty.create_word_cluster_list(chatty.cluster)
 
-chatty.recluster(chatty.Ordered_Cluster_List)
+chatty.recluster_recursive(chatty.Ordered_Cluster_List)
 
-print(chatty.Reduced_Cluster_List)
+print(chatty.Final_Cluster_List)
 
 
 
