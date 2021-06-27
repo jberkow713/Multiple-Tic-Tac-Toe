@@ -253,7 +253,9 @@ class Chatbot:
         self.cluster = None
         #List of Lists of ordered clustered words
         self.Ordered_Cluster_List = None
-        self.Reduced_Cluster_List = None   
+        self.Reduced_Cluster_List = None
+        self.Final_Cluster_List = []
+
     def create_words(self, word_count):
         counter = 0
         with open("glove.42B.300d.vocab", 'r',encoding='cp850') as file:
@@ -272,6 +274,7 @@ class Chatbot:
         Cluster_Dict = Cluster_Labels(self.words, model)
         self.cluster = Cluster_Dict
         return Cluster_Dict
+
     def create_word_cluster_list(self, cluster_dict):
         #Returns a list of lists for a cluster dictionary
         vals = set()
@@ -304,41 +307,40 @@ class Chatbot:
         Reclustered_List_ = []
         #This list_ needs to be a list of lists
         
-        for x in list_:
-            
+        for x in list_:            
             
             if len(x)<10 and len(x)>2:
                 
-                Reclustered_List_.append(x)
-                
-            #word count 
+                Reclustered_List_.append(x)         
         
-            if len(x)>=10:
-                
+            if len(x)>=10:                
                 
                 #Clustered_Dict for each list in our giant list that is passed in
                 Reclustered_Dict = Cluster_Labels(x, model)
                                
                 #This will be turned into a list of lists
                 Reclustered_List = self.create_word_cluster_list(Reclustered_Dict)
-                Reclustered_List_.append(Reclustered_List)
-               
+                                
+                length = len(Reclustered_List)
+                index = 0
+                new_reclustered_list = []
+                while length >0:
+                    curr = Reclustered_List[index]
+                    if len(curr)>2:
+                        new_reclustered_list.append(curr)
+                    length -=1
+                    index +=1
                 
+                Reclustered_List_.append(new_reclustered_list)              
         
         self.Reduced_Cluster_List = Reclustered_List_
-        
 
-
-
-
-
-
-
-
-chatty = Chatbot(2000)
+chatty = Chatbot(300)
 chatty.create_cluster()
 chatty.create_word_cluster_list(chatty.cluster)
+
 chatty.recluster(chatty.Ordered_Cluster_List)
+
 print(chatty.Reduced_Cluster_List)
 
 
