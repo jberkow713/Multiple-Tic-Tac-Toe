@@ -265,10 +265,10 @@ class Chatbot:
                 if counter == word_count:
                     break    
                 line=line.strip()
-                if len(line)>2:
+                
 
-                    words.append(line)
-                    counter +=1
+                words.append(line)
+                counter +=1
             return words     
     def create_cluster(self):
                
@@ -355,15 +355,27 @@ class Chatbot:
                 if x in self.Ordered_Cluster_List:
                     self.Ordered_Cluster_Count+=1
                 self.recluster_recursive(Reclustered_List)
+    def find_response_list(self, user_response):
+        chatbot_possible_response = []
+        user_response = user_response.lower().replace('?', '')
+        user_response = user_response.split()
+
+        for x in user_response:
+            for y in self.Final_Cluster_List:
+                if x in y:
+                    chatbot_possible_response.append(y)
+        return chatbot_possible_response            
 
 
-chatty = Chatbot(500)
+
+
+chatty = Chatbot(1005)
 chatty.create_cluster()
 chatty.create_word_cluster_list(chatty.cluster)
 
 chatty.recluster_recursive(chatty.Ordered_Cluster_List)
 
-print(chatty.Final_Cluster_List)
+print(chatty.find_response_list('how do i get to the museum?'))
     
 
 
