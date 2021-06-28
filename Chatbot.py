@@ -310,7 +310,7 @@ class Chatbot:
         
         for x in list_:            
             
-            if len(x)<10 and len(x)>2:
+            if len(x)<10 and len(x)>=2:
                 
                 Reclustered_List_.append(x)         
         
@@ -327,7 +327,7 @@ class Chatbot:
                 new_reclustered_list = []
                 while length >0:
                     curr = Reclustered_List[index]
-                    if len(curr)>2:
+                    if len(curr)>=2:
                         new_reclustered_list.append(curr)
                     length -=1
                     index +=1
@@ -342,7 +342,7 @@ class Chatbot:
         
         for x in list_:
                     
-            if len(x)>2 and len(x)<=10:
+            if len(x)>1 and len(x)<=10:
                 
                 self.Final_Cluster_List.append(x)
                 
@@ -357,13 +357,15 @@ class Chatbot:
                 self.recluster_recursive(Reclustered_List)
 
 
-chatty = Chatbot(700)
+chatty = Chatbot(500)
 chatty.create_cluster()
 chatty.create_word_cluster_list(chatty.cluster)
 
 chatty.recluster_recursive(chatty.Ordered_Cluster_List)
 
 print(chatty.Final_Cluster_List)
+    
+
 
 
 
