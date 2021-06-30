@@ -30,6 +30,7 @@ from numpy.linalg import norm
 from multiprocessing import Pool
 import concurrent.futures
 from sklearn.cluster import KMeans
+import random 
 
 def hasNumbers(inputString):
     return inputString.isalpha()
@@ -366,13 +367,21 @@ class Chatbot:
             for y in self.Final_Cluster_List:
                 if x in y:
                     similarities_max = 0, None 
+                    rand = random.randint(0,5)
                     for z in y:
-                        if z != x:
+                        
+                        if rand <3:
+                            
+                            if z != x:
 
+                                similarity = cosine(x, z, model)
+                                if similarity > similarities_max[0]:
+                                    similarities_max = similarity, z     
+                        if rand >=3:
                             similarity = cosine(x, z, model)
                             if similarity > similarities_max[0]:
-                                similarities_max = similarity, z     
-                    
+                                similarities_max = similarity, z 
+
 
                     chatbot_possible_response.append(similarities_max[1])
         
