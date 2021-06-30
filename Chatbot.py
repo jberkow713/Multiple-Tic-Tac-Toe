@@ -256,6 +256,7 @@ class Chatbot:
         self.Ordered_Cluster_Count = 0
         self.Reduced_Cluster_List = None
         self.Final_Cluster_List = []
+        self.response_list = None 
 
     def create_words(self, word_count):
         counter = 0
@@ -355,6 +356,7 @@ class Chatbot:
                 if x in self.Ordered_Cluster_List:
                     self.Ordered_Cluster_Count+=1
                 self.recluster_recursive(Reclustered_List)
+    
     def find_response_list(self, user_response):
         chatbot_possible_response = []
         user_response = user_response.lower().replace('?', '')
@@ -363,19 +365,31 @@ class Chatbot:
         for x in user_response:
             for y in self.Final_Cluster_List:
                 if x in y:
-                    chatbot_possible_response.append(y)
-        return chatbot_possible_response            
+                    similarities_max = 0, None 
+                    for z in y:
+                        if z != x:
+
+                            similarity = cosine(x, z, model)
+                            if similarity > similarities_max[0]:
+                                similarities_max = similarity, z     
+                    
+
+                    chatbot_possible_response.append(similarities_max[1])
+        
+        chatbot_possible_response = ' '.join(chatbot_possible_response)
+        self.response_list = chatbot_possible_response            
 
 
 
 
-chatty = Chatbot(1005)
+chatty = Chatbot(6000)
 chatty.create_cluster()
 chatty.create_word_cluster_list(chatty.cluster)
 
 chatty.recluster_recursive(chatty.Ordered_Cluster_List)
 
-print(chatty.find_response_list('how do i get to the museum?'))
+chatty.find_response_list('The store is open late tonight')
+print(chatty.response_list)
     
 
 
