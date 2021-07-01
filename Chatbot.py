@@ -243,7 +243,63 @@ def Cluster_Labels(List, model):
     
     Categorized_Dict = dict(zip(List, string_list))
     return Categorized_Dict                
+def find_objects(sentence):
+    nlp = spacy.load("en_core_web_sm")
+    
+    inpt = tokenize(str(sentence))
+    inpt = ' '.join(word for word in inpt) 
 
+    doc = nlp(inpt)
+    x = [token.pos_ for token in doc]
+    text = inpt.split()
+    Text_Dict = dict(zip(text, x))
+    return Text_Dict 
+    # preceders = ['the', 'a', ]
+def find_objects_advanced(sentence):
+    #Need a function to identify, in order, not only the types of speech, but the relevant importance of the words
+    #in the sentence
+    nlp = spacy.load("en_core_web_sm")
+    
+    inpt = tokenize(str(sentence))
+    inpt = ' '.join(word for word in inpt) 
+
+    doc = nlp(inpt)
+    x = [token.pos_ for token in doc]
+    text = inpt.split()
+    Text_Dict = dict(zip(text, x))
+    
+    order = list(enumerate(doc))
+    primary_nouns = []
+    secondary_nouns = []
+    determinant_list = []
+    
+    for k,v in Text_Dict.items():
+        if v == 'DET':
+            determinant_list.append(k)
+        
+    for x in determinant_list:
+        for y in order:
+            if x == str(y[1]):
+                pos = y[0]
+                primary_nouns.append(str(order[pos+1][1]))
+    for k,v in Text_Dict.items():
+        if v == 'NOUN':
+            if k not in primary_nouns:
+                secondary_nouns.append(k)
+    return primary_nouns, secondary_nouns        
+
+
+    
+
+    
+
+
+    
+
+
+
+
+print(find_objects_advanced('i walked to the store and lost weight'))
 
 class Chatbot:
     #Class created to initially divide word list into sub categories, to be stored and used by Chatbot
@@ -363,21 +419,41 @@ class Chatbot:
         user_response = user_response.lower().replace('?', '')
         user_response = user_response.split()
 
+        input_dict = find_objects(user_response)
+        possible_replications = []
+        possible_tenses = ['NOUN', 'PRON', 'DET']
+        for k,v in input_dict.items():
+            if v in possible_tenses:
+                possible_replications.append(k)
+        
         for x in user_response:
             for y in self.Final_Cluster_List:
-                if x in y:
+                if x in y and x in possible_replications:
+                    print(y)
+                    
                     similarities_max = 0, None 
-                    rand = random.randint(0,5)
-                    for z in y:
+                    
+                    rand = random.randint(0,10)
+                    for z in y:                            
                         
-                        if rand <3:
-                            
+                        if rand <5:                                
                             if z != x:
 
                                 similarity = cosine(x, z, model)
                                 if similarity > similarities_max[0]:
                                     similarities_max = similarity, z     
-                        if rand >=3:
+                        elif rand >=5:
+                            similarity = cosine(x, z, model)
+                            if similarity > similarities_max[0]:
+                                similarities_max = similarity, z 
+                    chatbot_possible_response.append(similarities_max[1])        
+                
+                elif x in y and x not in possible_replications:
+                    print(y)
+                    similarities_max = 0, None 
+                    for z in y:
+                        if z!= x:
+
                             similarity = cosine(x, z, model)
                             if similarity > similarities_max[0]:
                                 similarities_max = similarity, z 
@@ -388,18 +464,22 @@ class Chatbot:
         chatbot_possible_response = ' '.join(chatbot_possible_response)
         self.response_list = chatbot_possible_response            
 
+#Create idea: teach computer what word in the response is the object, by telling it the object will follow specific
+#words, like the, a, an, etc
+# Create a function that parses the actual input to first figure out the object, subject, etc
+# And treat words differently given their type of speech, importance, etc
+#Using NLP for tenses etc...
 
 
 
-chatty = Chatbot(6000)
-chatty.create_cluster()
-chatty.create_word_cluster_list(chatty.cluster)
+# chatty = Chatbot(6000)
+# chatty.create_cluster()
+# chatty.create_word_cluster_list(chatty.cluster)
 
-chatty.recluster_recursive(chatty.Ordered_Cluster_List)
+# chatty.recluster_recursive(chatty.Ordered_Cluster_List)
 
-chatty.find_response_list('The store is open late tonight')
-print(chatty.response_list)
-    
+# chatty.find_response_list('Yesterday I went to the zoo and saw monkeys and tigers')
+# print(chatty.response_list)
 
 
 
