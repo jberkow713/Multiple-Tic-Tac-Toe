@@ -243,56 +243,7 @@ def Cluster_Labels(List, model):
     
     Categorized_Dict = dict(zip(List, string_list))
     return Categorized_Dict                
-def find_objects(sentence):
-    nlp = spacy.load("en_core_web_sm")
-    
-    inpt = tokenize(str(sentence))
-    inpt = ' '.join(word for word in inpt) 
-
-    doc = nlp(inpt)
-    x = [token.pos_ for token in doc]
-
-    text = inpt.split()
-    print(text)
-    Text_Dict = dict(zip(text, x))
-    return Text_Dict 
-    # preceders = ['the', 'a', ]
-def find_objects_advanced(sentence):
-    '''
-    Custom function to identify importance of various words, to then be used later with Chatbot
-    '''
-    nlp = spacy.load("en_core_web_sm")
-    
-    inpt = tokenize(str(sentence))
-    inpt = ' '.join(word for word in inpt) 
-
-    doc = nlp(inpt)
-    
-    x = [token.pos_ for token in doc]
-   
-    text = inpt.split()
-    
-    Text_Dict = dict(zip(text, x))
-    
-    order = list(enumerate(doc))
-    primary_nouns = []
-    secondary_nouns = []
-    determinant_list = []
-    
-    for k,v in Text_Dict.items():
-        if v == 'DET':
-            determinant_list.append(k)
-        
-    for x in determinant_list:
-        for y in order:
-            if x == str(y[1]):
-                pos = y[0]
-                primary_nouns.append(str(order[pos+1][1]))
-    for k,v in Text_Dict.items():
-        if v == 'NOUN':
-            if k not in primary_nouns:
-                secondary_nouns.append(k)
-    return primary_nouns, secondary_nouns        
+      
 
 def find_POS_tuple(sentence):
     #returns list of tuples to cover duplicate words not covered in dict
@@ -317,7 +268,6 @@ def find_POS_tuple(sentence):
 
         index +=1
         length -=1 
-
    
     return tuple_list 
 
@@ -344,8 +294,16 @@ def find_object_importance(sentence):
                  else:
                      num +=1
                      count +=1      
-    return valuable_terms    
+    return valuable_terms
+def find_descriptor_importants(sentence):
+    objects = find_object_importance(sentence)
+    # [('creature', 1), ('man', 2)]
+    #TODO connect the objects of importance to the verbs/adverbs/action words of importance, and 
+    #create the relationship between the two objects, using that action word
+    #return both the action word, and the relationship
+
 print(find_object_importance('A tiny creature was stomped on by a very giant man'))
+print(find_POS_tuple('a tiny creature was stomped on by a very giant man'))
 
 
 #Need parsing function to analyze relative importance of nouns based on some kind of structure, some kind of patterns,    
