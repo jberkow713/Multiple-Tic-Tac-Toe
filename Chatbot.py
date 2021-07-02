@@ -294,7 +294,7 @@ def find_objects_advanced(sentence):
                 secondary_nouns.append(k)
     return primary_nouns, secondary_nouns        
 
-def find_objects_tuple(sentence):
+def find_POS_tuple(sentence):
     #returns list of tuples to cover duplicate words not covered in dict
     nlp = spacy.load("en_core_web_sm")
     
@@ -321,27 +321,31 @@ def find_objects_tuple(sentence):
    
     return tuple_list 
 
-def find_purpose(sentence):
-    structure = find_objects_tuple(sentence)
-    # [('a', 'DET'), ('giant', 'ADJ'), ('man', 'NOUN'), ('stomped', 'VERB'), ('on', 'ADP'),\
-    #  ('a', 'DET'), ('very', 'ADV'), ('tiny', 'ADJ'), ('creature', 'NOUN')]
+def find_object_importance(sentence):
+    '''
+    Parses sentence to find words of interest and descriptive words for each
+    '''
+    structure = find_POS_tuple(sentence)
+    
     order = list(enumerate(structure))
-    # [(0, ('i', 'PRON')), (1, ('walked', 'VERB')), (2, ('to', 'ADP')), (3, ('the', 'DET')), (4, ('beach', 'NOUN'))]
+    
     valuable_terms = []
     for x in order:
         if x[1][1] == 'DET':
             num = x[0]+1 
-            
+            count = 0 
             noun_search = True
             while noun_search == True:
                  nxt = order[num]
                  if nxt[1][1]=='NOUN':
-                     valuable_terms.append(nxt[1][0])
+                     value = (nxt[1][0], count)
+                     valuable_terms.append(value)
                      noun_search = False
                  else:
-                     num +=1      
+                     num +=1
+                     count +=1      
     return valuable_terms    
-print(find_purpose('A tiny creature was stomped on by a very giant man'))
+print(find_object_importance('A tiny creature was stomped on by a very giant man'))
 
 
 #Need parsing function to analyze relative importance of nouns based on some kind of structure, some kind of patterns,    
