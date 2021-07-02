@@ -251,21 +251,27 @@ def find_objects(sentence):
 
     doc = nlp(inpt)
     x = [token.pos_ for token in doc]
+
     text = inpt.split()
+    print(text)
     Text_Dict = dict(zip(text, x))
     return Text_Dict 
     # preceders = ['the', 'a', ]
 def find_objects_advanced(sentence):
-    #Need a function to identify, in order, not only the types of speech, but the relevant importance of the words
-    #in the sentence
+    '''
+    Custom function to identify importance of various words, to then be used later with Chatbot
+    '''
     nlp = spacy.load("en_core_web_sm")
     
     inpt = tokenize(str(sentence))
     inpt = ' '.join(word for word in inpt) 
 
     doc = nlp(inpt)
+    
     x = [token.pos_ for token in doc]
+   
     text = inpt.split()
+    
     Text_Dict = dict(zip(text, x))
     
     order = list(enumerate(doc))
@@ -288,18 +294,42 @@ def find_objects_advanced(sentence):
                 secondary_nouns.append(k)
     return primary_nouns, secondary_nouns        
 
+def find_objects_tuple(sentence):
+    #returns list of tuples to cover duplicate words not covered in dict
+    nlp = spacy.load("en_core_web_sm")
+    
+    inpt = tokenize(str(sentence))
+    inpt = ' '.join(word for word in inpt) 
+
+    doc = nlp(inpt)
+    x = [token.pos_ for token in doc]
+
+    text = inpt.split()
+    tuple_list = []
+    
+    length = len(x)
+    index = 0
+    while length >0:
+        a = x[index]
+        b = text[index]
+        c = (b,a)
+        tuple_list.append(c)
+
+        index +=1
+        length -=1 
+
+   
+    return tuple_list 
+#Need parsing function to analyze relative importance of nouns based on some kind of structure, some kind of patterns,    
+
 
     
 
-    
-
-
-    
-
+print(find_objects_tuple('A tiny creature was stomped on by a very giant man'))
+print(find_objects_tuple('A giant man stomped on a very tiny creature'))
 
 
 
-print(find_objects_advanced('i walked to the store and lost weight'))
 
 class Chatbot:
     #Class created to initially divide word list into sub categories, to be stored and used by Chatbot
@@ -313,7 +343,8 @@ class Chatbot:
         self.Ordered_Cluster_Count = 0
         self.Reduced_Cluster_List = None
         self.Final_Cluster_List = []
-        self.response_list = None 
+        self.response = None
+        self.response_list = None  
 
     def create_words(self, word_count):
         counter = 0
@@ -400,13 +431,13 @@ class Chatbot:
         
         for x in list_:
                     
-            if len(x)>1 and len(x)<=10:
+            if len(x)>1 and len(x)<=15:
                 
                 self.Final_Cluster_List.append(x)
                 
                 if x in self.Ordered_Cluster_List:
                     self.Ordered_Cluster_Count+=1
-            if len(x)>10:
+            if len(x)>15:
                 Reclustered_Dict = Cluster_Labels(x, model)
                 Reclustered_List = self.create_word_cluster_list(Reclustered_Dict)
                 
@@ -418,6 +449,7 @@ class Chatbot:
         chatbot_possible_response = []
         user_response = user_response.lower().replace('?', '')
         user_response = user_response.split()
+        overall_usable_words = []
 
         input_dict = find_objects(user_response)
         possible_replications = []
@@ -429,7 +461,7 @@ class Chatbot:
         for x in user_response:
             for y in self.Final_Cluster_List:
                 if x in y and x in possible_replications:
-                    print(y)
+                    overall_usable_words.append(y)
                     
                     similarities_max = 0, None 
                     
@@ -449,7 +481,7 @@ class Chatbot:
                     chatbot_possible_response.append(similarities_max[1])        
                 
                 elif x in y and x not in possible_replications:
-                    print(y)
+                    overall_usable_words.append(y)
                     similarities_max = 0, None 
                     for z in y:
                         if z!= x:
@@ -462,7 +494,9 @@ class Chatbot:
                     chatbot_possible_response.append(similarities_max[1])
         
         chatbot_possible_response = ' '.join(chatbot_possible_response)
-        self.response_list = chatbot_possible_response            
+        self.response = chatbot_possible_response
+        self.response_list = overall_usable_words
+
 
 #Create idea: teach computer what word in the response is the object, by telling it the object will follow specific
 #words, like the, a, an, etc
@@ -478,7 +512,8 @@ class Chatbot:
 
 # chatty.recluster_recursive(chatty.Ordered_Cluster_List)
 
-# chatty.find_response_list('Yesterday I went to the zoo and saw monkeys and tigers')
+# chatty.find_response_list('I walked to the park on a Sunday')
+# print(chatty.response)
 # print(chatty.response_list)
 
 
