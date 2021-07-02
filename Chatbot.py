@@ -275,7 +275,11 @@ def find_object_importance(sentence):
     '''
     Parses sentence to find words of interest and descriptive words for each
     '''
+    secondary_terms = []
     structure = find_POS_tuple(sentence)
+    for x in structure:
+        if x[1]== 'PRON':
+            secondary_terms.append(x[0])
     
     order = list(enumerate(structure))
     
@@ -294,7 +298,7 @@ def find_object_importance(sentence):
                  else:
                      num +=1
                      count +=1      
-    return valuable_terms
+    return valuable_terms, secondary_terms
 def find_descriptor_importants(sentence):
     objects = find_object_importance(sentence)
     # [('creature', 1), ('man', 2)]
@@ -302,8 +306,8 @@ def find_descriptor_importants(sentence):
     #create the relationship between the two objects, using that action word
     #return both the action word, and the relationship
 
-print(find_object_importance('A tiny creature was stomped on by a very giant man'))
-print(find_POS_tuple('a tiny creature was stomped on by a very giant man'))
+print(find_object_importance('I travelled to the zoo'))
+print(find_POS_tuple('I travelled to the zoo'))
 
 
 #Need parsing function to analyze relative importance of nouns based on some kind of structure, some kind of patterns,    
