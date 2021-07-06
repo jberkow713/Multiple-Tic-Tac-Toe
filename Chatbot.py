@@ -375,60 +375,14 @@ def find_object_importance_main(sentence):
             end_pos[0] = word[2]
 
 
+    #TODO Right now, we have a list of either main NOUN or main pronouns
+    # Now we need to collect verbs refererring to these things and store them in list
 
 
     print(current_pos)
     print(structure)        
     print(primary_object)          
-    
-
-
-
-
-    #initialize it with either a determinant referring to a NOUN or a Pronoun: 
-    # This initial noun or pronoun will be the primary object in the sentence until a new primary object is created
-    # In this case, the precedes Cat, so cat is primary object:
-    # Then we take the verbs which follow the primary object, store them in a list, until we reach a new NOUN
-    # In this case, the first noun is beach....
-    # Cat----going, travel, ----beach
-    # At this point, Cat may have been replaced as primary object, but we dont know this for sure
-    # We need to look for a verb following the first NOUN we see, 
-    # If we do not find a verb before the next noun, then CAT, remains the primary object , and is ocnnected to the next noun implicitly
-    # In this case, the conjunction, CCONJ 'and' connects the primary noun to the next noun
-    
-    # So I will try to structure it so that if I see a conjunction before a verb, following a noun, the primary noun stays primary noun, 
-    # and the following noun remains tied to the primary noun
-
-    # In this sentence, we see conjunctions following the first and 2nd nouns which follow the primary noun, keeping the primary noun as the 
-    # main object relating to the various verbs and nouns that follow
-
-    #So we basically will have a primary object list at all times
-    # connect verbs to nouns
-    #if primary object is replaced, then previous primary object and its relationships need to enter dictionary to be stored
-
-    #verbs need to be connected from object to object...but in the case of conjunctions like and, verbs need to be extended to the next object 
-    # as well
-
-
-
-
-
-#Structure:
-#Start with a main object, its either a prounoun, or a noun that follows a determinant
-#This object is then attached to verbs, which are then attached to nouns, ...the nouns because they are attached as subjects to the initial
-# object, do not replace the initial object as primary focus, they get stored in a subject list, related to the verbs
-# that came before them
-# dictionary of dictionaries, for a given sentence
-
-#conjunctions like but will end the sentence 
-# and whatever was the primary noun before, assuming it wasnt changed, will still be the primary noun in the following sentence
-
-# The idea is to split a sentence into a few smaller sentences, each with primary nouns, verbs relating to those primary nouns, and nouns 
-# relating to those verbs
-
-# Then we also need sort of a finalized idea of what happened, the 'but' can negate all previous imformation
-# But we also want computer to be aware and sometimes refer to the things that did not happen
-            
+           
 
 
 
