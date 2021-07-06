@@ -341,7 +341,7 @@ def find_object_importance_main(sentence):
     for word in structure:
         if word[1] == 'PRON':
             pronoun = word[0]
-            usable_objects = ['Personal', 'Object']
+            usable_objects = ['Personal', 'Object', 'Interrogative', 'Relative', 'Indefinite']
             
                 
             if Pronoun_Type(pronoun)[0] in usable_objects:
@@ -372,7 +372,7 @@ def find_object_importance_main(sentence):
 
 
 
-
+    print(current_pos)
     print(structure)        
     print(primary_object)          
     
@@ -431,7 +431,7 @@ def find_object_importance_main(sentence):
 # print(find_object_importance('i was going to travel to the beach and then zoo'))
 # print(find_POS_tuple('the cat was going to travel to the beach and the market, but went to the zoo'))
 # print(find_POS_tuple('Today I saw a puppy climbing up a hill'))
-find_object_importance_main('I climbed up the tree and then fell onto the ground which was covered in worms')
+find_object_importance_main('who climbed up the tree and then fell onto the ground which was covered in worms')
 
 # find_descriptor_importance('i was going to travel to the beach and the market , but went to the zoo')
 
