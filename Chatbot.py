@@ -336,27 +336,32 @@ def find_object_importance_main(sentence):
     # ('to', 'ADP', 6), ('the', 'DET', 7), ('beach', 'NOUN', 8), ('and', 'CCONJ', 9), ('the', 'DET', 10), \
     # ('market', 'NOUN', 11), ('but', 'CCONJ', 12), ('went', 'VERB', 13),\
     #  ('to', 'ADP', 14), ('the', 'DET', 15), ('zoo', 'NOUN', 16)]
-    primary_object = [None]
-    current_pos = [None]
+    primary_object = []
+    current_pos = []
     for word in structure:
+        
         if word[1] == 'PRON':
+            print(word[0])
             pronoun = word[0]
-            usable_objects = ['Personal', 'Object', 'Interrogative', 'Relative', 'Indefinite']
+            usable_objects = ['Personal', 'Object']
             
+            print(Pronoun_Type(pronoun))
+            if Pronoun_Type(pronoun)[0] not in usable_objects:
                 
+                primary_object.append(pronoun)    
             if Pronoun_Type(pronoun)[0] in usable_objects:
                 
-                primary_object[0] = word[0]
-                current_pos[0] = word[2]
+                primary_object.append(word[0])
+                current_pos.append(word[2])
                 break 
-
+             
 
         elif word[1] == 'DET':
             pos = word[2]
             for word in structure[pos+1:]:
                 if word[1]=='NOUN':
-                    primary_object[0]= word[0]
-                    current_pos[0] = word[2]
+                    primary_object.append(word[0])
+                    current_pos.append(word[2])
                     break
             break
     # find the initial object and its position, now look for verbs following
@@ -431,7 +436,7 @@ def find_object_importance_main(sentence):
 # print(find_object_importance('i was going to travel to the beach and then zoo'))
 # print(find_POS_tuple('the cat was going to travel to the beach and the market, but went to the zoo'))
 # print(find_POS_tuple('Today I saw a puppy climbing up a hill'))
-find_object_importance_main('who climbed up the tree and then fell onto the ground which was covered in worms')
+find_object_importance_main('whichever of us climbed up the tree and then fell onto the ground which was covered in worms')
 
 # find_descriptor_importance('i was going to travel to the beach and the market , but went to the zoo')
 
