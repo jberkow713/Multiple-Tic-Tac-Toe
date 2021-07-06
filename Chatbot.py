@@ -263,7 +263,7 @@ def find_POS_tuple(sentence):
     while length >0:
         a = x[index]
         b = text[index]
-        c = (b,a)
+        c = (b,a, index)
         tuple_list.append(c)
 
         index +=1
@@ -299,16 +299,134 @@ def find_object_importance(sentence):
                      num +=1
                      count +=1      
     return valuable_terms, secondary_terms
-def find_descriptor_importants(sentence):
-    objects = find_object_importance(sentence)
-    # [('creature', 1), ('man', 2)]
-    #TODO connect the objects of importance to the verbs/adverbs/action words of importance, and 
-    #create the relationship between the two objects, using that action word
-    #return both the action word, and the relationship
+def Pronoun_Type(pronoun):
+    Pronoun_Dict = {'Personal':['i, we, you, he, she, it, they'], 'Object':['me, us, you, her, him, it , them'], \
+        'Possessive': ['mine', 'ours', 'yours', 'your', 'her', 'his', 'their'],\
+            'Reflexive':['myself, yourself, herself, himself, itself, ourselves, yourselves, themselves'],\
+                'Intensive': ['myself', 'yourself', 'herself', 'itself', 'ourselves', 'yourselves', 'themselves'],\
+                    'Indefinite': ['ALL', 'another', 'ANY', 'anybody', 'anyone', 'anything', 'both', 'each', 'either', \
+                        'everybody', 'everyone', 'everything', 'few', 'many', 'most', 'neither', 'nobody', 'none', 'no one',\
+                            'nothing', 'one', 'other', 'others', 'several', 'some', 'somebody', 'someone', 'something', 'such'], \
+                                'Demonstrative': ['such', 'that','these', 'this', 'those'], \
+                                    'Interrogative': ['what', 'whatever', 'which', 'whichever', 'who', 'whoever', 'whom', 'whomever', 'whose'],\
+                                        'Relative': ['as', 'that', 'what', 'whatever', 'which', 'whichever', 'who', 'whoever', 'whom', 'whomever', 'whose'],\
+                                            'Archaic': ['thou', 'thee', 'thy', 'thine', 'ye']}
+    
+    if pronoun == 'all' or pronoun == 'any':
+        return 'Indefinite'
+    types = []
+    for k,v in Pronoun_Dict.items():
+        for x in v:
+        
+            if pronoun == x:
+                types.append(k)
+    return types             
 
-print(find_object_importance('I travelled to the zoo'))
-print(find_POS_tuple('I travelled to the zoo'))
+print(Pronoun_Type('all'))
 
+
+            
+def find_object_importance_main(sentence):
+    '''
+    Purpose of this function is to dissect the sentence into objects relating to other objects
+    input: sentence string
+    output: dictionary of one or many main objects and their connection to other words in the original sentence
+    '''
+    structure = find_POS_tuple(sentence)
+    #[('the', 'DET', 0), ('cat', 'NOUN', 1), ('was', 'AUX', 2), ('going', 'VERB', 3), ('to', 'PART', 4), ('travel', 'VERB', 5), \
+    # ('to', 'ADP', 6), ('the', 'DET', 7), ('beach', 'NOUN', 8), ('and', 'CCONJ', 9), ('the', 'DET', 10), \
+    # ('market', 'NOUN', 11), ('but', 'CCONJ', 12), ('went', 'VERB', 13),\
+    #  ('to', 'ADP', 14), ('the', 'DET', 15), ('zoo', 'NOUN', 16)]
+    primary_object = [None]
+    current_pos = [None]
+    for word in structure:
+        if word[1] == 'PRON':
+            primary_object[0] = word[0]
+            current_pos[0] = word[2]
+            break
+        elif word[1] == 'DET':
+            pos = word[2]
+            for word in structure[pos+1:]:
+                if word[1]=='NOUN':
+                    primary_object[0]= word[0]
+                    current_pos[0] = word[2]
+                    break
+            break
+    # find the initial object and its position, now look for verbs following
+    related_verbs = []
+    related_nouns = []
+    end_pos = [None]
+    structure = structure[current_pos[0]+1:]
+    for word in structure:
+        if word[1]== 'NOUN':
+            related_nouns.append(word[0])
+            end_pos[0] = word[2]
+
+
+
+
+
+    print(structure)        
+    print(primary_object)          
+    
+
+
+
+
+    #initialize it with either a determinant referring to a NOUN or a Pronoun: 
+    # This initial noun or pronoun will be the primary object in the sentence until a new primary object is created
+    # In this case, the precedes Cat, so cat is primary object:
+    # Then we take the verbs which follow the primary object, store them in a list, until we reach a new NOUN
+    # In this case, the first noun is beach....
+    # Cat----going, travel, ----beach
+    # At this point, Cat may have been replaced as primary object, but we dont know this for sure
+    # We need to look for a verb following the first NOUN we see, 
+    # If we do not find a verb before the next noun, then CAT, remains the primary object , and is ocnnected to the next noun implicitly
+    # In this case, the conjunction, CCONJ 'and' connects the primary noun to the next noun
+    
+    # So I will try to structure it so that if I see a conjunction before a verb, following a noun, the primary noun stays primary noun, 
+    # and the following noun remains tied to the primary noun
+
+    # In this sentence, we see conjunctions following the first and 2nd nouns which follow the primary noun, keeping the primary noun as the 
+    # main object relating to the various verbs and nouns that follow
+
+    #So we basically will have a primary object list at all times
+    # connect verbs to nouns
+    #if primary object is replaced, then previous primary object and its relationships need to enter dictionary to be stored
+
+    #verbs need to be connected from object to object...but in the case of conjunctions like and, verbs need to be extended to the next object 
+    # as well
+
+
+
+
+
+#Structure:
+#Start with a main object, its either a prounoun, or a noun that follows a determinant
+#This object is then attached to verbs, which are then attached to nouns, ...the nouns because they are attached as subjects to the initial
+# object, do not replace the initial object as primary focus, they get stored in a subject list, related to the verbs
+# that came before them
+# dictionary of dictionaries, for a given sentence
+
+#conjunctions like but will end the sentence 
+# and whatever was the primary noun before, assuming it wasnt changed, will still be the primary noun in the following sentence
+
+# The idea is to split a sentence into a few smaller sentences, each with primary nouns, verbs relating to those primary nouns, and nouns 
+# relating to those verbs
+
+# Then we also need sort of a finalized idea of what happened, the 'but' can negate all previous imformation
+# But we also want computer to be aware and sometimes refer to the things that did not happen
+            
+
+
+
+    
+# print(find_object_importance('i was going to travel to the beach and then zoo'))
+# print(find_POS_tuple('the cat was going to travel to the beach and the market, but went to the zoo'))
+# print(find_POS_tuple('Today I saw a puppy climbing up a hill'))
+find_object_importance_main('I climbed up the tree and then fell onto the ground which was covered in worms')
+
+# find_descriptor_importance('i was going to travel to the beach and the market , but went to the zoo')
 
 #Need parsing function to analyze relative importance of nouns based on some kind of structure, some kind of patterns,    
 
