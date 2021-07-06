@@ -300,9 +300,9 @@ def find_object_importance(sentence):
                      count +=1      
     return valuable_terms, secondary_terms
 def Pronoun_Type(pronoun):
-    Pronoun_Dict = {'Personal':['i, we, you, he, she, it, they'], 'Object':['me, us, you, her, him, it , them'], \
+    Pronoun_Dict = {'Personal':['i', 'we', 'you', 'he', 'she', 'it', 'they'], 'Object':['me', 'us', 'you', 'her', 'him', 'it' , 'them'], \
         'Possessive': ['mine', 'ours', 'yours', 'your', 'her', 'his', 'their'],\
-            'Reflexive':['myself, yourself, herself, himself, itself, ourselves, yourselves, themselves'],\
+            'Reflexive':['myself', 'yourself', 'herself', 'himself', 'itself', 'ourselves', 'yourselves', 'themselves'],\
                 'Intensive': ['myself', 'yourself', 'herself', 'itself', 'ourselves', 'yourselves', 'themselves'],\
                     'Indefinite': ['ALL', 'another', 'ANY', 'anybody', 'anyone', 'anything', 'both', 'each', 'either', \
                         'everybody', 'everyone', 'everything', 'few', 'many', 'most', 'neither', 'nobody', 'none', 'no one',\
@@ -312,18 +312,17 @@ def Pronoun_Type(pronoun):
                                         'Relative': ['as', 'that', 'what', 'whatever', 'which', 'whichever', 'who', 'whoever', 'whom', 'whomever', 'whose'],\
                                             'Archaic': ['thou', 'thee', 'thy', 'thine', 'ye']}
     
-    if pronoun == 'all' or pronoun == 'any':
-        return 'Indefinite'
+    
     types = []
     for k,v in Pronoun_Dict.items():
         for x in v:
-        
+            
             if pronoun == x:
                 types.append(k)
+    if pronoun == 'all' or pronoun == 'any':
+        return 'Indefinite'
+    
     return types             
-
-print(Pronoun_Type('all'))
-
 
             
 def find_object_importance_main(sentence):
@@ -341,9 +340,17 @@ def find_object_importance_main(sentence):
     current_pos = [None]
     for word in structure:
         if word[1] == 'PRON':
-            primary_object[0] = word[0]
-            current_pos[0] = word[2]
-            break
+            pronoun = word[0]
+            usable_objects = ['Personal', 'Object']
+            
+                
+            if Pronoun_Type(pronoun)[0] in usable_objects:
+                
+                primary_object[0] = word[0]
+                current_pos[0] = word[2]
+                break 
+
+
         elif word[1] == 'DET':
             pos = word[2]
             for word in structure[pos+1:]:
