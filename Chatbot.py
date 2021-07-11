@@ -299,6 +299,7 @@ def find_object_importance(sentence):
                      num +=1
                      count +=1      
     return valuable_terms, secondary_terms
+
 def Pronoun_Type(pronoun):
     Pronoun_Dict = {'Personal':['i', 'we', 'you', 'he', 'she', 'it', 'they'], 'Object':['me', 'us', 'you', 'her', 'him', 'it' , 'them'], \
         'Possessive': ['mine', 'ours', 'yours', 'your', 'her', 'his', 'their'],\
@@ -324,85 +325,6 @@ def Pronoun_Type(pronoun):
     
     return types             
 
-            
-def find_object_importance_main(sentence):
-    '''
-    Purpose of this function is to dissect the sentence into objects relating to other objects
-    input: sentence string
-    output: dictionary of one or many main objects and their connection to other words in the original sentence
-    '''
-    structure = find_POS_tuple(sentence)
-    #[('the', 'DET', 0), ('cat', 'NOUN', 1), ('was', 'AUX', 2), ('going', 'VERB', 3), ('to', 'PART', 4), ('travel', 'VERB', 5), \
-    # ('to', 'ADP', 6), ('the', 'DET', 7), ('beach', 'NOUN', 8), ('and', 'CCONJ', 9), ('the', 'DET', 10), \
-    # ('market', 'NOUN', 11), ('but', 'CCONJ', 12), ('went', 'VERB', 13),\
-    #  ('to', 'ADP', 14), ('the', 'DET', 15), ('zoo', 'NOUN', 16)]
-    primary_object = []
-    current_pos = []
-    for word in structure:
-        
-        if word[1] == 'PRON':
-            print(word[0])
-            pronoun = word[0]
-            usable_objects = ['Personal', 'Object']
-            
-            print(Pronoun_Type(pronoun))
-            if Pronoun_Type(pronoun)[0] not in usable_objects:
-                
-                primary_object.append(pronoun)    
-            if Pronoun_Type(pronoun)[0] in usable_objects:
-                
-                primary_object.append(word[0])
-                current_pos.append(word[2])
-                break 
-             
-
-        elif word[1] == 'DET':
-            pos = word[2]
-            for word in structure[pos+1:]:
-                if word[1]=='NOUN':
-                    primary_object.append(word[0])
-                    current_pos.append(word[2])
-                    break
-            break
-    # find the initial object and its position, now look for verbs following
-    related_verbs = []
-    related_nouns = []
-    end_pos = [None]
-    structure = structure[current_pos[0]+1:]
-    for word in structure:
-        if word[1]== 'NOUN':
-            related_nouns.append(word[0])
-            end_pos[0] = word[2]
-
-
-    #TODO Right now, we have a list of either main NOUN or main pronouns
-    # Now we need to collect verbs refererring to these things and store them in list
-
-
-    print(current_pos)
-    print(structure)        
-    print(primary_object)          
-           
-
-
-
-    
-# print(find_object_importance('i was going to travel to the beach and then zoo'))
-# print(find_POS_tuple('the cat was going to travel to the beach and the market, but went to the zoo'))
-# print(find_POS_tuple('Today I saw a puppy climbing up a hill'))
-find_object_importance_main('whichever of us climbed up the tree and then fell onto the ground which was covered in worms')
-
-# find_descriptor_importance('i was going to travel to the beach and the market , but went to the zoo')
-
-#Need parsing function to analyze relative importance of nouns based on some kind of structure, some kind of patterns,    
-
-
-    
-
-
-
-
-
 
 class Chatbot:
     #Class created to initially divide word list into sub categories, to be stored and used by Chatbot
@@ -417,7 +339,9 @@ class Chatbot:
         self.Reduced_Cluster_List = None
         self.Final_Cluster_List = []
         self.response = None
-        self.response_list = None  
+        self.response_list = None
+        self.structure = None
+        self.sentence_relationships = []   
 
     def create_words(self, word_count):
         counter = 0
@@ -499,6 +423,7 @@ class Chatbot:
         self.Reduced_Cluster_List = Reclustered_List_
 
     def recluster_recursive(self, list_):
+        #Takes Ordered_Cluster_List and recursively reduces lists into smaller, more intelligent lists of similar words
         if self.Ordered_Cluster_Count == len(self.Ordered_Cluster_List):
                 return
         
@@ -518,74 +443,176 @@ class Chatbot:
                     self.Ordered_Cluster_Count+=1
                 self.recluster_recursive(Reclustered_List)
     
+    
+    def find_object_importance_recursive(self, sentence):
+        # '''
+        # Purpose of this function is to dissect the sentence into objects relating to other objects
+        # input: sentence string
+        # output: dictionary of one or many main objects and their connection to other words in the original sentence
+        # '''
+        
+        self.structure = find_POS_tuple(sentence)
+        #[('the', 'DET', 0), ('cat', 'NOUN', 1), ('was', 'AUX', 2), ('going', 'VERB', 3), ('to', 'PART', 4), ('travel', 'VERB', 5), \
+        # ('to', 'ADP', 6), ('the', 'DET', 7), ('beach', 'NOUN', 8), ('and', 'CCONJ', 9), ('the', 'DET', 10), \
+        # ('market', 'NOUN', 11), ('but', 'CCONJ', 12), ('went', 'VERB', 13),\
+        #  ('to', 'ADP', 14), ('the', 'DET', 15), ('zoo', 'NOUN', 16)]
+        if len(self.structure)== 0:
+            return 
+
+        primary_object = []
+        current_pos = []
+        for word in self.structure:
+            
+            if word[1] == 'PRON':
+                
+                pronoun = word[0]
+                usable_objects = ['Personal', 'Object']
+                                
+                if Pronoun_Type(pronoun)[0] not in usable_objects:
+                    
+                    primary_object.append(pronoun)
+                        
+                if Pronoun_Type(pronoun)[0] in usable_objects:
+                    
+                    primary_object.append(word[0])
+                    current_pos.append(word[2])
+                    break 
+                
+
+            elif word[1] == 'DET':
+                pos = word[2]
+                for word in self.structure[pos+1:]:
+                    if word[1]=='NOUN':
+                        primary_object.append(word[0])
+                        current_pos.append(word[2])
+                        break
+                break
+        # find the initial object and its position, now look for nouns that follow
+        amended_sentence = []
+        self.structure = self.structure[current_pos[0]+1:]
+        for word in self.structure:
+            amended_sentence.append(word[0])
+
+        sentence = ' '.join(amended_sentence)
+        #Resetting the index value at start of self.structure to 0 so easier to manipulate
+        self.structure = find_POS_tuple(sentence)
+        
+        related_nouns = []
+        
+        end_pos = []
+        current_sentence = []
+
+        for word in self.structure:
+            if word[1]== 'NOUN':
+                related_nouns.append(word[0])
+                current_pos = word[2]
+                
+                break 
+        
+        for word in self.structure:
+            if word[2]>current_pos:
+                current_sentence.append(word[0])
+
+        current_sentence = ' '.join(current_sentence)
+             
+        current_structure = find_POS_tuple(current_sentence)
+        
+        words_prior_to_verb = []
+
+        for word in current_structure:
+            if word[1]=='VERB':
+                verb_location = word[2]
+                break
+        for word in current_structure:
+            if word[2] < verb_location:
+                if word[1] == 'NOUN':
+                    related_nouns.append(word[0])
+
+        
+        for word in self.structure:
+            if word[0] == related_nouns[-1]:
+                last_noun_position = word[2]
+        
+
+        verbs = []
+        for word in self.structure:
+            if word[2] < last_noun_position:
+                if word[1] == 'VERB':
+                    verbs.append(word[0])
+        
+        final_connection = []
+        for word in primary_object:
+            final_connection.append(word)
+        for word in verbs:
+            final_connection.append(word)
+        for word in related_nouns:
+            final_connection.append(word)
+
+        current_sentence = ' '.join(final_connection)
+        #put current relationships into classes attribute to store it before recursion
+        self.sentence_relationships.append(current_sentence)
+        
+        continued_sentence = []
+
+        for word in self.structure:
+            if word[2]>last_noun_position:
+                continued_sentence.append(word[0])
+        
+
+        self.structure = find_POS_tuple(' '.join(continued_sentence))        
+
+        #TODO 
+        # Have parsed the original sentence, using parts of speech, we have created relationship between the primary object
+        # and the nouns, using the verbs
+        # then we want to run this function recursively, but we need to deal with conjunctions, and all of the fringe cases
+        # where the next part of the sentence starts either with a conjunction, or a non personal pronoun
+        # in which case, we simply want to link the following sentence back to the original primary object...
+        # which we can do by referencing the sentence relationships, finding which of the words was the primary object,
+        # and so on
+        
+
+        
+                
+
+        
+
+
+
+
+
+        
+    
     def find_response_list(self, user_response):
         chatbot_possible_response = []
         user_response = user_response.lower().replace('?', '')
         user_response = user_response.split()
         overall_usable_words = []
-
-        input_dict = find_objects(user_response)
-        possible_replications = []
-        possible_tenses = ['NOUN', 'PRON', 'DET']
-        for k,v in input_dict.items():
-            if v in possible_tenses:
-                possible_replications.append(k)
+        for list in self.Final_Cluster_List:
+            for word in user_response:
+                if word in list:
+                    overall_usable_words.append(list)
         
-        for x in user_response:
-            for y in self.Final_Cluster_List:
-                if x in y and x in possible_replications:
-                    overall_usable_words.append(y)
-                    
-                    similarities_max = 0, None 
-                    
-                    rand = random.randint(0,10)
-                    for z in y:                            
-                        
-                        if rand <5:                                
-                            if z != x:
-
-                                similarity = cosine(x, z, model)
-                                if similarity > similarities_max[0]:
-                                    similarities_max = similarity, z     
-                        elif rand >=5:
-                            similarity = cosine(x, z, model)
-                            if similarity > similarities_max[0]:
-                                similarities_max = similarity, z 
-                    chatbot_possible_response.append(similarities_max[1])        
-                
-                elif x in y and x not in possible_replications:
-                    overall_usable_words.append(y)
-                    similarities_max = 0, None 
-                    for z in y:
-                        if z!= x:
-
-                            similarity = cosine(x, z, model)
-                            if similarity > similarities_max[0]:
-                                similarities_max = similarity, z 
-
-
-                    chatbot_possible_response.append(similarities_max[1])
         
-        chatbot_possible_response = ' '.join(chatbot_possible_response)
-        self.response = chatbot_possible_response
         self.response_list = overall_usable_words
+        return self.response_list 
 
 
-#Create idea: teach computer what word in the response is the object, by telling it the object will follow specific
-#words, like the, a, an, etc
-# Create a function that parses the actual input to first figure out the object, subject, etc
-# And treat words differently given their type of speech, importance, etc
-#Using NLP for tenses etc...
+chatty = Chatbot(2000)
+chatty.find_object_importance_recursive('the cat jumped over the moon , while the dog went to the grocery store')
+print(chatty.sentence_relationships)
+print(chatty.structure)
 
 
 
-# chatty = Chatbot(6000)
+
 # chatty.create_cluster()
 # chatty.create_word_cluster_list(chatty.cluster)
 
+
 # chatty.recluster_recursive(chatty.Ordered_Cluster_List)
 
-# chatty.find_response_list('I walked to the park on a Sunday')
+# print(chatty.find_response_list('I walked to the park on a Sunday'))
+
 # print(chatty.response)
 # print(chatty.response_list)
 
