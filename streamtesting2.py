@@ -1,0 +1,256 @@
+
+
+TWEETS =[
+('1418271884072955908', 'RT @squawksquare: BREAKING: Tesla received $400 million in energy credits in China; most of any car company. Holy smokes! $tsla')
+,('1418271884379054086', 'RT @DeItaone: *TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK\n$TSLA')
+,('1418271884039311371', '$GTOR Information https://t.co/maNb4JgxVp #wsj #nytimes #business #reuters #IHub_StockPosts #forbes #marketwatch… https://t.co/OLVVup57fR')
+,('1418271890142007299', 'RT @ftcommodities: Tesla is to buy nickel from BHP as it looks to lock up the metal for batteries not controlled by China. The deal follows…')
+,('1418271892381765634', 'RT @MasterChangz: BREAKING - TESLA AQUIRES 300,000 M2 PLOT OF LAND IN NEVADA TO BE UTILIZED AS THE WORLDS LARGEST SOLAR BITCOIN MINING FARM…')
+,('1418271894579654658', 'RT @NuanceBro: The rules don’t apply to her')
+,('1418271905451237380', 'RT @HiteshK01672691: Anyone would fancy a new @Tesla on day @SpaceX Starship Launch? 🚀🏎️\n\nEnter the #Tesla giveaway by @astro_doggy 🏎️🐶\n\nRe…')
+,('1418271907108073472', '$TSLA may be in bull flag + news\n\nOn watch')
+,('1418271908651487240', 'RT @therationalroot: "Tesla\'s bank balances in Europe have negative interest rate..it is quite annoying to see your bank balance drop in re…')
+,('1418271912401281028', 'RT @squawksquare: BREAKING: Tesla received $400 million in energy credits in China; most of any car company. Holy smokes! $tsla')
+,('1418271919783268354', 'LOL - why? $TSLA \nTesla (TSLA) is going on a salesforce hiring spree as demand ramps up in the US - Electrek https://t.co/UoZ6EpZ3my')
+,('1418271923239366661', 'Moar pumps')
+,('1418271939509071882', 'Elon Musk Says Tesla Will Open Up Superchargers to Other EVs https://t.co/osWHN5DaRY - #engineering, #technology an… https://t.co/jHOpdm8TnR')
+,('1418271943388712965', 'There is no demand... $TSLA')
+,('1418271945628524551', 'RT @NoContextSag: TESLA vs TOGG\n\nhttps://t.co/YwF2UXmo4i')
+,('1418271953706799110', 'Below average vehicles that are overhyped. $TSLAQ $TSLA \n\nhttps://t.co/SU8vlFHMan')
+,('1418271975693164544', 'RT @Umbisam: Q3 may surprise more than most already expecting. $TSLA')
+,('1418271975881920512', 'RT @bobbyclee: IT HAS HAPPENED!! $BTC over $40k!!\n#Bitcoin has exceeded the price of the @Tesla CyberTruck, so I will keep my promise &amp; GIV…')
+,('1418271984602034179', 'RT @Fxhedgers: TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK')
+,('1418271984669143046', 'RT @Wieneraaron: When your neighbor gets a Tesla. https://t.co/RxyL6BRpd1')
+,('1418271987105947659', '$TSLA\n\nTesla (TSLA) is going on a salesforce hiring spree as demand ramps up in the US https://t.co/x6yRcHZE2D… by \n@fredericlambert')
+,('1418271997088473091', 'RT @HiteshK01672691: Anyone would fancy a new @Tesla on day @SpaceX Starship Launch? 🚀🏎️\n\nEnter the #Tesla giveaway by @astro_doggy 🏎️🐶\n\nRe…')
+,('1418272003098882050', 'RT @DeItaone: *TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK\n$TSLA')
+,('1418272016864534531', '$TSLA As others scale back TSLA hires positions to meet interest demand. Production is already maxed for the time b… https://t.co/FUjbpbtfmy')
+,('1418272023944601601', 'RT @StockMKTNewz: Tesla $TSLA is reportedly going on a new hiring spree for sales staff in the U.S mostly focusing on part-time positions h…')
+,('1418272026159104000', '@ValueAnalyst1 @elonmusk @Tesla A few lies, extrapolations and a Musk-calendar?')
+,('1418272027014615040', 'RT @bobbyclee: Now that #Bitcoin is over $39,900 (again!) don’t forget that you can win a *FREE* @Tesla #CyberTruck in my free giveaway lat…')
+,('1418272027270696967', 'RT @therationalroot: "Tesla\'s bank balances in Europe have negative interest rate..it is quite annoying to see your bank balance drop in re…')
+,('1418272034598101002', 'RT @ToneVays: Looks like @elonmusk never understood the fundamental reason(s) of buying #Bitcoin for himself or @Tesla - Disappointed')
+,('1418272035961200642', 'RT @KelvinYang7: Tesla China is looking to build a points system for owners, similar to credit card points, with the newly founded CRM depa…')
+,('1418272037878046721', 'RT @ProblemSniper: *TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: $TSLA')
+,('1418272038217732101', '@alfahoellenhund @BS__Exposed @C_S_Skeptic Extremely unlikely Tesla vision has dealt with humans in the road a lot… https://t.co/Y8kjj8Z1Nk')
+,('1418272050360295426', 'Tesla $TSLA going on a salesforce hiring spree as demand ramps up in the US - electrek')
+,('1418272073848401933', "RT @ToneVays: Or in other words, @elonmusk was convinced by incorrect facts regarding #Bitcoin's energy consumption &amp; even if his data was…")
+,('1418272080798404611', 'RT @DeItaone: *TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK\n$TSLA')
+,('1418272092487831558', 'RT @mikesacconetv: DEVELOPING: Tesla crashed into a building on Concord Road in Sudbury this morning. Police say the injuries were minor. T…')
+,('1418272098896732163', 'RT @squawksquare: BREAKING: Tesla received $400 million in energy credits in China; most of any car company. Holy smokes! $tsla')
+,('1418272102826725378', 'RT @investmentnews: SEC’s Gensler issues warning about stock tokens, making it clear that digital assets mirroring the performance of Amazo…')
+,('1418272103338364928', 'RT @SawyerMerritt: NEWS: Tesla is going on a salesforce hiring spree as demand ramps up in the US - Electrek\n\nThe automaker is focusing on…')
+,('1418272113425719297', 'Now run.')
+,('1418272114700800011', "@garyblack00 You are right, BTC is really a distraction to Tesla's mission.")
+,('1418272118366736389', '@XUYANG93380266 @KelvinYang7 This is established to counter the FUD that is spread in China since March and hurt Te… https://t.co/I0uqGltDN6')
+,('1418272124511285248', 'RT @Wieneraaron: When your neighbor gets a Tesla. https://t.co/RxyL6BRpd1')
+,('1418272133189455873', '#WorthReading Tesla China more than doubles VW’s Q2 sales figures in June alone https://t.co/NpHkLsGZ3X')
+,('1418272140923744263', 'Bitcoin rises to nearly $32,000 as Musk says Tesla will ‘likely’ accept it again (story by @aghoshal) https://t.co/Idv765qOeh')
+,('1418272146493640707', 'RT @SamTheCarpetMan: If @elonmusk follows me and tweets “Sam The Carpet Man® is #Klever ~ $KLV ”, I’ll buy a @Tesla. \n\nHow clever is that,…')
+,('1418272158623612932', "@myEVreview @OndrejBobal @adamwellinform @elonmusk Don't get me wrong. I have a Tesla too and i am happy with it, b… https://t.co/fg5bmlpv8a")
+,('1418272160905318406', 'RT @pbrody: #WorthReading Tesla China more than doubles VW’s Q2 sales figures in June alone https://t.co/NpHkLsGZ3X')
+,('1418272162377572360', 'RT @MasterChangz: BREAKING - TESLA AQUIRES 300,000 M2 PLOT OF LAND IN NEVADA TO BE UTILIZED AS THE WORLDS LARGEST SOLAR BITCOIN MINING FARM…')
+,('1418272163279343628', 'RT @AustinTeslaClub: Tesla Solar Roofs on new construction just look so good! @elonmusk \n📷 @RoschetzkyP https://t.co/4KuW2tXms9')
+,('1418272171407839232', 'RT @FinancialJuice: TESLA BEGINS A SALESFORCE RECRUITING SPREE IN RESPONSE TO INCREASED DEMAND IN THE UNITED STATES - ELECTREK.')
+,('1418272184133431297', 'RT @ForbesCrypto: Elon Musk: I am not selling any bitcoin, nor SpaceX or Tesla https://t.co/ewsM025aul')
+,('1418272185236418560', 'RT @thenextweb: Bitcoin rises to nearly $32,000 as Musk says Tesla will ‘likely’ accept it again (story by @aghoshal) https://t.co/Idv765qO…')
+,('1418272191192440833', 'Yeah, about the charging stations.... https://t.co/OASuMQ8JCX')
+,('1418272898192609280', 'Tesla and #Bitcoin, Activision, AT&amp;T, Chembio - 5 Things You Must Know Thursday - TheStreet https://t.co/4VanLyVsFw')
+,('1418272908854575105', 'RT @Zxcxz_xyz: Tesla (TSLA) is going on a salesforce hiring spree as demand ramps up in the US https://t.co/Aagm6aZo6m #ElectricVehicles #R…')
+,('1418272912608464896', 'RT @HiteshK01672691: Anyone would fancy a new @Tesla on day @SpaceX Starship Launch? 🚀🏎️\n\nEnter the #Tesla giveaway by @astro_doggy 🏎️🐶\n\nRe…')
+,('1418272916626608138', '250 part-time positions for "Gallery Advisors".\nTo put things into perspective: Between July and November 2020, Ama… https://t.co/Amo9PspjI9')
+,('1418272926894370826', 'Tesla has faced an unusual degree of scrutiny from regulators in recent months. Combined with a rash of negative pr… https://t.co/NCOmAUAaUo')
+,('1418272928748216328', "The company's high-tech halo, and Musk's star power, may no longer be enough to protect it from the risks that othe… https://t.co/LnnVHkBqTz")
+,('1418272935874289669', 'When The Sun Makes Drinking Water https://t.co/NZotxeKxvy #Tesla #EV #ClimateChange #Renewables #RenewableEnergy')
+,('1418272940131381250', 'RT @Fxhedgers: TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK')
+,('1418272942987759619', 'RT @Investingcom: *TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK\n\n$TSLA https://t.co/WxPYMxkmKH')
+,('1418272967419629568', 'Wasteful spending.')
+,('1418272980006752262', 'RT @squawksquare: BREAKING: Tesla received $400 million in energy credits in China; most of any car company. Holy smokes! $tsla')
+,('1418272983123169281', 'RT @DimaZeniuk: Tesla Model X air filter is a masterpiece and much bigger than a normal car filter.💨🚗\n\n@elonmusk @Tesla https://t.co/GW52Sh…')
+,('1418272990555344900', 'RT @RepBoebert: I challenge @AOC to condemn capitalism by getting rid of her Tesla.')
+,('1418272990979035136', 'RT @APompliano: BREAKING: Elon Musk just confirmed that Tesla, SpaceX, and him personally all own bitcoin.')
+,('1418272999313117186', 'RT @FirstClassMetal: 𝐅𝐢𝐫𝐬𝐭 𝐂𝐥𝐚𝐬𝐬 𝐌𝐞𝐭𝐚𝐥𝐬 𝐋𝐢𝐦𝐢𝐭𝐞𝐝. \n\n#Mining  #Exploration #POW $PDM #PALM $HMLO #Nickel #Copper #molybdenum #Ontario \n\nBHP s…')
+,('1418272999590010886', 'RT @Fxhedgers: TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK')
+,('1418273001955491842', 'RT @Fxhedgers: TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK')
+,('1418273014307856390', '@squawksquare @Tesla and @elonmusk should hire you for the PR department.  😉')
+,('1418273015817637888', 'RT @DeItaone: *TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK\n$TSLA')
+,('1418273020200857607', 'RT @NouveauDeco: Amazing portrait of Nikola Tesla (1856-1943) constructed from electrical appliances. Tesla, "the father of electricity who…')
+,('1418273027721154562', "@LennartZHH @TheRealSaus @DrvrBby @DurvidImel @Tesla @MKBHD Out of 250 new Tesla Model S Plaid, 1 gets burned. I don't need to.")
+,('1418273032221511680', '@MarketRebels Might apply. They are hiring Tesla advisors in almost every town they do business.')
+,('1418273039649853449', 'Scan: No critical thinking skills detected.')
+,('1418273041239269386', 'RT @GordonJohnson19: 👀 “Tesla has dropped to ‘below average quality’ while three leading Chinese electric vehicle start-ups are now making…')
+,('1418273041587523594', 'RT @SmartKeyDeFi: You will be able to manage @Tesla via $Skey blockchain. First blockchain with tesla dedicated node:\nhttps://t.co/dXxAZ6Ct…')
+,('1418273043831427078', 'RT @Wieneraaron: When your neighbor gets a Tesla. https://t.co/RxyL6BRpd1')
+,('1418273054413688842', 'RT @CNBC: Elon Musk says Tesla could start accepting bitcoin again: "I want to do a little more due diligence to confirm that the percentag…')
+,('1418273059090288648', 'RT @SawyerMerritt: NEWS: Tesla is going on a salesforce hiring spree as demand ramps up in the US - Electrek\n\nThe automaker is focusing on…')
+,('1418273063431413765', '@sfreeman166 @Sarvy80321399 @Spartacuore @DimaZeniuk @elonmusk @Tesla @chicago_glenn @daelmor @Inelonwetrust__… https://t.co/7yhcUutmA9')
+,('1418273066354941956', 'Perhaps if @mcuban knew this existed he would have thought twice before buying iron and would had bought $CRX inste… https://t.co/v47zOXtqZf')
+,('1418273067889950723', 'RT @Wieneraaron: When your neighbor gets a Tesla. https://t.co/RxyL6BRpd1')
+,('1418273081160777732', '@washingtonpost Limousine Liberals:  Just get a Tesla and work from home!')
+,('1418273086768435201', 'RT @SamTheCarpetMan: If @elonmusk follows me and tweets “Sam The Carpet Man® is #Klever ~ $KLV ”, I’ll buy a @Tesla. \n\nHow clever is that,…')
+,('1418273088630833156', 'RT @putersdcat: @MercedesBenz @Kenneth91250415 @Superalkaline11 @Tesla I got your RSVP for a +9, but looks like you’re stuck in traffic? ht…')
+,('1418273093248716803', 'RT @RepBoebert: I challenge @AOC to condemn capitalism by getting rid of her Tesla.')
+,('1418273095987703809', 'RT @SawyerMerritt: Morgan Stanley analyst, Adam Jonas, highlighted his thoughts surrounding Tesla’s superchargers sharing, as well as the a…')
+,('1418273111661817861', 'RT @MasterChangz: BREAKING - TESLA AQUIRES 300,000 M2 PLOT OF LAND IN NEVADA TO BE UTILIZED AS THE WORLDS LARGEST SOLAR BITCOIN MINING FARM…')
+,('1418273113842749443', 'Predictions:\n\n#Dogecoin is @elonmusk and Tesla’s main focus\n\nDoge will optimize for max transaction speed so a leve… https://t.co/LFNJIv6YBN')
+,('1418273125263839233', 'RT @RepBoebert: I challenge @AOC to condemn capitalism by getting rid of her Tesla.')
+,('1418273128476811271', 'RT @MorningBrew: Elon Musk just said the only investments he personally owns are Tesla stock, SpaceX stock, bitcoin, ethereum, and....dogec…')
+,('1418273129240088578', '@Becca06700093 Machine operator in a metal fabrication shop. We make industrial warehouse rack systems. Customers i… https://t.co/sDpbylMDgh')
+,('1418273158570954752', 'Putting gas in your car is the worst. Tesla me please lol')
+,('1418273172026187776', 'Tesla (TSLA) is going on a salesforce hiring spree as demand ramps up in the US https://t.co/KKFlqMDYBT via @FredericLambert #Tesla @Tesla')
+,('1418273176098856965', 'RT @RepBoebert: I challenge @AOC to condemn capitalism by getting rid of her Tesla.')
+,('1418273225637724162', '@The_Commenting @StalinSSR @Teslarati @KlenderJoey Tesla has 20% margins, some of the best in the industry - maybe… https://t.co/8UyNFu5fNK')
+,('1418273231555997700', '@Top5Gamingx Tesla they would have electricity stands to fill up your Tesla it will take 1 minute to fill up but yo… https://t.co/0m2UZUY104')
+,('1418273239445524480', 'RT @SamTheCarpetMan: If @elonmusk follows me and tweets “Sam The Carpet Man® is #Klever ~ $KLV ”, I’ll buy a @Tesla. \n\nHow clever is that,…')
+,('1418273242519908353', 'RT @RepBoebert: I challenge @AOC to condemn capitalism by getting rid of her Tesla.')
+,('1418273245556531204', 'RT @SawyerMerritt: NEWS: Tesla is going on a salesforce hiring spree as demand ramps up in the US - Electrek\n\nThe automaker is focusing on…')
+,('1418273248589008899', 'RT @SkyNews: Bitcoin\'s price has climbed after Elon Musk said his electric car maker Tesla would "most likely" resume accepting the cryptoc…')
+,('1418273249264340996', "@Joscocok @James95113983 @FuturamaKing tesla ignores radar returns for stuff not in it's lane")
+,('1418273265940901888', 'RT @FreeBeacon: CAUGHT ON VIDEO: @AOC illegally parked her Tesla near a Whole Foods in her posh neighborhood—AGAIN.\n\nVia @AndrewStilesUSA a…')
+,('1418273273947774980', 'Apple and Tesla  potentially working on  a partnership? I think they are! #tesla #apple #retweet #stocks')
+,('1418273281010974727', 'RT @SawyerMerritt: NEWS: Tesla is going on a salesforce hiring spree as demand ramps up in the US - Electrek\n\nThe automaker is focusing on…')
+,('1418273285620604931', 'RT @SkyNews: Bitcoin\'s price has climbed after Elon Musk said his electric car maker Tesla would "most likely" resume accepting the cryptoc…')
+,('1418273295896616962', "Is there any other government entity where they can just spend extravagantly on things like Teslas and we're suppos… https://t.co/Ief9y9ZvLE")
+,('1418273296639008769', 'RT @ericdowney77: Apple and Tesla  potentially working on  a partnership? I think they are! #tesla #apple #retweet #stocks')
+,('1418273300564910080', 'RT @danheld: "I own Bitcoin \nTesla owns Bitcoin \nSpaceX owns Bitcoin"\n\n- @elonmusk')
+,('1418273303228293120', 'RT @DLoesch: I thought she was against big billionaires and their big billionare companies?')
+,('1418273318252187650', 'RT @SawyerMerritt: Barron’s: “Like it or not, the electric-vehicle pioneer Tesla is ahead of the curve. A nickel- supply deal with the mini…')
+,('1418273326338920457', 'RT @ForbesCrypto: Elon Musk: I am not selling any bitcoin, nor SpaceX or Tesla https://t.co/ewsM025aul')
+,('1418273353127792640', '"My wife discovered a wrench wedged behind the brake rotor of one of [her Tesla\'s] tires!!"\n\nThere\'s only so much c… https://t.co/3ztxB2I3c0')
+,('1418273363282206727', '“Tesla sales employees petition for higher base pay after commission cuts in 2019” https://t.co/31UZwCzl4w\n\nSO NOW… https://t.co/X1wHrzvOTb')
+,('1418273363898814473', "RT @tyler: Sounds like Elon will likely go back to selling Teslas for #Bitcoin \n\nI'd take that trade. Bullish.\nhttps://t.co/fxbDoz2Js0")
+,('1418273364196708352', '@Superalkaline11 @MercedesBenz @Tesla Cool. Glad to see MB’s EV vans are out already in Europe. Sincerely hope they… https://t.co/q3OBfesO3B')
+,('1418273374367850498', 'RT @CryptoMyoGirl: $myobu going to moon! New smartcontracts coming, giving away @tesla, prizes, charity, &amp; huge celebrity TBA this month. M…')
+,('1418273376448045061', 'My Short Option List - Open to feedback. I’m worried that these short positions are too concentrated in tech and al… https://t.co/yD9NZs9vm1')
+,('1418273385365196803', 'Elon Musk Congratulates Tesla Bull Cathie Wood After She Hits 1M Twitter Followers $ARKK $TSLA https://t.co/gydOsmmVjF # via @benzinga')
+,('1418273400695427074', 'RT @MasterChangz: BREAKING - TESLA AQUIRES 300,000 M2 PLOT OF LAND IN NEVADA TO BE UTILIZED AS THE WORLDS LARGEST SOLAR BITCOIN MINING FARM…')
+,('1418273404537303043', '@LordPente @squawksquare @Tesla @elonmusk Agree')
+,('1418273406408036352', "RT @chenggaymarie: Tagging the Musk family 👪\n@elonmusk @mayemusk @ToscaMusk @kimbal 💜 💜 💜 💜 let's go! Here's a sure customer waving 👋 #Klev…")
+,('1418273410329759750', '@WR4NYGov @elonmusk @Tesla @MercedesBenz Sure tesla is quivering in their boots. Not')
+,('1418273412422660097', 'RT @AustinTeslaClub: Tesla Solar Roofs on new construction just look so good! @elonmusk \n📷 @RoschetzkyP https://t.co/4KuW2tXms9')
+,('1418273418286440450', "lol. there's no indication of a demand ramp, but good old long $TSLA Fred still feels the need to pump.\n\n250 whole… https://t.co/enyEf0C8rv")
+,('1418273430403694593', 'RT @elonwusk1: More Tesla boat mode video from #zhengzhouflood @elonmusk @SavedTesla @EmmetPeppers @28delayslater @TeslaPodcast https://t.c…')
+,('1418273438280601603', '@itztheDDMobile @Tesla you ruined your car mate')
+,('1418273442739150854', 'RT @SkyNews: Bitcoin\'s price has climbed after Elon Musk said his electric car maker Tesla would "most likely" resume accepting the cryptoc…')
+,('1418273445767438337', 'RT @StanphylCap: “Tesla sales employees petition for higher base pay after commission cuts in 2019” https://t.co/31UZwCzl4w\n\nSO NOW $TSLA I…')
+,('1418273447776501760', '@LloydBasson @illyr1ans @AleM_LB @ToyotaPolicy @ToyotaResearch Top selling in June of all types of cars. Remember,… https://t.co/rrdhBX9EqR')
+,('1418273449802403842', 'One minute you are a driver and next a captain 🤷\u200d♀️ Climate change must haves')
+,('1418273461810647043', 'damn nikola tesla was right these man made horrors really are beyond my comprehension')
+,('1418273462976536576', 'RT @SawyerMerritt: NEWS: Tesla is going on a salesforce hiring spree as demand ramps up in the US - Electrek\n\nThe automaker is focusing on…')
+,('1418273466407526400', 'RT @DogeMoon11: Tesla And SpaceX Billionaire Elon Musk Doubles Down On Dogecoin And Ethereum Plan To Beat Bitcoin Amid Crypto Price Bounce…')
+,('1418273468601323523', 'RT @AustinTeslaClub: One year ago today, @elonmusk announced that Tesla would build Giga Texas! @EvaFoxU @vincent13031925 @Tesmanian_com ht…')
+,('1418273470534889475', '@GlobalMonitor7 @zerohedge tesla is more luxurious? \nmatter of taste😉\n\nBut Tesla will never be able to have such lo… https://t.co/pGZRPPUck8')
+,('1418273475958091784', 'RT @SkyNews: Bitcoin\'s price has climbed after Elon Musk said his electric car maker Tesla would "most likely" resume accepting the cryptoc…')
+,('1418273481280610310', 'RT @scottmelker: Elon Musk just said that the only things he owns are Tesla stock and SpaceX stock... and #Bitcoin  (both personally and th…')
+,('1418273496891895814', '@VoteForTaylor31 Tesla #MTVHottest Taylor Swift')
+,('1418273504076738562', '"The Eden Prairie police department has added an outfitted Tesla to its fleet, likely becoming the first in the sta… https://t.co/nOptVR32qE')
+,('1418273504609259521', '@JonVirtual @jeriellsworth Encrypted NFT Blockchain Synergistic Juicero Tesla Hi-Wi USC-B Boosted Wobbly Quantum Bl… https://t.co/LiD1iGBVNT')
+,('1418273511601315841', 'RT @TheCryptoLark: Elon Musk owns #bitcoin, #ethereum and #dogecoin! His companies Tesla and SpaceX both hold BTC on their balance sheets!')
+,('1418273533004816393', 'I could also see Elon take $ETH on as payment for Tesla products.')
+,('1418273535139659785', '@Resist_dwp @e_neko_san @david_starof @P3ng1z @Byrnzie800 @savtah8 @dorrit_r @Moshepupik1 @Pakeha56… https://t.co/xSwYPNByrt')
+,('1418273535655567368', 'Consumer Reports Says Tesla’s ‘Full Self-Driving’ Software Lacks\xa0Safeguards https://t.co/PTBBQ673Eu')
+,('1418273535651467266', 'Tesla (TSLA) is going on a salesforce hiring spree as demand ramps up in the US – chatter @\xa0#wallstreetbets https://t.co/0VbE8iZhg0')
+,('1418273537966628865', 'Tesla ( $TSLA ) is going on a salesforce hiring spree as demand ramps up in the US, but focusing on part time positions to save costs')
+,('1418273540613177344', 'RT @DeItaone: *TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK\n$TSLA')
+,('1418273541208743936', 'RT @BTCTN: "I do own bitcoin. Tesla owns #bitcoin. Spacex owns bitcoin … And I personally own a bit of #ethereum and #dogecoin," said Elon…')
+,('1418273546141409283', "RT @MrIrianKomar: This pinhead is rich enough that hos company doesn't need any subsidy. Crass profeteer. https://t.co/jLVBNUZO7U")
+,('1418273548037206025', 'RT @NeilaK20: This tweet is taking off so now I must explain that I write novels about an asexual psychic were-Tesla called Psychic Undergr…')
+,('1418273555465314305', 'RT @JannetAymen: I challenge @JeffBezos, @elonmusk and @BillGates to donate 1 million dollars to my person.\nThe first one to do so wins 100…')
+,('1418273556027215872', "RT @chenggaymarie: Tagging the Musk family 👪\n@elonmusk @mayemusk @ToscaMusk @kimbal 💜 💜 💜 💜 let's go! Here's a sure customer waving 👋 #Klev…")
+,('1418273579162947584', 'RT @SamTheCarpetMan: If @elonmusk follows me and tweets “Sam The Carpet Man® is #Klever ~ $KLV ”, I’ll buy a @Tesla. \n\nHow clever is that,…')
+,('1418273592459112456', 'RT @CNET: Mercedes-Benz Vision EQXX concept aims to leapfrog Tesla as it pours resources into EVs https://t.co/77JpxJ5ukW')
+,('1418273602063921156', 'RT @Gadgets360: Talking about his crypto investments, Elon Musk said, "I might pump but I don\'t dump." \nhttps://t.co/xQoZQpK5QY https://t.c…')
+,('1418273615133302785', 'RT @tyler: Elon, Tesla, and SpaceX own #Bitcoin')
+,('1418273616135819264', "I am waiting #Pump in Bitcoin Real crypto is bitcoin coin #Elon Musk have capability to dump the Market but don't k… https://t.co/z3xpSxTYMl")
+,('1418273624746770447', 'RT @MasterChangz: BREAKING - TESLA AQUIRES 300,000 M2 PLOT OF LAND IN NEVADA TO BE UTILIZED AS THE WORLDS LARGEST SOLAR BITCOIN MINING FARM…')
+,('1418273629389787137', "@KimBushel @EVTruths @smdcapital Oh but it does. That's why EVERY lidar system is matched with HD maps. It isn't be… https://t.co/96i0B53Lh0")
+,('1418273635370995712', 'RT @elonwusk1: More Tesla boat mode video from #zhengzhouflood @elonmusk @SavedTesla @EmmetPeppers @28delayslater @TeslaPodcast https://t.c…')
+,('1418273637446995969', 'RT @Investingcom: *TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK\n\n$TSLA https://t.co/WxPYMxkmKH')
+,('1418273660742213637', '@StarTribune Now they can roll up in a Tesla when they break up kids from smoking.')
+,('1418273661920944128', 'RT @BTCTN: "I do own bitcoin. Tesla owns #bitcoin. Spacex owns bitcoin … And I personally own a bit of #ethereum and #dogecoin," said Elon…')
+,('1418273667281309704', 'FT: Tesla signs nickel deal with BHP to secure non-Chinese supply https://t.co/QciMflfgXY')
+,('1418273672213667841', 'RT @BTCTN: "I do own bitcoin. Tesla owns #bitcoin. Spacex owns bitcoin … And I personally own a bit of #ethereum and #dogecoin," said Elon…')
+,('1418273674545614852', '@elonmusk Hello, Mr. Elon Musk, I want to use the pig token to buy Tesla')
+,('1418273682506539009', 'RT @MasterChangz: BREAKING - TESLA AQUIRES 300,000 M2 PLOT OF LAND IN NEVADA TO BE UTILIZED AS THE WORLDS LARGEST SOLAR BITCOIN MINING FARM…')
+,('1418273684654067720', 'RT @RepBoebert: I challenge @AOC to condemn capitalism by getting rid of her Tesla.')
+,('1418273692963024899', 'Like, ok, electric police cars make sense, they let those idle all day long. But... A Tesla?')
+,('1418273713921855492', 'RT @BTC_Archive: "Most likely the answer is that Tesla would resume accepting #Bitcoin," @ElonMusk')
+,('1418273714152611840', 'RT @RepBoebert: I challenge @AOC to condemn capitalism by getting rid of her Tesla.')
+,('1418273714832039937', 'RT @Umbisam: Q3 may surprise more than most already expecting. $TSLA https://t.co/EiZOGLwlVt')
+,('1418273714987159553', 'Wireless charging on roads parking lots  the future is going to be amazing 😭 #Tesla #teslaq $TSLA')
+,('1418273717164122121', '@MercedesBenz @Superalkaline11 @Tesla When do you plan on increasing your sales? Don’t know if you’ve noticed, but… https://t.co/vaAqaFNNdq')
+,('1418273718984392704', 'RT @guardian: Tesla likely to start accepting bitcoin as payment again, says Elon Musk https://t.co/XazkTGZXTU')
+,('1418273720938860544', '@BustaRhymes @BONTESA_ @jack @elonmusk @CathieDWood So when Elon &amp; @Tesla bought #Bitcoin last December &amp; also anno… https://t.co/UCPoDW24Kv')
+,('1418273721815486466', 'RT @RepBoebert: I challenge @AOC to condemn capitalism by getting rid of her Tesla.')
+,('1418273730573312003', "RT @orthereaboot: lol. there's no indication of a demand ramp, but good old long $TSLA Fred still feels the need to pump.\n\n250 whole positi…")
+,('1418273731915419648', 'RT @Umbisam: BREAKING: Car companies including NIO, XPeng, Li, Tesla Cn, BYD have accumulated a lot of NEV credits last year, and now they…')
+,('1418273735056916482', "RT @pakpakchicken: I feel the pain when @elonmusk speaks. \n2/3rds of his life 🔥\n\nThank you for your sacrifice. I'll strive harder to spread…")
+,('1418273736273317889', 'RT @RepBoebert: I challenge @AOC to condemn capitalism by getting rid of her Tesla.')
+,('1418273756519227397', 'RT @Umbisam: Tesla received more than 860,000 new energy credits in China in 2020, the most of any car company, valued at RMB 2.58 billion…')
+,('1418273762793992193', 'Nice #Bitcoin article by @eqonex ! Read up \n👇 👇 👇 $EQOS')
+,('1418273764995858434', 'RT @Fxhedgers: TESLA STARTS SALESFORCE HIRING SPREE ON U.S. DEMAND: ELECTREK')
+,('1418273770326958083', 'RT @elonmusk: Tesla Solar Roof + Powerwall in major new housing development in Austin\nhttps://t.co/u7NJAswFW2')
+,('1418273770637123586', "RT @chenggaymarie: Tagging the Musk family 👪\n@elonmusk @mayemusk @ToscaMusk @kimbal 💜 💜 💜 💜 let's go! Here's a sure customer waving 👋 #Klev…")
+,('1418273775989235723', '@iSpeak_ebonicz No. She black and literally has mental health issues. She also stated Beyonce is her wife, she owns… https://t.co/97qsq8zDXs')
+,('1418273777587208197', '$TSLA - added, 7.23 660c lottos (risky), GL...')]
+
+from collections import Counter
+
+ids = set()
+
+for x in TWEETS:
+    ids.add(int(x[0]))
+
+text = []
+for x in TWEETS:
+    text.append(x[1])
+
+Hashtags = []
+Callouts = []
+for x in text:
+    b = x.split()
+    for a in b:
+        if '#' in a:
+            Hashtags.append(a)
+        elif '@' in a:
+            Callouts.append(a)
+
+Hashtag = Counter(Hashtags)
+Callout = Counter(Callouts)
+
+def find_top_keys(DICT, num_keys):
+    vals = []
+
+    for val in DICT.values():
+        vals.append(val)
+    vals = sorted(vals, reverse=True)
+    top_vals = []
+    index = 0
+
+    while num_keys >0:
+        val = vals[index]
+        top_vals.append(val)
+        index +=1
+        num_keys -=1
+
+    top_keys = []
+    for x in top_vals:
+        for k,v in DICT.items():
+            if x == v:
+                top_keys.append(k)
+
+    top_dict = dict(zip(top_keys, top_vals))
+    return top_dict
+
+print(find_top_keys(Hashtag, 5))
+print(find_top_keys(Callout, 5))
+
+
+
+
+
+
+
+    
+  
+
