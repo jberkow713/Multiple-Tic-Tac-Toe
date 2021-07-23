@@ -3,6 +3,7 @@ import tweepy
 from tweepy import Stream
 from collections import Counter
 from streamtesting3 import Tesla
+import datetime
 
 def removekey(d, key):
     r = dict(d)
@@ -92,19 +93,33 @@ class TweetParser():
             list.append(b)
         B = self.find_top_keys(list, 10)
         return B
-    def create_user_dictionary(self, user_key ):
+    def create_user_dictionary(self, user_key):
+        
         A = self.create_list('user')
+                
         list = []
         for x in A:
             b = (x['screen_name'])
             list.append(b)
-        list2 = []
-        for x in A:
-            b = (x[user_key])
-            list2.append(b)
+        if user_key in self.user_keys:
 
-        DICT = dict(zip(list, list2))
-        return DICT         
+            list2 = []
+            for x in A:
+                b = (x[user_key])
+                list2.append(b)
+
+            DICT = dict(zip(list, list2))
+            return DICT         
+        
+        elif user_key in self.keys:
+            for x in self.Dict_List:
+                lst = self.create_list(user_key)
+                DICT = dict(zip(list, lst))
+                return DICT 
+        else:
+            return 'Sorry that is not a valid key'
+
+
 
 T = TweetParser(Tesla())
 
@@ -116,7 +131,18 @@ T = TweetParser(Tesla())
 # print(T.find_top_keys(T.Hashtags, 10))
 # print(T.find_top_keys(T.Callouts, 10))
 T = TweetParser(Tesla())
-print(T.create_user_dictionary('friends_count'))  
+print(T.create_user_dictionary('timestamp_ms'))  
+
+
+B = T.create_list('timestamp_ms')
+times = []
+for x in B:
+    date = round(int(x)/1000)
+    times.append(date)
+times = sorted(times)
+
+print(times)    
+
     
 
 
