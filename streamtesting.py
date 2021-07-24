@@ -5,7 +5,7 @@ from collections import Counter
 from streamtesting3 import Tesla
 import datetime
 from datetime import datetime
-
+from Chatbot import *
 
 def removekey(d, key):
     r = dict(d)
@@ -83,6 +83,7 @@ class TweetParser():
                     Text.append(v)
         return Text            
     def create_Hashtags_and_Callouts(self):
+        
         for x in self.textlist:
             b = x.split()
             for a in b:
@@ -120,6 +121,7 @@ class TweetParser():
         top_dict = dict(zip(top_keys, top_vals))
         return top_dict
     def create_list(self, key):
+        #creates list based on key
         LIST = []
         for x in self.Dict_List:
             for k,v in x.items():
@@ -134,32 +136,9 @@ class TweetParser():
             list.append(b)
         B = self.find_top_keys(list, 10)
         return B
-    def create_user_dictionary(self, user_key):
-        
-        A = self.create_list('user')
-                
-        list = []
-        for x in A:
-            b = (x['screen_name'])
-            list.append(b)
-        if user_key in self.user_keys:
-
-            list2 = []
-            for x in A:
-                b = (x[user_key])
-                list2.append(b)
-
-            DICT = dict(zip(list, list2))
-            return DICT         
-        
-        elif user_key in self.keys:
-            for x in self.Dict_List:
-                lst = self.create_list(user_key)
-                DICT = dict(zip(list, lst))
-                return DICT 
-        else:
-            return 'Sorry that is not a valid key'
+    
     def find_time_stamps_by_duration(self, window, sec=True):
+        #Organizes time stamps into lists based on window length
         timestamps = self.create_list('timestamp_ms')
         times = [round(int(x)/1000) for x in timestamps]
         if sec == True:
@@ -168,7 +147,7 @@ class TweetParser():
             Organized_Times = find_time_windows(times, window, sec=False)
         return Organized_Times
     def find_users_by_time_stamps(self, window, Option):
-        
+        #Finds all Users for given time Stamp
         if Option == True:
             Organized_Times = self.find_time_stamps_by_duration(window, sec=True)
         if Option == False:
@@ -191,8 +170,9 @@ class TweetParser():
             User_list.append(small_list)
 
         return User_list   
-             
+
     def find_Tweets_by_Window(self, window, Option):
+        #Finds number of Tweets by time window
         if Option == True:
             Users = self.find_users_by_time_stamps(window, True)
         elif Option == False:
@@ -208,7 +188,7 @@ class TweetParser():
     
     
     def find_hashes_by_time(self, window, Option):
-        
+        #finds hashes by time windows
         if Option == True:
             A = self.find_users_by_time_stamps(window, True)
         elif Option == False:
@@ -216,7 +196,7 @@ class TweetParser():
         Hash_List = []
         for LIST in A:
             txt = []
-            for x in Tesla():
+            for x in self.Dict_List:
                 c = x['text']
                 a = x['user']
                 b = a['screen_name']
@@ -238,6 +218,47 @@ class TweetParser():
             Hash_List.append(Hashes)
         return Hash_List
 
+    def find_text_by_time(self, window, Option):
+        #Finds all text by time windows
+        if Option == True:
+            A = self.find_users_by_time_stamps(window, True)
+        elif Option == False:
+            A = self.find_users_by_time_stamps(window, False)
+        Master_List = []       
+        for LIST in A:
+            txt = []
+            for x in self.Dict_List:
+                c = x['text']
+                a = x['user']
+                b = a['screen_name']
+                # print(a)
+                for x in LIST:
+                    if x == b:
+                        txt.append(c)
+            Master_List.append(txt)
+
+        return Master_List
+    def analyze_text(self, window, Option):
+        #Returns Counter Dictionary for all given tweets within a given window of time
+
+        if Option == True:
+            A = self.find_text_by_time(window, True)
+        elif Option == False:
+            A = self.find_text_by_time(window, False)
+        Tokenized = []       
+        
+        for x in A:
+            Mini_List = ''
+            for y in x:
+                Mini_List +=y
+            Tokens = tokenize(Mini_List)
+            Tokenized.append(Tokens)
+        Counter_Dict = []
+        for x in Tokenized:
+            c = Counter(x)
+            Counter_Dict.append(c)
+        return Counter_Dict
+
 
 T = TweetParser(Tesla())
 
@@ -250,9 +271,12 @@ T = TweetParser(Tesla())
 # print(T.find_top_keys(T.Callouts, 10))
 T = TweetParser(Tesla())
 
-A = T.find_users_by_time_stamps(30, True)
-print(T.find_Tweets_by_Window(30, True))  
-print(T.find_top_keys(T.Hashtags, 10))
+# print(T.find_users_by_time_stamps(30, True))
+# print(T.find_Tweets_by_Window(30, True))  
+# print(T.find_hashes_by_time(30, True))
+A = T.analyze_text(30, True)
+print(A[5])
+
 
 
 
