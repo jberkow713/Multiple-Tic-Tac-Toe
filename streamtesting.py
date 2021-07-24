@@ -168,71 +168,83 @@ class TweetParser():
                 return DICT 
         else:
             return 'Sorry that is not a valid key'
-    def find_users_in_time_window(self, window, sec=True):
-        #Time_Dict maps all timestamps to users
-        
-        Time_Dict = self.create_user_dictionary('timestamp_ms')      
-          
-        
-        keys = []
-        values = []
-        print(len(values))
-        for k,v in Time_Dict.items():
-            keys.append(k)
-            values.append(round(int(v)/1000))
-        Time_Dict = dict(zip(keys, values))
-        print(len(values))           
-
-        #Time_Windows = List of Lists of sorted timestamps for given window duration
-        B = self.create_list('timestamp_ms')
-        times = []
-        for x in B:
-            date = round(int(x)/1000)
-            times.append(date)
-        times = sorted(times)
+    def find_time_stamps_by_duration(self, window, sec=True):
+        timestamps = self.create_list('timestamp_ms')
+        times = [round(int(x)/1000) for x in timestamps]
         if sec == True:
-            Time_Windows = find_time_windows(times,window)
+            Organized_Times = find_time_windows(times, window, sec=True)
         elif sec == False:
-            Time_Windows = find_time_windows(times, window, sec=False)    
-        Lengths = []
-        count = 0
+            Organized_Times = find_time_windows(times, window, sec=False)
+        return Organized_Times
+    def find_users_by_time_stamps(self, window, Option):
         
-        for x in Time_Windows:
-            for vals in x:
-                count +=1
-            Lengths.append(count)
-            count = 0
-      
-       
-        length = len(Lengths)
-        index = 0
-        Big_List = []
-        index_2 = 0 
-        Done = False 
-        while length >0:
-            val = Lengths[index]
-            
-            Small_List = []
-            while val >0:
+        if Option == True:
+            Organized_Times = self.find_time_stamps_by_duration(window, sec=True)
+        if Option == False:
+            Organized_Times = self.find_time_stamps_by_duration(window, sec=False)
                 
-                VAL = keys[index_2]
+        User_list = []              
+        
+        for list in Organized_Times:
+            small_list = []
+            for y in list:
+                for x in self.Dict_List:
+                    a = x['timestamp_ms']
+                    time = round(int(a)/1000)
+                    if time == y:
                 
-                
-                Small_List.append(VAL)
-                if VAL == keys[-1]:
-                    
-                    Done == True
-                    break 
-                index_2 +=1
-                val -=1
-            
-            index +=1
-            length -=1
-            Big_List.append(Small_List)             
+                        a = x['user']
+                        b = a['screen_name']
+                        small_list.append(b)
 
-        Big_List.remove(Big_List[-1])        
+            User_list.append(small_list)
+
+        return User_list        
+    def find_Tweets_by_Window(self, window, Option):
+        if Option == True:
+            Users = self.find_users_by_time_stamps(window, True)
+        elif Option == False:
+           Users = self.find_users_by_time_stamps(window, False)     
+
+        Tweets_by_Window = []
+        for x in Users:
+            count = 0
+            for y in x:
+                count +=1
+            Tweets_by_Window.append(count)
+        return Tweets_by_Window 
+    
+    
+    def find_hashes_by_time(self, window, Option):
         
-        return Big_List
+        if Option == True:
+            A = self.find_users_by_time_stamps(window, True)
+        elif Option == False:
+            A = self.find_users_by_time_stamps(window, False)
+        Hash_List = []
+        for LIST in A:
+            txt = []
+            for x in Tesla():
+                c = x['text']
+                a = x['user']
+                b = a['screen_name']
+                # print(a)
+                for x in LIST:
+                    if x == b:
+                        txt.append(c)
+            txt2 = []
+            for x in txt:
+                a = x.split()
+                txt2.append(a)
+            txt3 = []
+            for x in txt2:
+                for y in x:
+                    if '#' in y:
+                        txt3.append(y)
+
+            Hashes = Counter(txt3)
+            Hash_List.append(Hashes)
+        return Hash_List
 
 
 T = TweetParser(Tesla())
@@ -242,96 +254,62 @@ T = TweetParser(Tesla())
 # print(T.textlist)
 # A = T.find_most_active_users(10)
 # print(A)
-print(T.find_top_keys(T.Hashtags, 10))
+# print(T.find_top_keys(T.Hashtags, 10))
 # print(T.find_top_keys(T.Callouts, 10))
 T = TweetParser(Tesla())
-A = T.create_user_dictionary('timestamp_ms')
 
-times = []
-for v in A.values():
-    date = round(int(v)/1000)
-    times.append(date)
-print(len(times))
+A = T.find_users_by_time_stamps(30, True)
+print(T.find_Tweets_by_Window(30, True))  
+print(T.find_top_keys(T.Hashtags, 10))
+
 
 
     
-A = T.find_users_in_time_window(30)
-for x in A:
-    print(x)
-    
+#Problems and solutions: 
 
-
-#1)Tweets by 30 second windows: [14, 19, 22, 17, 14, 19, 11, 25, 7, 25, 16]
-#  
+#1)Tweets by 30 second windows: [26, 33, 42, 31, 28, 31, 11, 39, 7, 45, 22]
+#  print(T.find_Tweets_by_Window(30, True))  
 # Users by 30 second increments
-#2)
-
-# ['intwastaken', 'EdGriffith2', 'imathreatsueme', 'MrSatyaJit06', 'LukeShoeFitter', 'TinaRoy73771752', 'commander_cruz', 'TeslaForThe_Win', 'tslaqpodcast', 'ScotJChrisman', 'JCDentonNetRnnr', 'HanNing0609', 'utkarsh85129791', 'WhyTesla15']
-# ['Scott2Loudly', 'dohmanbob', 'Thesolidinvest1', 'Duane_MS_Dhoni', 'ahsanbutt', 'laerisee', 'Whenthe50930605', 'aiacides', 'usnews18_com', 'TNR_Gold', 'ClassInvestor', 'IBD_Aparna', 'EV_Stevee', 'bagguley', 'praveen77321', 'GeekInfoNow', 'InvestorIdeas', 'jayceejames', 'nytimestech']
-# ['PrinsenRobert', 'kylaschwaberow', 'Mike121948', 'Zxcxz_xyz', 'CryptoBowski', 'Leesanfr1', 'AustinTeslaClub', '1_Oreo_1', 'TSLAQrabbithole', 'LenePuah', 'Doge4faithfull', 'jacleena', 'NayakRkk', 'crypto_punx', 'Scifo15th', 'Livetradingnews', 'Asset_7', 'FinancialTimes', 'Jeff1601', 'MikeNasser91', 'uzohak', 'DedicNed']
-# ['Marcus08090087', 'rickpaulphoto', 'satoshidreams1', 'my_Book_of_Eli', 'Thearoged', 'broapmax', 'CryptoMyoGirl', 'TheWoolCorner', 'StarBoy_09', 'AndrewL07811963', 'warpig4130', 'barkleesanders', 'Techgnostik', 'superchatboiz', 'y_permatamora', 'carlos27edgar', 'ShahLVL']
-# ['KevinBCook', 'MrSockpuppet', 'eduardo06424849', 'investorNPress', 'StalinSSR', 'MUI_MaxHolloway', 'BugabooJester', 'PandaSWP', 'BijliWaliGaadi', 'dealbook', 'CrankStartMedia', 'ClayIMFWTF', 'JFrusci', 'pamikins62']
-# ['DavidRDutch', 'DeplorableRich5', 'Ink_Songwriter', 'MooningD', 'Spikebmth', 'BehnanSemih', 'candidate7153', 'TerryKanu', 'imshivmgoyal', 'TeslaChillMode', 'pat25854', 'smileysteph', 'JCobrae', 'realAlbanHoxha', 'ConnectingODots', 'YosarianTwo', 'The_Amit_Rana', 'AlBluson', 'cryptoderanged']
-# ['NVanSpartan', 'jluckyriego', 'FinTwitTSLA', 'Kenneth91250415', 'Ashokku42459973', 'Tre_Main_Event', 'RealTeslaNorth', 'Jacques66506078', 'Imhariom_bronex', 'PratyushMalli20', 'world_news_eng']
-# ['KalthoffKevin', 'Surajmo67748814', 'shubham97212324', 'timetravelart', 'PaulAdams72', 'OndrejBobal', 'gigglehertz', 'Cryptocuban1', 'mhadtk', 'The_Commenting', 'guacamole_in', 'usernamedn0ne', 'TeslaNY', 'hunnyhoney1212', 'up_camping', 'defi_pulse', 'AshokRPatil09', 'EliPasternak', 'JamesHoffmann3', 'aleks211969', 'futchasfu', 'SamuelKunemoemi', 'NSL_Photography', 'BitcoinW0rld', 'Writer_StevenL']
-# ['viriyabot', 'StanStandard', 'AMYRO551', 'MrMan12486375', 'daanielme', 'MBrae3', 'InvestorSwan']
-# ['myEVreview', 'DaCryptoMonkey', 'Watsay', 'trostrumnet', 'Sukhi_sukhraj', 'Constitutiongal', 'GTuranova', 'adamwellinform', 'Chadwright_', 'MonicaGwenlover', 'BoyprematureRr', 'gwestr', 'isukatsmsh', 'wolfofcrypto89', 'Gays4Tesla', 'Umesh25572659', 'Brownboi9365', 'tesflowtravel', 'NorCalWineLady', 'iKadm0s', 'Man89445040', 'b437d3fe9441419', 'jamicianmecrazy']
+#2)A = T.find_users_by_time_stamps(30, True)
 
 
-#3) Most used hashtag: {'#Bitcoin': 24, '#Tesla': 15, '#ethereum': 6, '#Bitcoin"': 6, '#zhengzhouflood': 5, \
+#3) Most used hashtag: 
+# print(T.find_top_keys(T.Hashtags, 10))
+# {'#Bitcoin': 24, '#Tesla': 15, '#ethereum': 6, '#Bitcoin"': 6, '#zhengzhouflood': 5, \
 # '#bitcoin.': 4, '#dogecoin,"': 4, '#tesla': 3, '#Model3': 3, '#Doge': 2}
 
 #4)Hashtags in last 30 seconds Counter({'#ethereum': 2, '#Bitcoin': 2, '#zhengzhouflood': 1, '#bitcoin,': 1, '#dogecoin!': 1, '#Bitcoin"': 1, '#bitcoin.': 1, '#dogecoin,"': 1})
+# A = T.find_hashes_by_time(30, True)
+#print(A[0])
+# A = T.find_hashes_by_time(30, True)
+# print(A[0])
+# Counter({'#Bitcoin': 6, '#ethereum': 5, '#Bitcoin"': 3, '#bitcoin.': \
+# 3, '#dogecoin,"': 3, '#zhengzhouflood': 2, '#bitcoin,': 2, '#dogecoin!': 2})
+
 
 #5) Used Built in class functionality to find moving average of any given window of time for dataset :)
 
-
-def find_hashes_by_time(window):
-    T = TweetParser(Tesla())
-    A = T.find_users_in_time_window(window)
-    Hash_List = []
-    for LIST in A:
-        txt = []
-        for x in Tesla():
-            c = x['text']
-            a = x['user']
-            b = a['screen_name']
-            # print(a)
-            for x in LIST:
-                if x == b:
-                    txt.append(c)
-        txt2 = []
-        for x in txt:
-            a = x.split()
-            txt2.append(a)
-        txt3 = []
-        for x in txt2:
-            for y in x:
-                if '#' in y:
-                    txt3.append(y)
-
-        Hashes = Counter(txt3)
-        Hash_List.append(Hashes)
-    return Hash_List
-
-print(find_hashes_by_time(60))
+# print(T.find_hashes_by_time(30, True))
 
 
-# [Counter({'#Bitcoin': 5, '#Tesla': 3, '#zhengzhouflood': 2, '#ethereum': 2, '#bitcoin,': 1, '#dogecoin!': 1, '#Bitcoin"': 1, \
-# '#bitcoin.': 1, '#dogecoin,"': 1, '#skynews': 1, '#BreakingNews': 1, '#PleaseRetweet': 1, '#rEVolution': 1, '#Gold:': 1, '#DYOR': 1,\
-#  '#Ethereum': 1, '#Tesla,': 1, '#ElectricCars': 1, '#EVs': 1, '#BlockChain': 1, '#Crypto': 1}),\
-#  Counter({'#Bitcoin': 5, '#Tesla': 2, '#zhengzhouflood': 2, '#doge': 2, '#ethereum': 2, '#EV…': 1, '#Tezos"': 1,\
-# '#Doge': 1, '#Ethereum,': 1, '#dogearmy': 1, '#shibainu': 1, '#ShibaArmy': 1, '#babydoge': 1, '#babyshibinu': 1, '#CyberTruck': 1, '#tesla': 1,\
-#  '#eCar': 1, '#SpaceX': 1, '#Bitcoin”': 1, '#cybertruck': 1, '#ListenToThis:': 1, '#NowPlaying': 1,\
-#  '#dogecoin': 1, '#upgrade': 1, '#dogethereum': 1, '#moon': 1, '#mars': 1, '#dogelon': 1, '#crypto': 1, '#bitcoin.': 1, '#dogecoin,"': 1}),\
-#  Counter({'#Tesla': 3, '#Bitcoin': 2, '#wsj': 1, '#nytimes': 1, '#business…': 1, '#Bitcoin”': 1, '#SAFEMOON': 1, '#Bitcoi…': 1, '#tesla': 1,\
-# '#climateaction': 1, '#SocialMediaMarketing': 1, '#DigitalMarketing': 1, '#BSC': 1, '#BNB': 1, '#Polygon':'\
-#  1, '#Matic': 1, '#ETH': 1, '#bitcoin.': 1, '#ethereum': 1, '#dogecoin,"': 1, \
-# '#Cryptocurrency': 1, '#FinTech': 1, '#Digital': 1, '#Currency': 1, '#batterystorage': 1}), \
-# Counter({'#Tesla': 3, '#Doge': 1, '#Ethereum,': 1, '#Model3': 1, '#Bitcoin,"': 1, '#EV': 1, '#tesla': 1, '#selfdrive': 1,\
-#  '#modelsex': 1, '#m…': 1, '#BITCOIN': 1, '#zhengzhouflood': 1, '#Bitcoin': 1, '#bitcoin': 1}), 
-# \
-# Counter({'#Tesla': 3, '#Bitcoin': 2, '#ElonMusk': 1, '#bitcoin.”': 1, '#BTC': 1, '#Model3': 1, '#Bitcoin"': 1})]   
+# [Counter({'#Bitcoin': 6, '#ethereum': 5, '#Bitcoin"': 3, '#bitcoin.': 3, '#dogecoin,"': 3, '#zhengzhouflood': 2, '#bitcoin,': 2,\
+#  '#dogecoin!': 2}), Counter({'#Tesla': 18, '#Bitcoin': 12, '#rEVolution': 6, '#Gold:': 6, '#DYOR': 6, '#ElectricCars': 6, \
+# '#EVs': 6, '#BlockChain': 6, '#Crypto': 6, '#Ethereum': 3, '#skynews': 2, '#BreakingNews': 2, '#PleaseRetweet': 2, '#Tesla,': 1,\
+#  '#zhengzhouflood': 1}), Counter({'#zhengzhouflood': 4, '#Tesla': 3, '#EV…': 3, '#Bitcoin': 2, '#Tezos"': 2, '#Doge': 2, '#Ethereum,': 2,\
+#  '#tesla': 2, '#eCar': 2, '#bitcoin.': 2, '#ethereum': 2, '#dogecoin,"': 2, '#doge': 1, '#dogearmy': 1, '#shibainu': 1, '#ShibaArmy': 1,\
+#  '#babydoge': 1, '#babyshibinu': 1, '#CyberTruck': 1}), Counter({'#Bitcoin': 12, '#Tesla': 4, '#SpaceX': 4, '#Bitcoin”': 4,\
+#  '#cybertruck': 3, '#ListenToThis:': 3, '#NowPlaying': 3}), Counter({'#wsj': 3, '#nytimes': 3, '#business…': 3, \
+# '#zhengzhouflood': 2, '#ethereum': 1, '#dogecoin': 1, '#doge': 1, '#upgrade': 1, '#dogethereum': 1, '#moon': 1,\
+# '#mars': 1, '#dogelon': 1, '#crypto': 1, '#Tesla': 1, '#Bitcoin”': 1, '#Bitcoin': 1, '#SAFEMOON': 1}), \
+# Counter({'#Bitcoin': 4, '#Cryptocurrency': 4, '#FinTech': 4, '#Digital': 4, '#Currency': 4, '#bitcoin.': 2, \
+# '#ethereum': 2, '#dogecoin,"': 2, '#Bitcoi…': 1, '#tesla': 1, '#climateaction': 1, '#SocialMediaMarketing': 1,\
+#  '#DigitalMarketing': 1, '#BSC': 1, '#BNB': 1, '#Polygon': 1, '#Matic': 1, '#ETH': 1, '#Tesla': 1}), \
+# Counter({'#batterystorage': 1, '#Tesla': 1}), Counter({'#Tesla': 7, '#Doge': 3, '#Ethereum,': 3, '#rEVolution': 2, \
+# '#Gold:': 2, '#DYOR': 2, '#ElectricCars': 2, '#EVs': 2, '#BlockChain': 2, '#Bitcoin': 2, '#Crypto': 2, '#bitcoin.': 1,\
+#  '#ethereum': 1, '#dogecoin,"': 1, '#Model3': 1}), Counter({'#Bitcoin,"': 1, '#Tesla': 1, '#EV': 1, '#tesla': 1,\
+#  '#selfdrive': 1, '#modelsex': 1, '#m…': 1}), Counter({'#Tesla': 8, '#Bitcoin': 6, '#ElonMusk': 3, '#bitcoin.”': 2,\
+#  '#BITCOIN': 1, '#zhengzhouflood': 1, '#bitcoin': 1, '#BTC': 1, '#Model3': 1, '#Bitcoin"': 1}),\
+#  Counter({'#Bitcoin': 10, '#Bitcoin"': 5, '#Tesla': 2, '#Model3': 2, '#bitcoin.': 1, '#ethereum': 1, '#dogecoin,"': 1})]
 
 
 
