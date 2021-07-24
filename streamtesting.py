@@ -4,11 +4,61 @@ from tweepy import Stream
 from collections import Counter
 from streamtesting3 import Tesla
 import datetime
+from datetime import datetime
+
 
 def removekey(d, key):
     r = dict(d)
     del r[key]
     return r
+def find_time_windows(list_of_times, window_length, sec=True):
+    if sec == False:
+        window_length = window_length*60
+
+    length = len(list_of_times)
+    
+    index = 1
+    list_of_windows = []
+    mini_list = []
+    
+
+    while length >1:              
+        
+        starting_time = list_of_times[0]  
+        
+        time = list_of_times[index]        
+       
+        difference = time-starting_time
+        
+        if difference <= window_length:
+            mini_list.append(time)
+                    
+            index +=1
+            
+
+            
+        if difference > window_length:
+            mini_list.insert(0,starting_time)
+            
+            list_of_windows.append(mini_list)
+            
+            for _ in range(index):
+                list_of_times.remove(list_of_times[0])
+               
+            index = 1
+            mini_list = []
+        
+        length -=1
+        if length ==1:
+            
+            mini_list.insert(0,starting_time)
+            
+            list_of_windows.append(mini_list)
+
+        # print(len(list_of_times), index)
+    return list_of_windows 
+
+
 
 
 class TweetParser():
@@ -118,7 +168,71 @@ class TweetParser():
                 return DICT 
         else:
             return 'Sorry that is not a valid key'
+    def find_users_in_time_window(self, window, sec=True):
+        #Time_Dict maps all timestamps to users
+        
+        Time_Dict = self.create_user_dictionary('timestamp_ms')      
+          
+        
+        keys = []
+        values = []
+        print(len(values))
+        for k,v in Time_Dict.items():
+            keys.append(k)
+            values.append(round(int(v)/1000))
+        Time_Dict = dict(zip(keys, values))
+        print(len(values))           
 
+        #Time_Windows = List of Lists of sorted timestamps for given window duration
+        B = self.create_list('timestamp_ms')
+        times = []
+        for x in B:
+            date = round(int(x)/1000)
+            times.append(date)
+        times = sorted(times)
+        if sec == True:
+            Time_Windows = find_time_windows(times,window)
+        elif sec == False:
+            Time_Windows = find_time_windows(times, window, sec=False)    
+        Lengths = []
+        count = 0
+        
+        for x in Time_Windows:
+            for vals in x:
+                count +=1
+            Lengths.append(count)
+            count = 0
+      
+       
+        length = len(Lengths)
+        index = 0
+        Big_List = []
+        index_2 = 0 
+        Done = False 
+        while length >0:
+            val = Lengths[index]
+            
+            Small_List = []
+            while val >0:
+                
+                VAL = keys[index_2]
+                
+                
+                Small_List.append(VAL)
+                if VAL == keys[-1]:
+                    
+                    Done == True
+                    break 
+                index_2 +=1
+                val -=1
+            
+            index +=1
+            length -=1
+            Big_List.append(Small_List)             
+
+        Big_List.remove(Big_List[-1])        
+        
+        return Big_List
 
 
 T = TweetParser(Tesla())
@@ -128,22 +242,81 @@ T = TweetParser(Tesla())
 # print(T.textlist)
 # A = T.find_most_active_users(10)
 # print(A)
-# print(T.find_top_keys(T.Hashtags, 10))
+print(T.find_top_keys(T.Hashtags, 10))
 # print(T.find_top_keys(T.Callouts, 10))
 T = TweetParser(Tesla())
-print(T.create_user_dictionary('timestamp_ms'))  
+A = T.create_user_dictionary('timestamp_ms')
 
-
-B = T.create_list('timestamp_ms')
 times = []
-for x in B:
-    date = round(int(x)/1000)
+for v in A.values():
+    date = round(int(v)/1000)
     times.append(date)
-times = sorted(times)
+print(len(times))
 
-print(times)    
 
     
+A = T.find_users_in_time_window(30)
+for x in A:
+    print(x)
+    
+
+
+#1)Tweets by 30 second windows: [14, 19, 22, 17, 14, 19, 11, 25, 7, 25, 16]
+#  
+# Users by 30 second increments
+#2)
+
+# ['intwastaken', 'EdGriffith2', 'imathreatsueme', 'MrSatyaJit06', 'LukeShoeFitter', 'TinaRoy73771752', 'commander_cruz', 'TeslaForThe_Win', 'tslaqpodcast', 'ScotJChrisman', 'JCDentonNetRnnr', 'HanNing0609', 'utkarsh85129791', 'WhyTesla15']
+# ['Scott2Loudly', 'dohmanbob', 'Thesolidinvest1', 'Duane_MS_Dhoni', 'ahsanbutt', 'laerisee', 'Whenthe50930605', 'aiacides', 'usnews18_com', 'TNR_Gold', 'ClassInvestor', 'IBD_Aparna', 'EV_Stevee', 'bagguley', 'praveen77321', 'GeekInfoNow', 'InvestorIdeas', 'jayceejames', 'nytimestech']
+# ['PrinsenRobert', 'kylaschwaberow', 'Mike121948', 'Zxcxz_xyz', 'CryptoBowski', 'Leesanfr1', 'AustinTeslaClub', '1_Oreo_1', 'TSLAQrabbithole', 'LenePuah', 'Doge4faithfull', 'jacleena', 'NayakRkk', 'crypto_punx', 'Scifo15th', 'Livetradingnews', 'Asset_7', 'FinancialTimes', 'Jeff1601', 'MikeNasser91', 'uzohak', 'DedicNed']
+# ['Marcus08090087', 'rickpaulphoto', 'satoshidreams1', 'my_Book_of_Eli', 'Thearoged', 'broapmax', 'CryptoMyoGirl', 'TheWoolCorner', 'StarBoy_09', 'AndrewL07811963', 'warpig4130', 'barkleesanders', 'Techgnostik', 'superchatboiz', 'y_permatamora', 'carlos27edgar', 'ShahLVL']
+# ['KevinBCook', 'MrSockpuppet', 'eduardo06424849', 'investorNPress', 'StalinSSR', 'MUI_MaxHolloway', 'BugabooJester', 'PandaSWP', 'BijliWaliGaadi', 'dealbook', 'CrankStartMedia', 'ClayIMFWTF', 'JFrusci', 'pamikins62']
+# ['DavidRDutch', 'DeplorableRich5', 'Ink_Songwriter', 'MooningD', 'Spikebmth', 'BehnanSemih', 'candidate7153', 'TerryKanu', 'imshivmgoyal', 'TeslaChillMode', 'pat25854', 'smileysteph', 'JCobrae', 'realAlbanHoxha', 'ConnectingODots', 'YosarianTwo', 'The_Amit_Rana', 'AlBluson', 'cryptoderanged']
+# ['NVanSpartan', 'jluckyriego', 'FinTwitTSLA', 'Kenneth91250415', 'Ashokku42459973', 'Tre_Main_Event', 'RealTeslaNorth', 'Jacques66506078', 'Imhariom_bronex', 'PratyushMalli20', 'world_news_eng']
+# ['KalthoffKevin', 'Surajmo67748814', 'shubham97212324', 'timetravelart', 'PaulAdams72', 'OndrejBobal', 'gigglehertz', 'Cryptocuban1', 'mhadtk', 'The_Commenting', 'guacamole_in', 'usernamedn0ne', 'TeslaNY', 'hunnyhoney1212', 'up_camping', 'defi_pulse', 'AshokRPatil09', 'EliPasternak', 'JamesHoffmann3', 'aleks211969', 'futchasfu', 'SamuelKunemoemi', 'NSL_Photography', 'BitcoinW0rld', 'Writer_StevenL']
+# ['viriyabot', 'StanStandard', 'AMYRO551', 'MrMan12486375', 'daanielme', 'MBrae3', 'InvestorSwan']
+# ['myEVreview', 'DaCryptoMonkey', 'Watsay', 'trostrumnet', 'Sukhi_sukhraj', 'Constitutiongal', 'GTuranova', 'adamwellinform', 'Chadwright_', 'MonicaGwenlover', 'BoyprematureRr', 'gwestr', 'isukatsmsh', 'wolfofcrypto89', 'Gays4Tesla', 'Umesh25572659', 'Brownboi9365', 'tesflowtravel', 'NorCalWineLady', 'iKadm0s', 'Man89445040', 'b437d3fe9441419', 'jamicianmecrazy']
+
+
+#3) Most used hashtag: {'#Bitcoin': 24, '#Tesla': 15, '#ethereum': 6, '#Bitcoin"': 6, '#zhengzhouflood': 5, \
+# '#bitcoin.': 4, '#dogecoin,"': 4, '#tesla': 3, '#Model3': 3, '#Doge': 2}
+
+#4)Hashtags in last 30 seconds Counter({'#ethereum': 2, '#Bitcoin': 2, '#zhengzhouflood': 1, '#bitcoin,': 1, '#dogecoin!': 1, '#Bitcoin"': 1, '#bitcoin.': 1, '#dogecoin,"': 1})
+
+#5) Used Built in class functionality to find moving average of any given window of time for dataset :)
+
+
+def find_hashes_by_time(window):
+    T = TweetParser(Tesla())
+    A = T.find_users_in_time_window(window)
+    Hash_List = []
+    for LIST in A:
+        txt = []
+        for x in Tesla():
+            c = x['text']
+            a = x['user']
+            b = a['screen_name']
+            # print(a)
+            for x in LIST:
+                if x == b:
+                    txt.append(c)
+        txt2 = []
+        for x in txt:
+            a = x.split()
+            txt2.append(a)
+        txt3 = []
+        for x in txt2:
+            for y in x:
+                if '#' in y:
+                    txt3.append(y)
+
+        Hashes = Counter(txt3)
+        Hash_List.append(Hashes)
+    return Hash_List
+
+print(find_hashes_by_time(60))
+
+   
 
 
 
