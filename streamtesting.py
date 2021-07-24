@@ -19,24 +19,19 @@ def find_time_windows(list_of_times, window_length, sec=True):
     
     index = 1
     list_of_windows = []
-    mini_list = []
-    
+    mini_list = []    
 
     while length >1:              
         
-        starting_time = list_of_times[0]  
-        
-        time = list_of_times[index]        
-       
+        starting_time = list_of_times[0]          
+        time = list_of_times[index]      
         difference = time-starting_time
         
         if difference <= window_length:
             mini_list.append(time)
                     
             index +=1
-            
 
-            
         if difference > window_length:
             mini_list.insert(0,starting_time)
             
@@ -51,15 +46,11 @@ def find_time_windows(list_of_times, window_length, sec=True):
         length -=1
         if length ==1:
             
-            mini_list.insert(0,starting_time)
-            
+            mini_list.insert(0,starting_time)            
             list_of_windows.append(mini_list)
 
         # print(len(list_of_times), index)
     return list_of_windows 
-
-
-
 
 class TweetParser():
     def __init__(self, Dict_List):
@@ -199,7 +190,8 @@ class TweetParser():
 
             User_list.append(small_list)
 
-        return User_list        
+        return User_list   
+             
     def find_Tweets_by_Window(self, window, Option):
         if Option == True:
             Users = self.find_users_by_time_stamps(window, True)
