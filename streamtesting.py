@@ -269,8 +269,54 @@ print(T.find_top_keys(T.Hashtags, 10))
 
 #1)Tweets by 30 second windows: [26, 33, 42, 31, 28, 31, 11, 39, 7, 45, 22]
 #  print(T.find_Tweets_by_Window(30, True))  
+
 # Users by 30 second increments
-#2)A = T.find_users_by_time_stamps(30, True)
+
+# 2) A = T.find_users_by_time_stamps(30, True)
+# [['intwastaken', 'EdGriffith2', 'imathreatsueme', 'MrSatyaJit06', 'LukeShoeFitter', 'MrSatyaJit06', 'LukeShoeFitter',\
+#  'TinaRoy73771752', 'commander_cruz', 'TinaRoy73771752', 'commander_cruz', 'TeslaForThe_Win', 'tslaqpodcast', 'ScotJChrisman',\
+#  'JCDentonNetRnnr', 'ScotJChrisman', 'JCDentonNetRnnr', 'HanNing0609', 'utkarsh85129791', 'WhyTesla15', 'HanNing0609',\
+#  'utkarsh85129791', 'WhyTesla15', 'HanNing0609', 'utkarsh85129791', 'WhyTesla15'], ['Scott2Loudly', 'dohmanbob',\
+#  'Scott2Loudly', 'dohmanbob', 'Thesolidinvest1', 'Duane_MS_Dhoni', 'ahsanbutt', 'Duane_MS_Dhoni', 'ahsanbutt', 'laerisee',\
+#  'Whenthe50930605', 'laerisee', 'Whenthe50930605', 'aiacides', 'usnews18_com', 'TNR_Gold', 'ClassInvestor', 'usnews18_com',\
+#  'TNR_Gold', 'ClassInvestor', 'usnews18_com', 'TNR_Gold', 'ClassInvestor', 'IBD_Aparna', 'EV_Stevee', 'bagguley', 'praveen77321', \
+# 'TNR_Gold', 'TNR_Gold', 'GeekInfoNow', 'TNR_Gold', 'GeekInfoNow', 'InvestorIdeas'], ['jayceejames', 'nytimestech', 'jayceejames', \
+# 'nytimestech', 'PrinsenRobert', 'kylaschwaberow', 'PrinsenRobert', 'kylaschwaberow', 'Mike121948', 'Zxcxz_xyz', 'CryptoBowski', \
+# 'Mike121948', 'Zxcxz_xyz', 'CryptoBowski', 'Mike121948', 'Zxcxz_xyz', 'CryptoBowski', 'Leesanfr1', 'AustinTeslaClub', \
+# 'Leesanfr1', 'AustinTeslaClub', '1_Oreo_1', 'TSLAQrabbithole', '1_Oreo_1', 'TSLAQrabbithole', 'LenePuah', \
+# 'Doge4faithfull', 'LenePuah', 'Doge4faithfull', 'jacleena', 'NayakRkk', 'crypto_punx', 'Scifo15th',\
+#  'praveen77321', 'Scifo15th', 'praveen77321', 'Livetradingnews', 'Asset_7', 'FinancialTimes', 'Jeff1601', \
+# 'FinancialTimes', 'Jeff1601'], ['MikeNasser91', 'uzohak', 'DedicNed', 'MikeNasser91', 'uzohak', 'DedicNed', \
+# 'MikeNasser91', 'uzohak', 'DedicNed', 'Mike121948', 'Marcus08090087', 'uzohak', 'rickpaulphoto',\
+#  'satoshidreams1', 'my_Book_of_Eli', 'rickpaulphoto', 'satoshidreams1', 'my_Book_of_Eli', 'rickpaulphoto', \
+# 'satoshidreams1', 'my_Book_of_Eli', 'Thearoged', 'broapmax', 'CryptoMyoGirl', 'TheWoolCorner', 'InvestorIdeas', \
+# 'StarBoy_09', 'AndrewL07811963', 'StarBoy_09', 'AndrewL07811963', 'Thesolidinvest1'], ['warpig4130', \
+# 'barkleesanders', 'Techgnostik', 'warpig4130', 'barkleesanders', 'Techgnostik', 'warpig4130', 'barkleesanders', 'Techgnostik', \
+# 'superchatboiz', 'y_permatamora', 'carlos27edgar', 'ShahLVL', 'carlos27edgar', 'ShahLVL', 'KevinBCook', 'MrSockpuppet', 'eduardo06424849',\
+#  'investorNPress', 'MrSockpuppet', 'eduardo06424849', 'investorNPress', 'MrSockpuppet', 'eduardo06424849', 'investorNPress', \
+# 'StalinSSR', 'MUI_MaxHolloway', 'BugabooJester'], ['PandaSWP', 'BijliWaliGaadi', 'dealbook', 'CrankStartMedia', 'ClayIMFWTF',\
+#  'JFrusci', 'pamikins62', 'DavidRDutch', 'pamikins62', 'DavidRDutch', 'DeplorableRich5', 'Ink_Songwriter', 'MooningD', \
+# 'Spikebmth', 'MooningD', 'Spikebmth', 'BehnanSemih', 'candidate7153', 'TerryKanu', 'BehnanSemih', 'candidate7153', \
+# 'TerryKanu', 'BehnanSemih', 'candidate7153', 'TerryKanu', 'candidate7153', 'imshivmgoyal', 'TeslaChillMode', \
+# 'imshivmgoyal', 'TeslaChillMode', 'pat25854'], ['smileysteph', 'JCobrae', 'StarBoy_09', 'realAlbanHoxha', \
+# 'ConnectingODots', 'YosarianTwo', 'Marcus08090087', 'The_Amit_Rana', 'AlBluson', 'cryptoderanged', 'NVanSpartan'], \
+# ['jluckyriego', 'FinTwitTSLA', 'Kenneth91250415', 'jluckyriego', 'FinTwitTSLA', 'Kenneth91250415', 'jluckyriego',\
+#  'FinTwitTSLA', 'Kenneth91250415', 'Ashokku42459973', 'Tre_Main_Event', 'Doge4faithfull', 'RealTeslaNorth', \
+# 'Tre_Main_Event', 'Tre_Main_Event', 'Tre_Main_Event', 'Jacques66506078', 'Imhariom_bronex', 'PratyushMalli20', \
+# 'world_news_eng', 'Tre_Main_Event', 'world_news_eng', 'Tre_Main_Event', 'KalthoffKevin', 'TNR_Gold', 'KalthoffKevin',\
+#  'TNR_Gold', 'Surajmo67748814', 'shubham97212324', 'Surajmo67748814', 'shubham97212324', 'Tre_Main_Event', \
+# 'Tre_Main_Event', 'timetravelart', 'Tre_Main_Event', 'timetravelart', 'PaulAdams72', 'OndrejBobal', 'gigglehertz'],\
+#  ['Cryptocuban1', 'mhadtk', 'The_Commenting', 'guacamole_in', 'usernamedn0ne', 'TeslaNY', 'hunnyhoney1212'], \
+# ['up_camping', 'defi_pulse', 'AshokRPatil09', 'EliPasternak', 'JamesHoffmann3', 'aleks211969', 'futchasfu', \
+# 'SamuelKunemoemi', 'NSL_Photography', 'BitcoinW0rld', 'Writer_StevenL', 'NSL_Photography', 'BitcoinW0rld', \
+# 'Writer_StevenL', 'NSL_Photography', 'BitcoinW0rld', 'Writer_StevenL', 'viriyabot', 'StanStandard', 'AMYRO551',\
+#  'viriyabot', 'StanStandard', 'AMYRO551', 'viriyabot', 'StanStandard', 'AMYRO551', 'MrMan12486375', 'daanielme',\
+#  'MrMan12486375', 'daanielme', 'MBrae3', 'InvestorSwan', 'myEVreview', 'DaCryptoMonkey', 'Watsay', 'trostrumnet', \
+# 'Sukhi_sukhraj', 'Watsay', 'trostrumnet', 'Sukhi_sukhraj', 'Watsay', 'trostrumnet', 'Sukhi_sukhraj', \
+# 'Constitutiongal', 'GTuranova'], ['adamwellinform', 'Chadwright_', 'adamwellinform', 'Chadwright_', \
+# 'MonicaGwenlover', 'BoyprematureRr', 'gwestr', 'isukatsmsh', 'wolfofcrypto89', 'Gays4Tesla', 'Umesh25572659', \
+# 'Brownboi9365', 'tesflowtravel', 'NorCalWineLady', 'iKadm0s', 'NorCalWineLady',\
+#  'iKadm0s', 'Man89445040', 'b437d3fe9441419', 'Man89445040', 'b437d3fe9441419', 'jamicianmecrazy']]
 
 
 #3) Most used hashtag: 
