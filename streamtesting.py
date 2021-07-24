@@ -316,7 +316,22 @@ def find_hashes_by_time(window):
 
 print(find_hashes_by_time(60))
 
-   
+
+# [Counter({'#Bitcoin': 5, '#Tesla': 3, '#zhengzhouflood': 2, '#ethereum': 2, '#bitcoin,': 1, '#dogecoin!': 1, '#Bitcoin"': 1, \
+# '#bitcoin.': 1, '#dogecoin,"': 1, '#skynews': 1, '#BreakingNews': 1, '#PleaseRetweet': 1, '#rEVolution': 1, '#Gold:': 1, '#DYOR': 1,\
+#  '#Ethereum': 1, '#Tesla,': 1, '#ElectricCars': 1, '#EVs': 1, '#BlockChain': 1, '#Crypto': 1}),\
+#  Counter({'#Bitcoin': 5, '#Tesla': 2, '#zhengzhouflood': 2, '#doge': 2, '#ethereum': 2, '#EV…': 1, '#Tezos"': 1,\
+# '#Doge': 1, '#Ethereum,': 1, '#dogearmy': 1, '#shibainu': 1, '#ShibaArmy': 1, '#babydoge': 1, '#babyshibinu': 1, '#CyberTruck': 1, '#tesla': 1,\
+#  '#eCar': 1, '#SpaceX': 1, '#Bitcoin”': 1, '#cybertruck': 1, '#ListenToThis:': 1, '#NowPlaying': 1,\
+#  '#dogecoin': 1, '#upgrade': 1, '#dogethereum': 1, '#moon': 1, '#mars': 1, '#dogelon': 1, '#crypto': 1, '#bitcoin.': 1, '#dogecoin,"': 1}),\
+#  Counter({'#Tesla': 3, '#Bitcoin': 2, '#wsj': 1, '#nytimes': 1, '#business…': 1, '#Bitcoin”': 1, '#SAFEMOON': 1, '#Bitcoi…': 1, '#tesla': 1,\
+# '#climateaction': 1, '#SocialMediaMarketing': 1, '#DigitalMarketing': 1, '#BSC': 1, '#BNB': 1, '#Polygon':'\
+#  1, '#Matic': 1, '#ETH': 1, '#bitcoin.': 1, '#ethereum': 1, '#dogecoin,"': 1, \
+# '#Cryptocurrency': 1, '#FinTech': 1, '#Digital': 1, '#Currency': 1, '#batterystorage': 1}), \
+# Counter({'#Tesla': 3, '#Doge': 1, '#Ethereum,': 1, '#Model3': 1, '#Bitcoin,"': 1, '#EV': 1, '#tesla': 1, '#selfdrive': 1,\
+#  '#modelsex': 1, '#m…': 1, '#BITCOIN': 1, '#zhengzhouflood': 1, '#Bitcoin': 1, '#bitcoin': 1}), 
+# \
+# Counter({'#Tesla': 3, '#Bitcoin': 2, '#ElonMusk': 1, '#bitcoin.”': 1, '#BTC': 1, '#Model3': 1, '#Bitcoin"': 1})]   
 
 
 
