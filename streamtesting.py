@@ -146,6 +146,7 @@ class TweetParser():
         elif sec == False:
             Organized_Times = find_time_windows(times, window, sec=False)
         return Organized_Times
+
     def find_users_by_time_stamps(self, window, Option):
         #Finds all Users for given time Stamp
         if Option == True:
@@ -238,7 +239,7 @@ class TweetParser():
             Master_List.append(txt)
 
         return Master_List
-    def analyze_text(self, window, Option, word_count):
+    def Topic_Modeling(self, window, Option, word_count):
         #Returns Counter Dictionary for specified word count, 
         # using all given tweets within a given window of time
 
@@ -249,7 +250,8 @@ class TweetParser():
         Tokenized = []       
         Not_to_Include = ['and', 'i', 'in', 'to', 'the', 'of', 'is',\
             'a', 'for', 'my', 'do', 'was', 'but', 'by', 'that', 'have', 'from', 'he', 'she',\
-                'it', 'them', 'they', 'be', 'as', 'an', 'did', 'not', 'are' , 'would']
+                'it', 'them', 'they', 'be', 'as', 'an', 'did', 'not', 'are' , 'would', 'on', 'you', 'or',\
+                    'his', 'this', 'hers', 'we', 'has', 'how', 'us']
         for x in A:
             Mini_List = ''
             for y in x:
@@ -276,12 +278,20 @@ print(T.find_most_active_users(10))
 # print(T.find_top_keys(T.Hashtags, 10))
 # print(T.find_top_keys(T.Callouts, 10))
 T = TweetParser(Tesla())
-
 # print(T.find_users_by_time_stamps(30, True))
 # print(T.find_Tweets_by_Window(30, True))  
 # print(T.find_hashes_by_time(30, True))
 # A = T.analyze_text(30, True, 5)
 # print(A)
+
+
+
+####################################################################################################
+#To showcase and explain along with questions:
+# print(T.find_time_stamps_by_duration(30, True))
+#Created Manual Topic Modeling by time period, across entire dataset of imported Tweets from Kafka
+print(T.Topic_Modeling(60, True, 5))
+####################################################################################################
 
 
 
