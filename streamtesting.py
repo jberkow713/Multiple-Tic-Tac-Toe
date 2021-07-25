@@ -5,7 +5,7 @@ from collections import Counter
 from streamtesting3 import Tesla
 import datetime
 from datetime import datetime
-from Chatbot import *
+from Chatbot import tokenize
 
 def removekey(d, key):
     r = dict(d)
@@ -238,24 +238,31 @@ class TweetParser():
             Master_List.append(txt)
 
         return Master_List
-    def analyze_text(self, window, Option):
-        #Returns Counter Dictionary for all given tweets within a given window of time
+    def analyze_text(self, window, Option, word_count):
+        #Returns Counter Dictionary for specified word count, 
+        # using all given tweets within a given window of time
 
         if Option == True:
             A = self.find_text_by_time(window, True)
         elif Option == False:
             A = self.find_text_by_time(window, False)
         Tokenized = []       
-        
+        Not_to_Include = ['and', 'i', 'in', 'to', 'the', 'of', 'is',\
+            'a', 'for', 'my', 'do', 'was', 'but', 'by', 'that', 'have', 'from', 'he', 'she',\
+                'it', 'them', 'they', 'be', 'as', 'an', 'did', 'not', 'are' , 'would']
         for x in A:
             Mini_List = ''
             for y in x:
                 Mini_List +=y
             Tokens = tokenize(Mini_List)
-            Tokenized.append(Tokens)
+            Tokens_2 = [x for x in Tokens if x not in Not_to_Include]
+             
+            Tokenized.append(Tokens_2)
+            
         Counter_Dict = []
         for x in Tokenized:
-            c = Counter(x)
+            c = self.find_top_keys(x, word_count)
+
             Counter_Dict.append(c)
         return Counter_Dict
 
@@ -265,8 +272,7 @@ T = TweetParser(Tesla())
 # print(T.find_top_keys(T.Hashtags, 5))
 # print(T.find_top_keys(T.Callouts, 5))
 # print(T.textlist)
-# A = T.find_most_active_users(10)
-# print(A)
+print(T.find_most_active_users(10))
 # print(T.find_top_keys(T.Hashtags, 10))
 # print(T.find_top_keys(T.Callouts, 10))
 T = TweetParser(Tesla())
@@ -274,8 +280,8 @@ T = TweetParser(Tesla())
 # print(T.find_users_by_time_stamps(30, True))
 # print(T.find_Tweets_by_Window(30, True))  
 # print(T.find_hashes_by_time(30, True))
-A = T.analyze_text(30, True)
-print(A[5])
+# A = T.analyze_text(30, True, 5)
+# print(A)
 
 
 
