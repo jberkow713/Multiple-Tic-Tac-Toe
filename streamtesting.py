@@ -153,22 +153,32 @@ class TweetParser():
             Organized_Times = self.find_time_stamps_by_duration(window, sec=True)
         if Option == False:
             Organized_Times = self.find_time_stamps_by_duration(window, sec=False)
-                
-        User_list = []              
+             
+        User_list = []          
+        User_text_list = []
+        Dict2 = self.Dict_List.copy()
         
         for list in Organized_Times:
             small_list = []
+            text_list = []
             for y in list:
-                for x in self.Dict_List:
+                
+                for x in Dict2:
                     a = x['timestamp_ms']
                     time = round(int(a)/1000)
                     if time == y:
                 
                         a = x['user']
                         b = a['screen_name']
+                        c = x['text']
                         small_list.append(b)
-
+                        text_list.append(c)
+                        #Need to remove the item from self.Dict_List
+                        Dict2.remove(x)
             User_list.append(small_list)
+            User_text_list.append(text_list)
+
+        self.text_list = User_text_list    
 
         return User_list   
 
@@ -195,18 +205,10 @@ class TweetParser():
         elif Option == False:
             A = self.find_users_by_time_stamps(window, False)
         Hash_List = []
-        for LIST in A:
-            txt = []
-            for x in self.Dict_List:
-                c = x['text']
-                a = x['user']
-                b = a['screen_name']
-                # print(a)
-                for x in LIST:
-                    if x == b:
-                        txt.append(c)
+        for LIST in self.text_list:
+            
             txt2 = []
-            for x in txt:
+            for x in LIST:
                 a = x.split()
                 txt2.append(a)
             txt3 = []
@@ -217,42 +219,23 @@ class TweetParser():
 
             Hashes = Counter(txt3)
             Hash_List.append(Hashes)
-        return Hash_List
+        return Hash_List 
 
-    def find_text_by_time(self, window, Option):
-        #Finds all text by time windows
-        if Option == True:
-            A = self.find_users_by_time_stamps(window, True)
-        elif Option == False:
-            A = self.find_users_by_time_stamps(window, False)
-        Master_List = []       
-        for LIST in A:
-            txt = []
-            for x in self.Dict_List:
-                c = x['text']
-                a = x['user']
-                b = a['screen_name']
-                # print(a)
-                for x in LIST:
-                    if x == b:
-                        txt.append(c)
-            Master_List.append(txt)
-
-        return Master_List
+      
     def Topic_Modeling(self, window, Option, word_count):
         #Returns Counter Dictionary for specified word count, 
         # using all given tweets within a given window of time
 
         if Option == True:
-            A = self.find_text_by_time(window, True)
+            A = self.find_users_by_time_stamps(window, True)
         elif Option == False:
-            A = self.find_text_by_time(window, False)
+            A = self.find_users_by_time_stamps(window, False)
         Tokenized = []       
         Not_to_Include = ['and', 'i', 'in', 'to', 'the', 'of', 'is',\
             'a', 'for', 'my', 'do', 'was', 'but', 'by', 'that', 'have', 'from', 'he', 'she',\
                 'it', 'them', 'they', 'be', 'as', 'an', 'did', 'not', 'are' , 'would', 'on', 'you', 'or',\
                     'his', 'this', 'hers', 'we', 'has', 'how', 'us']
-        for x in A:
+        for x in self.text_list:
             Mini_List = ''
             for y in x:
                 Mini_List +=y
@@ -274,16 +257,18 @@ T = TweetParser(Tesla())
 # print(T.find_top_keys(T.Hashtags, 5))
 # print(T.find_top_keys(T.Callouts, 5))
 # print(T.textlist)
-print(T.find_most_active_users(10))
+# print(T.find_most_active_users(10))
 # print(T.find_top_keys(T.Hashtags, 10))
 # print(T.find_top_keys(T.Callouts, 10))
 T = TweetParser(Tesla())
-# print(T.find_users_by_time_stamps(30, True))
-# print(T.find_Tweets_by_Window(30, True))  
-# print(T.find_hashes_by_time(30, True))
+   
+
+            
+
+print(T.find_hashes_by_time(30, True))
 # A = T.analyze_text(30, True, 5)
 # print(A)
-
+        
 
 
 ####################################################################################################
@@ -291,6 +276,7 @@ T = TweetParser(Tesla())
 # print(T.find_time_stamps_by_duration(30, True))
 #Created Manual Topic Modeling by time period, across entire dataset of imported Tweets from Kafka
 print(T.Topic_Modeling(60, True, 5))
+# print(type(Tesla()[0]))
 ####################################################################################################
 
 
