@@ -89,27 +89,27 @@ model = load_embeddings_binary("glove.42B.300d")
 # with open('Embedding_Model.json', 'w') as fp:
 #   json.dump(model, fp)    
 
-def get_w2v2(sentence, model):
-    """
-    :param sentence: inputs a single sentences whose word embedding is to be extracted.
-    :param model: inputs glove model.
-    :return: returns numpy array containing word embedding of all words    in input sentence.
-    """
-    list_vec = []
-    b = sentence.lower()
-    b = re.sub(r'[^\w\s]','',b)
-    A = b.split()
-    for word in A:
-        for k, v in model.items():
-            if k == word:
-                list_vec.append(v)
-    if len(list_vec)>=1:
-        return list_vec
-    else:
-        for k,v in model.items():
-            if k == 'the':
-                list_vec.append(v)
-        return 0
+# def get_w2v2(sentence, model):
+#     """
+#     :param sentence: inputs a single sentences whose word embedding is to be extracted.
+#     :param model: inputs glove model.
+#     :return: returns numpy array containing word embedding of all words    in input sentence.
+#     """
+#     list_vec = []
+#     b = sentence.lower()
+#     b = re.sub(r'[^\w\s]','',b)
+#     A = b.split()
+#     for word in A:
+#         for k, v in model.items():
+#             if k == word:
+#                 list_vec.append(v)
+#     if len(list_vec)>=1:
+#         return list_vec
+#     else:
+#         for k,v in model.items():
+#             if k == 'the':
+#                 list_vec.append(v)
+#         return 0
 
 def get_w2v(sentence, model):
     """
@@ -121,11 +121,63 @@ def get_w2v(sentence, model):
     b = sentence.lower()
     b = re.sub(r'[^\w\s]','',b)
     A = b.split()
+    
+       
     for word in A:
         for k, v in model.items():
             if k == word:
                 list_vec.append(v)
     return list_vec    
+def get_w2v2(sentence, model):
+    """
+    :param sentence: inputs a single sentences whose word embedding is to be extracted.
+    :param model: inputs glove model.
+    :return: returns numpy array containing word embedding of all words    in input sentence.
+    """
+    list_vec = []
+    b = sentence.lower()
+    b = re.sub(r'[^\w\s]','',b)
+    nlp = spacy.load("en_core_web_sm")
+    doc = nlp(b)
+    x = [token.pos_ for token in doc]
+    
+    A = b.split()
+    # print(A)
+
+    
+    Acceptable_POS = ['NOUN', 'ADJ', 'ADV', 'PROPN', 'VERB']
+    Text_Dict = dict(zip(A, x))
+    
+    not_used = ['is', 'the', 'a', 'and']
+    A_ = []
+    for k,v in Text_Dict.items():
+        if v in Acceptable_POS:
+            if k not in not_used and len(k)>2:
+                A_.append(k)   
+    
+    final_words = []
+    for word in A_:
+        for k, v in model.items():
+            if k == word:
+                final_words.append(k)
+                list_vec.append(v)
+    # print(final_words)            
+    return list_vec  
+
+def Avg_sentence_vec_2(sentence, model):
+    '''
+    Helper function used to find the average vector for all words in sentence
+    Will improve using parts of speech, etc
+    '''
+    Vectors = get_w2v2(sentence,model)
+    if len(Vectors)>0:
+        Avg_Vector =  np.average(Vectors, axis=0)
+        return Avg_Vector   
+    else:
+        return np.zeros(300)
+
+
+
 
 def vec(word,model):
     #Gets vector for specific word, given specific model
@@ -227,6 +279,19 @@ def Vec_for_Clustering(sentence, model):
         return Avg_Vector
     else:
         return np.zeros(300)
+def Vec_for_Clustering_2(sentence, model):
+    '''
+    Helper function used to find the average vector for all words in sentence
+    If vector does not exist returns bunch of 0s so as not to ruin Clustering function below
+    '''
+    
+    Vectors = get_w2v2(sentence, model)
+    if len(Vectors)>0:
+        Avg_Vector =  np.average(Vectors, axis=0)
+        return Avg_Vector
+    else:
+        return np.zeros(300)
+
 
 def Cluster_Labels(List, model):
     '''
@@ -332,7 +397,7 @@ class Chatbot:
         self.model = model
         #list of words
         self.words = self.create_words(word_count)
-        self.cluster = None
+        self.cluster = self.create_cluster()
         #List of Lists of ordered clustered words
         self.Ordered_Cluster_List = None
         self.Ordered_Cluster_Count = 0
@@ -362,12 +427,16 @@ class Chatbot:
         self.cluster = Cluster_Dict
         return Cluster_Dict
 
-    def create_word_cluster_list(self, cluster_dict):
+    def create_word_cluster_list(self, *args):
         #Returns a list of lists for a cluster dictionary
+        if len(args)==0:
+            DICT = self.cluster
+        if len(args)>0:
+            DICT = args[0]    
         vals = set()
         lst = []
 
-        for k,v in cluster_dict.items():
+        for k,v in DICT.items():
             vals.add(int(v))
         for x in vals:
             lst.append(x)
@@ -378,7 +447,7 @@ class Chatbot:
         Big_List = []
         while length >0:
             curr_list = []
-            for k,v in cluster_dict.items():
+            for k,v in DICT.items():
                 if v == str(srted[index]):
                     curr_list.append(k)
             Big_List.append(curr_list)
@@ -387,20 +456,21 @@ class Chatbot:
         
         if self.Ordered_Cluster_List == None:
             self.Ordered_Cluster_List = Big_List
+        
         return Big_List    
 
-    def recluster(self, list_):
+    def recluster(self, list_, length):
         
         Reclustered_List_ = []
         #This list_ needs to be a list of lists
         
         for x in list_:            
             
-            if len(x)<10 and len(x)>=2:
+            if len(x)<length and len(x)>=2:
                 
                 Reclustered_List_.append(x)         
         
-            if len(x)>=10:                
+            if len(x)>=length:                
                 
                 #Clustered_Dict for each list in our giant list that is passed in
                 Reclustered_Dict = Cluster_Labels(x, model)
@@ -422,26 +492,28 @@ class Chatbot:
         
         self.Reduced_Cluster_List = Reclustered_List_
 
-    def recluster_recursive(self, list_):
+    def recluster_recursive(self, list_, length):
         #Takes Ordered_Cluster_List and recursively reduces lists into smaller, more intelligent lists of similar words
+        
+                #Takes Ordered_Cluster_List and recursively reduces lists into smaller, more intelligent lists of similar words
         if self.Ordered_Cluster_Count == len(self.Ordered_Cluster_List):
                 return
         
         for x in list_:
                     
-            if len(x)>1 and len(x)<=15:
+            if len(x)>1 and len(x)<=length:
                 
                 self.Final_Cluster_List.append(x)
                 
                 if x in self.Ordered_Cluster_List:
                     self.Ordered_Cluster_Count+=1
-            if len(x)>15:
+            if len(x)>length:
                 Reclustered_Dict = Cluster_Labels(x, model)
                 Reclustered_List = self.create_word_cluster_list(Reclustered_Dict)
                 
                 if x in self.Ordered_Cluster_List:
                     self.Ordered_Cluster_Count+=1
-                self.recluster_recursive(Reclustered_List)
+                self.recluster_recursive(Reclustered_List, length)            
     
     
     def find_object_importance_recursive(self, sentence):
@@ -452,10 +524,7 @@ class Chatbot:
         # '''
         
         self.structure = find_POS_tuple(sentence)
-        #[('the', 'DET', 0), ('cat', 'NOUN', 1), ('was', 'AUX', 2), ('going', 'VERB', 3), ('to', 'PART', 4), ('travel', 'VERB', 5), \
-        # ('to', 'ADP', 6), ('the', 'DET', 7), ('beach', 'NOUN', 8), ('and', 'CCONJ', 9), ('the', 'DET', 10), \
-        # ('market', 'NOUN', 11), ('but', 'CCONJ', 12), ('went', 'VERB', 13),\
-        #  ('to', 'ADP', 14), ('the', 'DET', 15), ('zoo', 'NOUN', 16)]
+                
         if len(self.structure)== 0:
             return 
 
@@ -570,17 +639,6 @@ class Chatbot:
         # which we can do by referencing the sentence relationships, finding which of the words was the primary object,
         # and so on
         
-
-        
-                
-
-        
-
-
-
-
-
-        
     
     def find_response_list(self, user_response):
         chatbot_possible_response = []
@@ -597,10 +655,15 @@ class Chatbot:
         return self.response_list 
 
 
-chatty = Chatbot(2000)
-chatty.find_object_importance_recursive('the cat jumped over the moon , while the dog went to the grocery store')
+chatty = Chatbot(500)
+chatty.create_word_cluster_list()
+
+# chatty.recluster_recursive(chatty.Ordered_Cluster_List,10)
+# print(chatty.Final_Cluster_List)
+# print(len(chatty.Final_Cluster_List))
+chatty.find_object_importance_recursive('the cat jumped over the moon ')
 print(chatty.sentence_relationships)
-print(chatty.structure)
+
 
 
 
@@ -610,6 +673,7 @@ print(chatty.structure)
 
 
 # chatty.recluster_recursive(chatty.Ordered_Cluster_List)
+# print(chatty.Final_Cluster_List)
 
 # print(chatty.find_response_list('I walked to the park on a Sunday'))
 
