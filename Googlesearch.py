@@ -48,5 +48,10 @@ def find_useful_searches(company_name, year):
 
 print(find_useful_searches('apple', 2021))
 
+#TODO 
+
+#from the list of links, need to create two web scraping classes, one for seekingalpha, one for motleyfool
+#each will pull text from specific yearly calls
+
 
 
