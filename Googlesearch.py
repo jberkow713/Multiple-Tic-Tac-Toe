@@ -30,4 +30,23 @@ def googleSearch(query):
       print(str(ex))
     finally:
       return g_clean[0:5]
-print(googleSearch("CVS")) 
+# print(googleSearch("apple transcripts 2021"))
+
+# print(googleSearch('standard charter PLC transcripts 2021'))
+
+def find_useful_searches(company_name, year):
+  list = googleSearch(company_name+'transcripts'+str(year))
+  final_links = []
+  for x in list:
+    if 'fool.com/earnings/call-transcripts' in x:
+      final_links.append(x)
+    if 'seekingalpha.com' in x:
+      if 'earnings/transcripts' in x:
+        final_links.append(x)
+
+  return final_links
+
+print(find_useful_searches('apple', 2021))
+
+
+
