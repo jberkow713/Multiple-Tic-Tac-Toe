@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import re
 import urllib.parse
 from urllib.parse import urlparse
-
+import time
 
 def googleSearch(query):
     g_clean = [ ] 
@@ -53,7 +53,7 @@ def find_useful_searches(company_name, year):
     for x in final_links:
       if 'seekingalpha.com' in x:
         final_links.remove(x)
-    return final_links
+    return 'Motley', final_links
   
   if motleyflag == False:
     for x in final_links:
@@ -62,12 +62,53 @@ def find_useful_searches(company_name, year):
           return x   
 
 
-print(find_useful_searches('standard chartered PLC', 2021))
+# print(find_useful_searches('apple', 2021))
 
-# 'https://seekingalpha.com/symbol/SCBFF/earnings/transcripts', 
-# 'https://seekingalpha.com/article/4444561-standard-chartered-plc-scbff-ceo-william-winters-on-q2-2021-results-earnings-call-transcript',
-#  'https://www.alacrastore.com/thomson-streetevents-transcripts/Q1-2021-Standard-Chartered-PLC-Earnings-Call-T14628598',
-# 'https://www.sc.com/en/investors/', 'https://www.sc.com/en/investors/events-and-presentations/'
+class Motley_Scraper():
+
+  def __init__(self, list_of_links):
+    self.list_of_links = list_of_links
+    
+    self.conversation_list = []
+  
+  def conversation(self):
+    for x in self.list_of_links:
+      
+      html_page = requests.get(x).text
+      
+      soup = BeautifulSoup(html_page, 'html.parser')
+
+      A = soup.find("div", {"class": "content-container"})
+      A = A.text
+      B =(A.split())
+
+      count = 0
+      for x in B:
+        count +=1
+        if 'Operator' in x:
+          y = x.replace('Operator', '')
+          start_val = count
+          break
+      count = 0   
+      for x in B:
+        count +=1   
+        if '[Operator' in x:
+          end_val = count
+          break   
+      text = B[start_val:end_val-1]
+      text.insert(0,y)
+      full_text = ' '.join(text)
+
+      self.conversation_list.append(full_text)
+
+      time.sleep(5)
+
+A = Motley_Scraper(["https://www.fool.com/earnings/call-transcripts/2021/10/29/apple-aapl-q4-2021-earnings-call-transcript/"])
+A.conversation()
+print(A.conversation_list)
+
+
+
 
 
 #TODO 
