@@ -64,6 +64,12 @@ def find_useful_searches(company_name, year):
 
 # print(find_useful_searches('apple', 2021))
 
+#Essentially, if Motley fool can be used to scrape for transcripts, the sites returned through the previous function
+#Will be fed into the Motley Scraper class, as a list, and each one of those links will be trancribed from the Motley Fool
+#Website and eventually put into a table
+
+#Otherwise, a seekingalpha class will have to do the rest
+
 class Motley_Scraper():
 
   def __init__(self, list_of_links):
@@ -103,13 +109,13 @@ class Motley_Scraper():
 
       time.sleep(5)
 
-A = Motley_Scraper(["https://www.fool.com/earnings/call-transcripts/2021/10/29/apple-aapl-q4-2021-earnings-call-transcript/"])
-A.conversation()
-print(A.conversation_list)
-
-
-
-
+# A = Motley_Scraper(["https://www.fool.com/earnings/call-transcripts/2021/10/29/apple-aapl-q4-2021-earnings-call-transcript/"])
+B = 'https://www.fool.com/earnings/call-transcripts/2021/07/28/apple-aapl-q3-2021-earnings-call-transcript/'
+C = Motley_Scraper([B])
+C.conversation()
+print(C.conversation_list)
+# A.conversation()
+# print(A.conversation_list)
 
 #TODO 
 
