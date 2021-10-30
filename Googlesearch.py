@@ -1,3 +1,4 @@
+from typing_extensions import final
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -30,23 +31,44 @@ def googleSearch(query):
       print(str(ex))
     finally:
       return g_clean[0:5]
-# print(googleSearch("apple transcripts 2021"))
+# print(googleSearch("standard chartered plc transcripts 2021"))
 
-# print(googleSearch('standard charter PLC transcripts 2021'))
 
 def find_useful_searches(company_name, year):
-  list = googleSearch(company_name+'transcripts'+str(year))
+  list = googleSearch(company_name + ' transcripts'+' '+ str(year))
+    
   final_links = []
+  
+  motleyflag = False  
   for x in list:
-    if 'fool.com/earnings/call-transcripts' in x:
-      final_links.append(x)
     if 'seekingalpha.com' in x:
       if 'earnings/transcripts' in x:
         final_links.append(x)
+            
+    if 'fool.com/earnings/call-transcripts' in x:
+      final_links.append(x)
+      motleyflag = True 
+  
+  if motleyflag == True:
+    for x in final_links:
+      if 'seekingalpha.com' in x:
+        final_links.remove(x)
+    return final_links
+  
+  if motleyflag == False:
+    for x in final_links:
+      if 'seekingalpha.com' in x:
+        if 'earnings/transcripts' in x:
+          return x   
 
-  return final_links
 
-print(find_useful_searches('apple', 2021))
+print(find_useful_searches('standard chartered PLC', 2021))
+
+# 'https://seekingalpha.com/symbol/SCBFF/earnings/transcripts', 
+# 'https://seekingalpha.com/article/4444561-standard-chartered-plc-scbff-ceo-william-winters-on-q2-2021-results-earnings-call-transcript',
+#  'https://www.alacrastore.com/thomson-streetevents-transcripts/Q1-2021-Standard-Chartered-PLC-Earnings-Call-T14628598',
+# 'https://www.sc.com/en/investors/', 'https://www.sc.com/en/investors/events-and-presentations/'
+
 
 #TODO 
 
