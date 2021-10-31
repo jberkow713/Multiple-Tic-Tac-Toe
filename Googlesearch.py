@@ -180,15 +180,32 @@ class Motley_Scraper():
 
 # print(find_useful_searches('tesla', 2021))
 
-Search = find_useful_searches('microsoft', 2021)
+Search = find_useful_searches('tesla', 2021)
 if Search[0]== 'Motley':
   A = Motley_Scraper(Search[1], 2021)
   A.conversation()
   print(A.subdivide_conversations())
-   
 
 
-# Titles = ['Officer', 'Analyst', 'Relations', 'Director', 'Chief', 'Senior', 'President']
+#Example of how the format is returned: List of Tuples(Speaker:Text)
+
+#  ('Jed Dorsheimer', "Genuity -- Analyst Sure. So on a margin per car -- but I would suspect though if your
+#  carry cost is full right now on the -- that as you start producing vehicles, it's going to be a margin
+#  lifter from where you're at right now,"), ('Zach Kirkhorn', "Financial Officer I mean we are carrying 
+# some amount of costs associated with the factories today. And so the incremental cost associated with turning
+#  the factories, it's not 100% of a factory, if that's what you're getting at in your"), 
+# ('Jed Dorsheimer', "Genuity -- Analyst Yes, yes. That's what I was getting"), 
+# ('Zach Kirkhorn', "Financial Officer Yeah. We also actually saw a very similar dynamic to this 
+# when we were launching Model S earlier in the year. So, you know, when a product starts launching 
+# and then cost of goods sold starts to activate, depreciation starts to activate, there's a bit of a 
+# movement in the P&L as to where that cost resides, so yes, assuming to some extent Brandenburg and
+#  Austin costs are already flowing through our P&L. But we still need to continue staffing and ramping
+#  and incurring all the operating costs associated with the factory that we're not spending right now.Martin Viecha")
+
+
+
+
+
 
 
 
