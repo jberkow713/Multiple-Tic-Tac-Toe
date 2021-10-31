@@ -72,9 +72,9 @@ def find_useful_searches(company_name, year):
 
 class Motley_Scraper():
 
-  def __init__(self, list_of_links):
+  def __init__(self, list_of_links, year):
     self.list_of_links = list_of_links
-    
+    self.year = year
     self.conversation_list = []
   
   def conversation(self):
@@ -91,36 +91,38 @@ class Motley_Scraper():
       count = 0
       for x in B:
         count +=1
-        if 'Operator' in x:
-          y = x.replace('Operator', '')
+        if str(self.year) in x:
+          
           start_val = count
           break
+      
       count = 0   
+      
       for x in B:
         count +=1   
         if '[Operator' in x:
           end_val = count
-          break   
+          if B[end_val+1]=='signoff]':
+            break   
       text = B[start_val:end_val-1]
-      text.insert(0,y)
+      
       full_text = ' '.join(text)
 
       self.conversation_list.append(full_text)
 
       time.sleep(5)
 
-# A = Motley_Scraper(["https://www.fool.com/earnings/call-transcripts/2021/10/29/apple-aapl-q4-2021-earnings-call-transcript/"])
-B = 'https://www.fool.com/earnings/call-transcripts/2021/07/28/apple-aapl-q3-2021-earnings-call-transcript/'
-C = Motley_Scraper([B])
-C.conversation()
-print(C.conversation_list)
-# A.conversation()
-# print(A.conversation_list)
+# print(find_useful_searches('tesla', 2021))
 
-#TODO 
+Search = find_useful_searches('microsoft', 2021)
+if Search[0]== 'Motley':
+  A = Motley_Scraper(Search[1], 2021)
+  A.conversation()
+  print(A.conversation_list)
+  print(len(A.conversation_list))  
 
-#from the list of links, need to create two web scraping classes, one for seekingalpha, one for motleyfool
-#each will pull text from specific yearly calls
+
+Titles = ['Officer', 'Analyst', 'Relations', 'Director', 'Chief', 'Senior', 'President']
 
 
 
