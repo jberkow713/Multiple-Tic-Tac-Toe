@@ -33,7 +33,6 @@ def googleSearch(query):
       return g_clean[0:5]
 # print(googleSearch("standard chartered plc transcripts 2021"))
 
-
 def find_useful_searches(company_name, year):
   list = googleSearch(company_name + ' transcripts'+' '+ str(year))
     
@@ -61,14 +60,13 @@ def find_useful_searches(company_name, year):
         if 'earnings/transcripts' in x:
           return x   
 
-
 # print(find_useful_searches('apple', 2021))
 
 #Essentially, if Motley fool can be used to scrape for transcripts, the sites returned through the previous function
 #Will be fed into the Motley Scraper class, as a list, and each one of those links will be trancribed from the Motley Fool
 #Website and eventually put into a table
 
-#Otherwise, a seekingalpha class will have to do the rest
+#Otherwise, a Seekingalpha class will have to do the rest
 
 class Motley_Scraper():
 
@@ -81,6 +79,8 @@ class Motley_Scraper():
     self.sentence_enders = [".", '!', '?', ","]
   
   def conversation(self):
+    'Scrapes Motley Fool and creates conversation'
+
     for x in self.list_of_links:
       
       html_page = requests.get(x).text
@@ -106,7 +106,8 @@ class Motley_Scraper():
         if '[Operator' in x:
           end_val = count
           if B[end_val+1]=='signoff]':
-            break   
+            break
+
       text = B[start_val:end_val-1]
       
       full_text = ' '.join(text)
@@ -116,7 +117,7 @@ class Motley_Scraper():
       time.sleep(5)
   
   def subdivide_conversations(self):
-    
+    'Divides full conversation into smaller list of (Speaker, Speech)'    
 
     for conference in self.conversation_list:
       A = conference.split()
@@ -130,15 +131,12 @@ class Motley_Scraper():
           current = index 
           for next_word in A[current:current+10]:
             for x in self.titles:
-              if x in next_word:
-                
-            # if next_word in self.titles:
+              if x in next_word:            
               
                 speaker_list = A[current-3:current-1]
                 for x in self.sentence_enders:
                   if x in speaker_list[0]:
-                    divider = x
-                
+                    divider = x                
                 
                     speaker = speaker_list[0].split(divider)[1]+ ' ' + speaker_list[1]
                     if (speaker, current+1) not in speaker_indices:
@@ -152,9 +150,6 @@ class Motley_Scraper():
         speakers.append(x[0])
         speaker_vals.append(x[1])
 
-      # print(speakers, speaker_vals)
-      # print(len(speakers), len(speaker_vals))
-
       speaker_length = len(speakers)
 
       index = 0
@@ -165,8 +160,7 @@ class Motley_Scraper():
         
         if index+1 <len(speakers):
           next = speaker_vals[index+1]
-          next -=3
-          
+          next -=3          
 
           text = A[current:next]
           
@@ -184,7 +178,6 @@ class Motley_Scraper():
 
           text = A[current:]
           if len(text)>0:
-
           
             for x in self.sentence_enders:
               if x in text[-1]:
@@ -199,18 +192,13 @@ class Motley_Scraper():
         index+=1
         speaker_length -=1
       
-      return final_speeches          
-              
-# word.split(','))
-
-# print(find_useful_searches('tesla', 2021))
+      return final_speeches
 
 Search = find_useful_searches('verizon', 2021)
 if Search[0]== 'Motley':
   A = Motley_Scraper(Search[1], 2021)
   A.conversation()
   print(A.subdivide_conversations())
-
 
 #Example of how the format is returned: List of Tuples(Speaker:Text)
 
