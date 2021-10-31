@@ -78,7 +78,7 @@ class Motley_Scraper():
     self.conversation_list = []
     self.individual_conversations = []
     self.titles = ['Officer', 'Analyst', 'Relations', 'Director', 'Chief', 'Senior', 'President']
-    self.sentence_enders = ['.', '!', '?']
+    self.sentence_enders = [".", '!', '?', ","]
   
   def conversation(self):
     for x in self.list_of_links:
@@ -128,18 +128,21 @@ class Motley_Scraper():
         if word == '--':
                      
           current = index 
-          for next_word in A[current:current+5]:
-            if next_word in self.titles:
+          for next_word in A[current:current+10]:
+            for x in self.titles:
+              if x in next_word:
+                
+            # if next_word in self.titles:
               
-              speaker_list = A[current-3:current-1]
-              for x in self.sentence_enders:
-                if x in speaker_list[0]:
-                  divider = x
-              
-              
-                  speaker = speaker_list[0].split(divider)[1]+ ' ' + speaker_list[1]
-                  if (speaker, current+1) not in speaker_indices:
-                    speaker_indices.append((speaker, current+1))
+                speaker_list = A[current-3:current-1]
+                for x in self.sentence_enders:
+                  if x in speaker_list[0]:
+                    divider = x
+                
+                
+                    speaker = speaker_list[0].split(divider)[1]+ ' ' + speaker_list[1]
+                    if (speaker, current+1) not in speaker_indices:
+                      speaker_indices.append((speaker, current+1))
       
       speakers = []
       speaker_vals = []
@@ -148,6 +151,9 @@ class Motley_Scraper():
       for x in speaker_indices:
         speakers.append(x[0])
         speaker_vals.append(x[1])
+
+      # print(speakers, speaker_vals)
+      # print(len(speakers), len(speaker_vals))
 
       speaker_length = len(speakers)
 
@@ -161,25 +167,30 @@ class Motley_Scraper():
           next = speaker_vals[index+1]
           next -=3
           
+
           text = A[current:next]
           
-          for x in self.sentence_enders:
-            if x in text[-1]:
-              new = text[-1].split(x)
-              replace = new[0]
-              text[-1]=replace
-          
+          if len(text)>0:
+
+            for x in self.sentence_enders:
+              if x in text[-1]:
+                new = text[-1].split(x)
+                replace = new[0]
+                text[-1]=replace
+            
           speaker_speech = (' '.join(text))
         
         if index+1 == len(speakers):
 
           text = A[current:]
+          if len(text)>0:
+
           
-          for x in self.sentence_enders:
-            if x in text[-1]:
-              new = text[-1].split(x)
-              replace = new[0]
-              text[-1]=replace
+            for x in self.sentence_enders:
+              if x in text[-1]:
+                new = text[-1].split(x)
+                replace = new[0]
+                text[-1]=replace
           
           speaker_speech = (' '.join(text))
 
@@ -194,7 +205,7 @@ class Motley_Scraper():
 
 # print(find_useful_searches('tesla', 2021))
 
-Search = find_useful_searches('tesla', 2021)
+Search = find_useful_searches('verizon', 2021)
 if Search[0]== 'Motley':
   A = Motley_Scraper(Search[1], 2021)
   A.conversation()
