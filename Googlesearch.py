@@ -76,6 +76,9 @@ class Motley_Scraper():
     self.list_of_links = list_of_links
     self.year = year
     self.conversation_list = []
+    self.individual_conversations = []
+    self.titles = ['Officer', 'Analyst', 'Relations', 'Director', 'Chief', 'Senior', 'President']
+    self.sentence_enders = ['.', '!', '?']
   
   def conversation(self):
     for x in self.list_of_links:
@@ -86,7 +89,7 @@ class Motley_Scraper():
 
       A = soup.find("div", {"class": "content-container"})
       A = A.text
-      B =(A.split())
+      B =A.split()
 
       count = 0
       for x in B:
@@ -111,6 +114,69 @@ class Motley_Scraper():
       self.conversation_list.append(full_text)
 
       time.sleep(5)
+  
+  def subdivide_conversations(self):
+    
+
+    for conference in self.conversation_list:
+      A = conference.split()
+      index = 0
+      speaker_indices = []
+      
+      for word in A:
+        index +=1
+        if word == '--':
+                     
+          current = index 
+          for next_word in A[current:current+5]:
+            if next_word in self.titles:
+              
+              speaker_list = A[current-3:current-1]
+              for x in self.sentence_enders:
+                if x in speaker_list[0]:
+                  divider = x
+              
+              
+                  speaker = speaker_list[0].split(divider)[1]+ ' ' + speaker_list[1]
+                  if (speaker, current+1) not in speaker_indices:
+                    speaker_indices.append((speaker, current+1))
+      
+      speakers = []
+      speaker_vals = []
+      final_speeches = []
+
+      for x in speaker_indices:
+        speakers.append(x[0])
+        speaker_vals.append(x[1])
+
+      speaker_length = len(speakers)
+
+      index = 0
+
+      while speaker_length >0:
+        
+        current = speaker_vals[index]
+        
+        if index+1 <len(speakers):
+          next = speaker_vals[index+1]
+          next -=4
+
+
+          speaker_speech = (' '.join(A[current:next]))
+        if index+1 == len(speakers):
+
+          
+          speaker_speech = (' '.join(A[current:]))
+
+        final_speeches.append((speakers[index], speaker_speech))  
+
+        index+=1
+        speaker_length -=1
+
+      
+      return final_speeches          
+              
+# word.split(','))
 
 # print(find_useful_searches('tesla', 2021))
 
@@ -118,11 +184,11 @@ Search = find_useful_searches('microsoft', 2021)
 if Search[0]== 'Motley':
   A = Motley_Scraper(Search[1], 2021)
   A.conversation()
-  print(A.conversation_list)
-  print(len(A.conversation_list))  
+  print(A.subdivide_conversations())
+   
 
 
-Titles = ['Officer', 'Analyst', 'Relations', 'Director', 'Chief', 'Senior', 'President']
+# Titles = ['Officer', 'Analyst', 'Relations', 'Director', 'Chief', 'Senior', 'President']
 
 
 
