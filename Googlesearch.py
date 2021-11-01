@@ -75,7 +75,7 @@ class Motley_Scraper():
     self.year = year
     self.conversation_list = []
     self.individual_conversations = []
-    self.titles = ['Officer', 'Analyst', 'Relations', 'Director', 'Chief', 'Senior', 'President']
+    self.titles = ['Officer', 'Analyst', 'Relations', 'Head', 'Director', 'Chief', 'Senior', 'President']
     self.sentence_enders = [".", '!', '?', ","]
   
   def conversation(self):
@@ -121,35 +121,58 @@ class Motley_Scraper():
 
     for conference in self.conversation_list:
       A = conference.split()
+      
+
+      # print(A)
       index = 0
       speaker_indices = []
       
       for word in A:
-        index +=1
+        # index +=1
         if word == '--':
+          
                      
-          current = index 
-          for next_word in A[current:current+10]:
+          # current = index 
+          for next_word in A[index:index+10]:
             for x in self.titles:
-              if x in next_word:            
+              if x in next_word:
+                  
               
-                speaker_list = A[current-3:current-1]
+                speaker_list = A[index-2:index]
+                punct_flag = False
                 for x in self.sentence_enders:
+                                   
+                                
                   if x in speaker_list[0]:
+                    punct_flag = True
                     divider = x                
-                
+
                     speaker = speaker_list[0].split(divider)[1]+ ' ' + speaker_list[1]
-                    if (speaker, current+1) not in speaker_indices:
-                      speaker_indices.append((speaker, current+1))
-      
+                   
+                    if (speaker, index+1) not in speaker_indices:
+                      speaker_indices.append((speaker, index+1))                 
+                
+                if punct_flag == False:
+                  speaker = speaker_list[0]+' '+ speaker_list[1]
+                  if (speaker, index+1) not in speaker_indices:
+                      speaker_indices.append((speaker, index+1)) 
+
+
+        index +=1
+
       speakers = []
       speaker_vals = []
       final_speeches = []
+      
+      
 
       for x in speaker_indices:
         speakers.append(x[0])
         speaker_vals.append(x[1])
+      # print(speakers, speaker_vals)
 
+      # print(speakers)
+      # print(speaker_vals)
       speaker_length = len(speakers)
 
       index = 0
@@ -194,10 +217,11 @@ class Motley_Scraper():
       
       return final_speeches
 
-Search = find_useful_searches('verizon', 2021)
+Search = find_useful_searches('apple', 2021)
 if Search[0]== 'Motley':
   A = Motley_Scraper(Search[1], 2021)
   A.conversation()
+  # print(A.conversation_list)
   print(A.subdivide_conversations())
 
 #Example of how the format is returned: List of Tuples(Speaker:Text)
