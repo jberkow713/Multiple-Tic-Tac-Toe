@@ -129,8 +129,7 @@ class Motley_Scraper():
       
       for word in A:
         # index +=1
-        if word == '--':
-          
+        if word == '--':          
                      
           # current = index 
           for next_word in A[index:index+10]:
@@ -209,20 +208,20 @@ class Motley_Scraper():
                 text[-1]=replace
           
           speaker_speech = (' '.join(text))
-
-        final_speeches.append((speakers[index], speaker_speech))  
-
+        self.individual_conversations.append((speakers[index], speaker_speech))
+        
         index+=1
         speaker_length -=1
+
       
-      return final_speeches
 
 Search = find_useful_searches('apple', 2021)
 if Search[0]== 'Motley':
   A = Motley_Scraper(Search[1], 2021)
   A.conversation()
   # print(A.conversation_list)
-  print(A.subdivide_conversations())
+  A.subdivide_conversations()
+  print(A.individual_conversations[0])
 
 #Example of how the format is returned: List of Tuples(Speaker:Text)
 
