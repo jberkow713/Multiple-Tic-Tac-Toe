@@ -321,6 +321,9 @@ while a >0:
   a-=1
 
 #operator_speech now gives all speech from the operator for the text
+#Operator_Speech is the list
+
+
 BREAKS = []
 for x in breaks:
   val = updated_transcript[x+1]
@@ -364,8 +367,7 @@ UPDATED_BREAKS = [x for x in BREAKS if updated_transcript[x+1] =='Chief' or upda
 
 #UPDATED_BREAKS represents all breaks directly before company speaker speaks
 #ANALYST_BREAKS represents all breaks directly before an analyst speaks
-print(ANALYST_BREAKS)
-print(UPDATED_BREAKS)
+
 
 length = len(ANALYST_BREAKS)
 index = 0
@@ -404,20 +406,66 @@ while length >0:
   length -=1
 
 
-print(Analyst_Speech)
 
-
-
-#use both lists to fill out the analyst speeches
-#take each value in analyst list, scroll through the UPDATED BREAKS list and find the first value higher , 
-
-
-
+#Analyst Speech now represents All Analyst speech in the transcript
+#Analyst_Speech is the list
 
 
 
 #TODO
-#Parse rest of text, return list of speaker, title, text
+#Add speech, title of speakers using the UPDATED_BREAKS list 
+print(ANALYST_BREAKS)
+print(UPDATED_BREAKS)
+print(operator_indices)
+Big_List = sorted(ANALYST_BREAKS+UPDATED_BREAKS+operator_indices)
+print(Big_List)
+
+name_list = []
+titles_list = []
+text_list = []
+
+length = len(UPDATED_BREAKS)
+index = 0
+while length >0:
+  correct_names = []
+  correct_titles = []
+
+  cur = UPDATED_BREAKS[index]
+  names = updated_transcript[cur-2:cur]
+  titles = updated_transcript[cur:cur+10]
+  
+  to_split = names[0]
+  
+  for y in endings:
+    if y in to_split:
+      
+      new = to_split.split(y)      
+      
+      correct_names.append(new[-1])
+      correct_names.append(names[-1])
+      break 
+  if y not in to_split:
+    correct_names.append(names[0])
+    correct_names.append(names[1])
+  
+  print(correct_names)
+  name_list.append(correct_names)
+
+  index +=1
+  length -=1
+
+# print(name_list)
+
+
+
+      
+
+# ['Luca?Luca', 'Maestri']
+
+
+
+# print(updated_transcript[3578:3598])
+
 
 
   
