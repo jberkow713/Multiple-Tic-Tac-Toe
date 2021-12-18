@@ -245,7 +245,7 @@ if Search[0]== 'Motley':
 with open('Apple_transcripts.json') as f:
   Transcript = json.load(f)
 
-endings = ['.', '?', '!']
+endings = ['.', '?', '!', '--']
 a = Transcript[0].split()
 updated_transcript = []
 #Find operator text up front, remove it possibly
@@ -364,16 +364,52 @@ UPDATED_BREAKS = [x for x in BREAKS if updated_transcript[x+1] =='Chief' or upda
 
 #UPDATED_BREAKS represents all breaks directly before company speaker speaks
 #ANALYST_BREAKS represents all breaks directly before an analyst speaks
-for x in UPDATED_BREAKS:
-  print(updated_transcript[x-2:x])
+print(ANALYST_BREAKS)
+print(UPDATED_BREAKS)
+
+length = len(ANALYST_BREAKS)
+index = 0
+
+Analyst_Speech = []
+
+while length >0:
+  next = 0
+  cur = ANALYST_BREAKS[index]+2
+  found = False
+  
+  for x in UPDATED_BREAKS:
+    if found == True:
+      break     
+    if x >cur:
+      next +=x
+      found = True
+      break   
+
+  speech = updated_transcript[cur:next]
+  speech = speech[:-1]
+  # print(speech)
+  updated_speech  = []
+  for x in speech[:-1]:
+    updated_speech.append(x)
+  
+  for x in endings:
+    if x in speech[-1]:
+      ending = speech[-1].split(x)
+      updated_speech.append(ending[0]+x)
+      break 
+  Analyst_Speech.append(" ".join(updated_speech))    
+
+
+  index +=1
+  length -=1
+
+
+print(Analyst_Speech)
 
 
 
-
-#So now Analyst Breaks represents every break related to an analyst
-#Breaks represents every break related to a speaker of the company
-
-
+#use both lists to fill out the analyst speeches
+#take each value in analyst list, scroll through the UPDATED BREAKS list and find the first value higher , 
 
 
 
