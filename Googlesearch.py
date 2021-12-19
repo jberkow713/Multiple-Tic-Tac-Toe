@@ -6,6 +6,8 @@ import urllib.parse
 from urllib.parse import urlparse
 import time
 import json
+from collections import Counter
+
 
 def googleSearch(query):
     g_clean = [ ] 
@@ -420,6 +422,45 @@ print(operator_indices)
 Big_List = sorted(ANALYST_BREAKS+UPDATED_BREAKS+operator_indices)
 print(Big_List)
 
+#Find most common titles for the speakers in this transcript
+TITLE_COUNTER = []
+for x in UPDATED_BREAKS:
+  y = updated_transcript[x+1:x+10]
+  for z in y:
+    if z[0].isupper()==True:
+      if len(z)>4:
+        TITLE_COUNTER.append(z)
+
+a = (Counter(TITLE_COUNTER))
+b = []
+for x in a.most_common(12):
+  b.append(x[0])
+b.append('of')
+b.append('and')
+
+if 'Thank' in b:
+  b.remove('Thank')
+if 'Thanks' in b:
+  b.remove('Thanks')
+
+for x in b:
+  if ',' in x:
+    b.remove(x)
+for x in b:
+  if '.' in x:
+    b.remove(x)
+
+#b is now a list of the most common words and titles in theory
+   
+
+
+
+
+
+
+
+
+
 name_list = []
 titles_list = []
 text_list = []
@@ -432,7 +473,7 @@ while length >0:
 
   cur = UPDATED_BREAKS[index]
   names = updated_transcript[cur-2:cur]
-  titles = updated_transcript[cur:cur+10]
+  titles = updated_transcript[cur+1:cur+10]
   
   to_split = names[0]
   
@@ -447,24 +488,27 @@ while length >0:
   if y not in to_split:
     correct_names.append(names[0])
     correct_names.append(names[1])
-  
-  print(correct_names)
+    
   name_list.append(correct_names)
+
+
+  print(titles)
+
+#Names are set
+#Get Titles
+
+
+
+
+
+
 
   index +=1
   length -=1
 
-# print(name_list)
+   
 
 
-
-      
-
-# ['Luca?Luca', 'Maestri']
-
-
-
-# print(updated_transcript[3578:3598])
 
 
 
