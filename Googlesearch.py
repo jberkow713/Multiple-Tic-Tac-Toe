@@ -406,20 +406,15 @@ while length >0:
 
   index +=1
   length -=1
-
-
-
 #Analyst Speech now represents All Analyst speech in the transcript
 #Analyst_Speech is the list
-
-
 
 #TODO
 #Add speech, title of speakers using the UPDATED_BREAKS list 
 print(ANALYST_BREAKS)
 print(UPDATED_BREAKS)
-print(operator_indices)
-Big_List = sorted(ANALYST_BREAKS+UPDATED_BREAKS+operator_indices)
+print(breaks)
+Big_List = sorted(ANALYST_BREAKS+UPDATED_BREAKS+breaks)
 print(Big_List)
 
 #Find most common titles for the speakers in this transcript
@@ -432,34 +427,26 @@ for x in UPDATED_BREAKS:
         TITLE_COUNTER.append(z)
 
 a = (Counter(TITLE_COUNTER))
-b = []
+possible_title_words = []
 for x in a.most_common(12):
-  b.append(x[0])
-b.append('of')
-b.append('and')
+  possible_title_words.append(x[0])
+possible_title_words.append('of')
+possible_title_words.append('and')
 
-if 'Thank' in b:
-  b.remove('Thank')
-if 'Thanks' in b:
-  b.remove('Thanks')
+if 'Thank' in possible_title_words:
+  possible_title_words.remove('Thank')
+if 'Thanks' in possible_title_words:
+  possible_title_words.remove('Thanks')
 
-for x in b:
+for x in possible_title_words:
   if ',' in x:
-    b.remove(x)
-for x in b:
+    possible_title_words.remove(x)
+for x in possible_title_words:
   if '.' in x:
-    b.remove(x)
+    possible_title_words.remove(x)
 
+print(possible_title_words)
 #b is now a list of the most common words and titles in theory
-   
-
-
-
-
-
-
-
-
 
 name_list = []
 titles_list = []
@@ -470,6 +457,7 @@ index = 0
 while length >0:
   correct_names = []
   correct_titles = []
+  text = []
 
   cur = UPDATED_BREAKS[index]
   names = updated_transcript[cur-2:cur]
@@ -485,28 +473,67 @@ while length >0:
       correct_names.append(new[-1])
       correct_names.append(names[-1])
       break 
+  
   if y not in to_split:
+
     correct_names.append(names[0])
     correct_names.append(names[1])
     
-  name_list.append(correct_names)
+  name_list.append(' '.join(correct_names))
 
+  #use the list possible_title_words to figure out the titles or people
 
-  print(titles)
+  for x in titles:
+    if x in possible_title_words:
+      correct_titles.append(x)
 
-#Names are set
-#Get Titles
+    else:
+      break
 
+  titles_list.append(' '.join(correct_titles))  
+  #use the list possible_title_words to figure out the titles or people
 
+  #get length of titles_list to find where to start text search
+  LEN = len(correct_titles)
+  text_start = cur + LEN + 1
+  found = False 
+  for x in Big_List:
+    if found == True:
+      break
+    if x > text_start:
+   
+      for y in updated_transcript[text_start:x-2]:
+        text.append(y)
 
+      last = updated_transcript[x-2]
+            
+      for x in endings:
+        if x in last:
+          ending = last.split(x)
+          text.append(ending[0])
+      
+      found = True
+      break  
 
-
-
-
+  text_list.append(' '.join(text))    
+      
   index +=1
   length -=1
 
-   
+final_speaker_list = []
+a = len(text_list)
+index = 0
+
+while a >0:
+  name = name_list[index]
+  title = titles_list[index]
+  text = text_list[index]
+
+  final_speaker_list.append((name, title, text))
+  index +=1
+  a -=1
+
+print(final_speaker_list)
 
 
 
