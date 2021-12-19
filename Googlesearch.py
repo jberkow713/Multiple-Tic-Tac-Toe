@@ -78,8 +78,7 @@ class Motley_Scraper():
     self.year = year
     self.conversation_list = []
     self.individual_conversations = []
-    self.titles = ['Officer', 'Analyst', 'Relations', 'Head', 'Director', 'Chief', 'Senior', 'President']
-    self.sentence_enders = [".", '!', '?', ","]
+        
   
   def create_conversation_list(self):
     'Scrapes Motley Fool and creates conversation'
@@ -122,418 +121,629 @@ class Motley_Scraper():
   def subdivide_conversations(self):
     'Divides full conversation into smaller list of (Speaker, Speech)'    
 
+    
     for conference in self.conversation_list:
-      A = conference.split()
-
-     
-      index = 0
-      speaker_indices = []
+      a = conference.split()
       
-      length = len(A)
+      endings = ['.', '?', '!', '--']
+
+      updated_transcript = []
+      #Find operator text up front, remove it possibly
+      operator_indices = []
+      breaks = []
+      count = 0
+      for x in a:
+
+        if 'Operator' in x:
+          operator_indices.append(count)
+          op_split = x.split('Operator')
+          updated_transcript.append('Operator')
+          updated_transcript.append(op_split[1])
+          count +=2
+        
+        else:
+          updated_transcript.append(x)
+          count +=1 
+
+      count = 0
+      for x in updated_transcript:
+        if '--' in x:
+          breaks.append(count)
+          count +=1
+        else:
+          count +=1
+
+      ending_operator = []
+
+      for x in operator_indices:
+        end_found = False
+        for y in breaks:
+          if end_found == True:
+            
+            break 
+          if y >x:
+            ending_operator.append(y)
+            end_found = True 
+            break
+
+      actual_endings = [x-1 for x in ending_operator]
+      operator_start = [x+1 for x in operator_indices]
+
+      length = len(actual_endings)
+      index = 0
 
       while length >0:
+        next = index+1    
+        if index < len(actual_endings)-1:
+          if actual_endings[next]-actual_endings[index]==0:
+            del actual_endings[next]
+            del operator_start[next]
+        
+        index +=1
+        length -=1 
 
-        word = A[index]
-          
-        if word == '--':
-          current = index
-          
-          val = current              
-          
-          for next_word in A[current:current+15]:
-            
-            for x in self.titles:
-              if x in next_word:
+      a = len(operator_start)
+      index = 0
+      Operator_Speech = []
+      while a >0:
+        x = updated_transcript[operator_start[index]:actual_endings[index]]
+        updated_x = []
+        for val in x[:-1]:
+          updated_x.append(val)
+        aaa = x[-1]
+        for z in endings:
+          if z in aaa:
+            zz = aaa.split(z)
+            updated_x.append(zz[0])
+        x1 = ' '.join(updated_x)
+        Operator_Speech.append(x1)
+        index +=1
+        a-=1
 
-                target = val     
+      #operator_speech now gives all speech from the operator for the text
+      #Operator_Speech is the list
+
+      BREAKS = []
+      for x in breaks:
+        val = updated_transcript[x+1]
+        if val[0] != 'I' and val[0].isupper()==True:
               
-                speaker_list = A[current-2:current]
-                punct_flag = False
-                for x in self.sentence_enders:
-                                    
-                                
-                  if x in speaker_list[0]:
-                    punct_flag = True
-                    divider = x                
+            
+          BREAKS.append(x)
 
-                    speaker = speaker_list[0].split(divider)[1]+ ' ' + speaker_list[1]
-                    
-                    if (speaker, index+1) not in speaker_indices:
-                      speaker_indices.append((speaker, target))                 
-                
-                if punct_flag == False:
-                  speaker = speaker_list[0]+' '+ speaker_list[1]
-                  if (speaker, index+1) not in speaker_indices:
-                      speaker_indices.append((speaker, target)) 
-            val +=1
+      #BREAKS is a list of actual breaks where the speaker changes
+      Analyst_BREAKS = []
+      for x in BREAKS:
 
-          index +=15
-          length -=15
+        after = updated_transcript[x:x+10]
+        if 'Analyst' in after:
+          Analyst_BREAKS.append(x)
+
+      length = len(Analyst_BREAKS)
+      index = 0
+
+      ANALYST_BREAKS = []
+
+      while length >0:
+        cur = Analyst_BREAKS[index]
+        next = Analyst_BREAKS[index+1]
+        #remove all analyst possible values from BREAKS list first
+        if cur in BREAKS:
+          BREAKS.remove(cur)
+
+        if next - cur <11:
+          ANALYST_BREAKS.append(next)
+          BREAKS.remove(next)
+          index +=2
+          length -=2
+        elif next-cur >11:
+          ANALYST_BREAKS.append(cur)
+          index +=1
+          length -=1
+
+      #cleaning up Breaks 
+      UPDATED_BREAKS = [x for x in BREAKS if updated_transcript[x+1] =='Chief' or updated_transcript[x+1]=='Director']
+
+      #UPDATED_BREAKS represents all breaks directly before company speaker speaks
+      #ANALYST_BREAKS represents all breaks directly before an analyst speaks
+
+      length = len(ANALYST_BREAKS)
+      index = 0
+
+      Analyst_Speech = []
+
+      while length >0:
+        next = 0
+        cur = ANALYST_BREAKS[index]+2
+        found = False
+        
+        for x in UPDATED_BREAKS:
+          if found == True:
+            break     
+          if x >cur:
+            next +=x
+            found = True
+            break   
+
+        speech = updated_transcript[cur:next]
+        if len(speech)>0:
+      
+          speech = speech[:-1]
+          
+          # print(speech)
+          updated_speech  = []
+          for x in speech[:-1]:
+            updated_speech.append(x)
+            
+
+          for x in endings:
+            if x in speech[-1]:
+              ending = speech[-1].split(x)
+              updated_speech.append(ending[0]+x)
+              break 
+          Analyst_Speech.append(" ".join(updated_speech))    
+        else:
+          Analyst_Speech.append([])
         
         index +=1
         length -=1
+      #Analyst Speech now represents All Analyst speech in the transcript
+      #Analyst_Speech is the list
 
-      speakers = []
-      speaker_vals = []
-           
+      Big_List = sorted(ANALYST_BREAKS+UPDATED_BREAKS+breaks)
 
-      for x in speaker_indices:
-        speakers.append(x[0])
-        speaker_vals.append(x[1])
-      
-      speaker_length = len(speakers)
 
+      #Find most common titles for the speakers in this transcript
+      TITLE_COUNTER = []
+      for x in UPDATED_BREAKS:
+        y = updated_transcript[x+1:x+10]
+        for z in y:
+          if z[0].isupper()==True:
+            if len(z)>4:
+              TITLE_COUNTER.append(z)
+
+      a = (Counter(TITLE_COUNTER))
+      possible_title_words = []
+      for x in a.most_common(12):
+        possible_title_words.append(x[0])
+      possible_title_words.append('of')
+      possible_title_words.append('and')
+
+      if 'Thank' in possible_title_words:
+        possible_title_words.remove('Thank')
+      if 'Thanks' in possible_title_words:
+        possible_title_words.remove('Thanks')
+
+      for x in possible_title_words:
+        if ',' in x:
+          possible_title_words.remove(x)
+      for x in possible_title_words:
+        if '.' in x:
+          possible_title_words.remove(x)
+
+      #possible_title_words is now a list of the most common words and titles in theory
+
+      name_list = []
+      titles_list = []
+      text_list = []
+
+      length = len(UPDATED_BREAKS)
+      index = 0
+      while length >0:
+        correct_names = []
+        correct_titles = []
+        text = []
+
+        cur = UPDATED_BREAKS[index]
+        names = updated_transcript[cur-2:cur]
+        titles = updated_transcript[cur+1:cur+10]
+        
+        to_split = names[0]
+        
+        for y in endings:
+          if y in to_split:
+            
+            new = to_split.split(y)      
+            
+            correct_names.append(new[-1])
+            correct_names.append(names[-1])
+            break 
+        
+        if y not in to_split:
+
+          correct_names.append(names[0])
+          correct_names.append(names[1])
+          
+        name_list.append(' '.join(correct_names))
+
+        #use the list possible_title_words to figure out the titles or people
+
+        for x in titles:
+          if x in possible_title_words:
+            correct_titles.append(x)
+
+          else:
+            break
+
+        titles_list.append(' '.join(correct_titles))  
+        #use the list possible_title_words to figure out the titles or people
+
+        #get length of titles_list to find where to start text search
+        LEN = len(correct_titles)
+        text_start = cur + LEN + 1
+        found = False 
+        for x in Big_List:
+          if found == True:
+            break
+          if x > text_start:
+        
+            for y in updated_transcript[text_start:x-2]:
+              text.append(y)
+
+            last = updated_transcript[x-2]
+                  
+            for x in endings:
+              if x in last:
+                ending = last.split(x)
+                text.append(ending[0])
+            
+            found = True
+            break  
+
+        text_list.append(' '.join(text))    
+            
+        index +=1
+        length -=1
+
+      final_speaker_list = []
+      a = len(text_list)
       index = 0
 
-      while speaker_length >0:
+      while a >0:
+        name = name_list[index]
+        title = titles_list[index]
+        text = text_list[index]
+
+        final_speaker_list.append((name, title, text))
+        index +=1
+        a -=1
+    
+      print(Operator_Speech)
+      print('---------------------------------------------------------')
+      print(Analyst_Speech)
+      print('----------------------------------------------------')
+      print(final_speaker_list)
+      print('-----------------------------------------------------')
+      print('DONE, NEXT REPORT')
+      print('-----------------------------------')
+    
         
-        current = speaker_vals[index]
-        
-        if index+1 <len(speakers):
-          next = speaker_vals[index+1]
-          next -=3          
 
-          text = A[current:next+1]
-          
-          if len(text)>0:
-
-            for x in self.sentence_enders:
-              if x in text[-1]:
-                new = text[-1].split(x)
-                replace = new[0]
-                text[-1]=replace
-            
-          speaker_speech = (' '.join(text))
-        
-        if index+1 == len(speakers):
-
-          text = A[current:]
-          if len(text)>0:
-          
-            for x in self.sentence_enders:
-              if x in text[-1]:
-                new = text[-1].split(x)
-                replace = new[0]
-                text[-1]=replace
-          
-          speaker_speech = (' '.join(text))
-        self.individual_conversations.append((speakers[index], speaker_speech, self.year))       
-        
-        index+=1
-        speaker_length -=1
-      for x in self.individual_conversations:
-        if len(x[1])<20:
-          self.individual_conversations.remove(x)
-      self.individual_conversations= self.individual_conversations[0:-2]
+#Run on Microsoft 2021
+#Working!
 
 
-#if Apple transcripts use Motley to scrape, pass it into the scraper
-'''
-Search = find_useful_searches('apple', 2021)
+
+
+
+Search = find_useful_searches('microsoft', 2021)
+
 if Search[0]== 'Motley':
   A = Motley_Scraper(Search[1], 2021)
   A.create_conversation_list()
-  #let's store this in a json file to operate on
-  # print(A.conversation_list)
   
-  with open('Apple_transcripts.json', 'w') as f:
-      json.dump(A.conversation_list, f)
-'''
+  A.subdivide_conversations()
 
 
-#lets open Apple Transcripts and operate on the text
 
-#Begin here
-with open('Apple_transcripts.json') as f:
-  Transcript = json.load(f)
 
-endings = ['.', '?', '!', '--']
-a = Transcript[0].split()
-updated_transcript = []
-#Find operator text up front, remove it possibly
-operator_indices = []
-breaks = []
-count = 0
-for x in a:
 
-  if 'Operator' in x:
-    operator_indices.append(count)
-    op_split = x.split('Operator')
-    updated_transcript.append('Operator')
-    updated_transcript.append(op_split[1])
-    count +=2
-  
-  else:
-    updated_transcript.append(x)
-    count +=1 
 
-count = 0
-for x in updated_transcript:
-  if '--' in x:
-    breaks.append(count)
-    count +=1
-  else:
-    count +=1
 
-ending_operator = []
+#The same function as in the class, only separate  
 
-for x in operator_indices:
-  end_found = False
-  for y in breaks:
-    if end_found == True:
+def parse_text(text):
+    
+  a = text.split()
+  endings = ['.', '?', '!', '--']
+
+  updated_transcript = []
+  #Find operator text up front, remove it possibly
+  operator_indices = []
+  breaks = []
+  count = 0
+  for x in a:
+
+    if 'Operator' in x:
+      operator_indices.append(count)
+      op_split = x.split('Operator')
+      updated_transcript.append('Operator')
+      updated_transcript.append(op_split[1])
+      count +=2
+    
+    else:
+      updated_transcript.append(x)
+      count +=1 
+
+  count = 0
+  for x in updated_transcript:
+    if '--' in x:
+      breaks.append(count)
+      count +=1
+    else:
+      count +=1
+
+  ending_operator = []
+
+  for x in operator_indices:
+    end_found = False
+    for y in breaks:
+      if end_found == True:
+        
+        break 
+      if y >x:
+        ending_operator.append(y)
+        end_found = True 
+        break
+
+  actual_endings = [x-1 for x in ending_operator]
+  operator_start = [x+1 for x in operator_indices]
+
+  length = len(actual_endings)
+  index = 0
+
+  while length >0:
+    next = index+1    
+    if index < len(actual_endings)-1:
+      if actual_endings[next]-actual_endings[index]==0:
+        del actual_endings[next]
+        del operator_start[next]
+    
+    index +=1
+    length -=1 
+
+  a = len(operator_start)
+  index = 0
+  Operator_Speech = []
+  while a >0:
+    x = updated_transcript[operator_start[index]:actual_endings[index]]
+    updated_x = []
+    for val in x[:-1]:
+      updated_x.append(val)
+    aaa = x[-1]
+    for z in endings:
+      if z in aaa:
+        zz = aaa.split(z)
+        updated_x.append(zz[0])
+    x1 = ' '.join(updated_x)
+    Operator_Speech.append(x1)
+    index +=1
+    a-=1
+
+  #operator_speech now gives all speech from the operator for the text
+  #Operator_Speech is the list
+
+
+  BREAKS = []
+  for x in breaks:
+    val = updated_transcript[x+1]
+    if val[0] != 'I' and val[0].isupper()==True:
+          
+        
+      BREAKS.append(x)
+
+  #BREAKS is a list of actual breaks where the speaker changes
+  Analyst_BREAKS = []
+  for x in BREAKS:
+
+    after = updated_transcript[x:x+10]
+    if 'Analyst' in after:
+      Analyst_BREAKS.append(x)
+
+  length = len(Analyst_BREAKS)
+  index = 0
+
+  ANALYST_BREAKS = []
+
+  while length >0:
+    cur = Analyst_BREAKS[index]
+    next = Analyst_BREAKS[index+1]
+    #remove all analyst possible values from BREAKS list first
+    if cur in BREAKS:
+      BREAKS.remove(cur)
+
+    if next - cur <11:
+      ANALYST_BREAKS.append(next)
+      BREAKS.remove(next)
+      index +=2
+      length -=2
+    elif next-cur >11:
+      ANALYST_BREAKS.append(cur)
+      index +=1
+      length -=1
+
+  #cleaning up Breaks 
+  UPDATED_BREAKS = [x for x in BREAKS if updated_transcript[x+1] =='Chief' or updated_transcript[x+1]=='Director']
+
+  #UPDATED_BREAKS represents all breaks directly before company speaker speaks
+  #ANALYST_BREAKS represents all breaks directly before an analyst speaks
+
+
+  length = len(ANALYST_BREAKS)
+  index = 0
+
+  Analyst_Speech = []
+
+  while length >0:
+    next = 0
+    cur = ANALYST_BREAKS[index]+2
+    found = False
+    
+    for x in UPDATED_BREAKS:
+      if found == True:
+        break     
+      if x >cur:
+        next +=x
+        found = True
+        break   
+
+    speech = updated_transcript[cur:next]
+    if len(speech)>0:
+        
+      speech = speech[:-1]
       
-      break 
-    if y >x:
-      ending_operator.append(y)
-      end_found = True 
-      break
+      # print(speech)
+      updated_speech  = []
+      for x in speech[:-1]:
+        updated_speech.append(x)
+        
 
-actual_endings = [x-1 for x in ending_operator]
-operator_start = [x+1 for x in operator_indices]
+      for x in endings:
+        if x in speech[-1]:
+          ending = speech[-1].split(x)
+          updated_speech.append(ending[0]+x)
+          break 
+      Analyst_Speech.append(" ".join(updated_speech))    
+    else:
+      Analyst_Speech.append([])
 
-length = len(actual_endings)
-index = 0
+    index +=1
+    length -=1
+  #Analyst Speech now represents All Analyst speech in the transcript
+  #Analyst_Speech is the list
 
-while length >0:
-  next = index+1    
-  if index < len(actual_endings)-1:
-    if actual_endings[next]-actual_endings[index]==0:
-      del actual_endings[next]
-      del operator_start[next]
-  
-  index +=1
-  length -=1 
-
-a = len(operator_start)
-index = 0
-Operator_Speech = []
-while a >0:
-  x = updated_transcript[operator_start[index]:actual_endings[index]]
-  updated_x = []
-  for val in x[:-1]:
-    updated_x.append(val)
-  aaa = x[-1]
-  for z in endings:
-    if z in aaa:
-      zz = aaa.split(z)
-      updated_x.append(zz[0])
-  x1 = ' '.join(updated_x)
-  Operator_Speech.append(x1)
-  index +=1
-  a-=1
-
-#operator_speech now gives all speech from the operator for the text
-#Operator_Speech is the list
+  Big_List = sorted(ANALYST_BREAKS+UPDATED_BREAKS+breaks)
 
 
-BREAKS = []
-for x in breaks:
-  val = updated_transcript[x+1]
-  if val[0] != 'I' and val[0].isupper()==True:
-         
-       
-    BREAKS.append(x)
+  #Find most common titles for the speakers in this transcript
+  TITLE_COUNTER = []
+  for x in UPDATED_BREAKS:
+    y = updated_transcript[x+1:x+10]
+    for z in y:
+      if z[0].isupper()==True:
+        if len(z)>4:
+          TITLE_COUNTER.append(z)
 
-#BREAKS is a list of actual breaks where the speaker changes
-Analyst_BREAKS = []
-for x in BREAKS:
+  a = (Counter(TITLE_COUNTER))
+  possible_title_words = []
+  for x in a.most_common(12):
+    possible_title_words.append(x[0])
+  possible_title_words.append('of')
+  possible_title_words.append('and')
 
-  after = updated_transcript[x:x+10]
-  if 'Analyst' in after:
-    Analyst_BREAKS.append(x)
+  if 'Thank' in possible_title_words:
+    possible_title_words.remove('Thank')
+  if 'Thanks' in possible_title_words:
+    possible_title_words.remove('Thanks')
 
-length = len(Analyst_BREAKS)
-index = 0
+  for x in possible_title_words:
+    if ',' in x:
+      possible_title_words.remove(x)
+  for x in possible_title_words:
+    if '.' in x:
+      possible_title_words.remove(x)
 
-ANALYST_BREAKS = []
+  #possible_title_words is now a list of the most common words and titles in theory
 
-while length >0:
-  cur = Analyst_BREAKS[index]
-  next = Analyst_BREAKS[index+1]
-  #remove all analyst possible values from BREAKS list first
-  if cur in BREAKS:
-    BREAKS.remove(cur)
+  name_list = []
+  titles_list = []
+  text_list = []
 
-  if next - cur <11:
-    ANALYST_BREAKS.append(next)
-    BREAKS.remove(next)
-    index +=2
-    length -=2
-  elif next-cur >11:
-    ANALYST_BREAKS.append(cur)
+  length = len(UPDATED_BREAKS)
+  index = 0
+  while length >0:
+    correct_names = []
+    correct_titles = []
+    text = []
+
+    cur = UPDATED_BREAKS[index]
+    names = updated_transcript[cur-2:cur]
+    titles = updated_transcript[cur+1:cur+10]
+    
+    to_split = names[0]
+    
+    for y in endings:
+      if y in to_split:
+        
+        new = to_split.split(y)      
+        
+        correct_names.append(new[-1])
+        correct_names.append(names[-1])
+        break 
+    
+    if y not in to_split:
+
+      correct_names.append(names[0])
+      correct_names.append(names[1])
+      
+    name_list.append(' '.join(correct_names))
+
+    #use the list possible_title_words to figure out the titles or people
+
+    for x in titles:
+      if x in possible_title_words:
+        correct_titles.append(x)
+
+      else:
+        break
+
+    titles_list.append(' '.join(correct_titles))  
+    #use the list possible_title_words to figure out the titles or people
+
+    #get length of titles_list to find where to start text search
+    LEN = len(correct_titles)
+    text_start = cur + LEN + 1
+    found = False 
+    for x in Big_List:
+      if found == True:
+        break
+      if x > text_start:
+    
+        for y in updated_transcript[text_start:x-2]:
+          text.append(y)
+
+        last = updated_transcript[x-2]
+              
+        for x in endings:
+          if x in last:
+            ending = last.split(x)
+            text.append(ending[0])
+        
+        found = True
+        break  
+
+    text_list.append(' '.join(text))    
+        
     index +=1
     length -=1
 
-#cleaning up Breaks 
-UPDATED_BREAKS = [x for x in BREAKS if updated_transcript[x+1] =='Chief' or updated_transcript[x+1]=='Director']
+  final_speaker_list = []
+  a = len(text_list)
+  index = 0
 
-#UPDATED_BREAKS represents all breaks directly before company speaker speaks
-#ANALYST_BREAKS represents all breaks directly before an analyst speaks
+  while a >0:
+    name = name_list[index]
+    title = titles_list[index]
+    text = text_list[index]
 
-
-length = len(ANALYST_BREAKS)
-index = 0
-
-Analyst_Speech = []
-
-while length >0:
-  next = 0
-  cur = ANALYST_BREAKS[index]+2
-  found = False
-  
-  for x in UPDATED_BREAKS:
-    if found == True:
-      break     
-    if x >cur:
-      next +=x
-      found = True
-      break   
-
-  speech = updated_transcript[cur:next]
-  speech = speech[:-1]
-  # print(speech)
-  updated_speech  = []
-  for x in speech[:-1]:
-    updated_speech.append(x)
-  
-  for x in endings:
-    if x in speech[-1]:
-      ending = speech[-1].split(x)
-      updated_speech.append(ending[0]+x)
-      break 
-  Analyst_Speech.append(" ".join(updated_speech))    
+    final_speaker_list.append((name, title, text))
+    index +=1
+    a -=1
 
 
-  index +=1
-  length -=1
-#Analyst Speech now represents All Analyst speech in the transcript
-#Analyst_Speech is the list
 
-#TODO
-#Add speech, title of speakers using the UPDATED_BREAKS list 
-print(ANALYST_BREAKS)
-print(UPDATED_BREAKS)
-print(breaks)
-Big_List = sorted(ANALYST_BREAKS+UPDATED_BREAKS+breaks)
-print(Big_List)
+  print(Operator_Speech)
+  print('----------------')
+  print(Analyst_Speech)
+  print('-------------------')
+  print(final_speaker_list)
+  print('-------------------')
 
-#Find most common titles for the speakers in this transcript
-TITLE_COUNTER = []
-for x in UPDATED_BREAKS:
-  y = updated_transcript[x+1:x+10]
-  for z in y:
-    if z[0].isupper()==True:
-      if len(z)>4:
-        TITLE_COUNTER.append(z)
+# with open('Apple_transcripts.json') as f:
+#   Transcript = json.load(f)
 
-a = (Counter(TITLE_COUNTER))
-possible_title_words = []
-for x in a.most_common(12):
-  possible_title_words.append(x[0])
-possible_title_words.append('of')
-possible_title_words.append('and')
-
-if 'Thank' in possible_title_words:
-  possible_title_words.remove('Thank')
-if 'Thanks' in possible_title_words:
-  possible_title_words.remove('Thanks')
-
-for x in possible_title_words:
-  if ',' in x:
-    possible_title_words.remove(x)
-for x in possible_title_words:
-  if '.' in x:
-    possible_title_words.remove(x)
-
-print(possible_title_words)
-#b is now a list of the most common words and titles in theory
-
-name_list = []
-titles_list = []
-text_list = []
-
-length = len(UPDATED_BREAKS)
-index = 0
-while length >0:
-  correct_names = []
-  correct_titles = []
-  text = []
-
-  cur = UPDATED_BREAKS[index]
-  names = updated_transcript[cur-2:cur]
-  titles = updated_transcript[cur+1:cur+10]
-  
-  to_split = names[0]
-  
-  for y in endings:
-    if y in to_split:
-      
-      new = to_split.split(y)      
-      
-      correct_names.append(new[-1])
-      correct_names.append(names[-1])
-      break 
-  
-  if y not in to_split:
-
-    correct_names.append(names[0])
-    correct_names.append(names[1])
-    
-  name_list.append(' '.join(correct_names))
-
-  #use the list possible_title_words to figure out the titles or people
-
-  for x in titles:
-    if x in possible_title_words:
-      correct_titles.append(x)
-
-    else:
-      break
-
-  titles_list.append(' '.join(correct_titles))  
-  #use the list possible_title_words to figure out the titles or people
-
-  #get length of titles_list to find where to start text search
-  LEN = len(correct_titles)
-  text_start = cur + LEN + 1
-  found = False 
-  for x in Big_List:
-    if found == True:
-      break
-    if x > text_start:
-   
-      for y in updated_transcript[text_start:x-2]:
-        text.append(y)
-
-      last = updated_transcript[x-2]
-            
-      for x in endings:
-        if x in last:
-          ending = last.split(x)
-          text.append(ending[0])
-      
-      found = True
-      break  
-
-  text_list.append(' '.join(text))    
-      
-  index +=1
-  length -=1
-
-final_speaker_list = []
-a = len(text_list)
-index = 0
-
-while a >0:
-  name = name_list[index]
-  title = titles_list[index]
-  text = text_list[index]
-
-  final_speaker_list.append((name, title, text))
-  index +=1
-  a -=1
-
-print(final_speaker_list)
+# for x in Transcript:
+#   parse_text(x)
 
 
 
