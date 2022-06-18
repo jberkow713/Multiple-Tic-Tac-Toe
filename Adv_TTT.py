@@ -6,8 +6,8 @@ import pygame
 import sys
 
 #Dimensions
-WIDTH = 1500 
-HEIGHT = 1000 
+BOARD_WIDTH = 1500 
+BOARD_HEIGHT = 1000 
 FPS = 60
 # Colors
 GROUND_COLOR = (255, 222, 179)
@@ -55,12 +55,12 @@ class Board:
         self.Height = Screen_Height
         self.line_color = line_color
         self.screen_color = screen_color
-        self.screen = self.build_screen()
+        self.screen = self.return_screen()
         self.lines = []
         self.create_lines()
         self.draw_board()
 
-    def build_screen(self):
+    def return_screen(self):
         screen = Screen(self.Width, self.Height, self.screen_color)
         return screen
 
@@ -93,7 +93,7 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-    B = Board(9,50,WIDTH, HEIGHT, LINE_COLOR, BOARD_COLOR)
+    B = Board(9,50,BOARD_WIDTH, BOARD_HEIGHT, LINE_COLOR, BOARD_COLOR)
     
     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
     pygame.display.flip()
