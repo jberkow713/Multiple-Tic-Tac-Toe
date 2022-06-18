@@ -17,6 +17,8 @@ RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
 PURPLE = (255,0,255)
+LINE_COLOR = BLUE
+BOARD_COLOR = WHITE 
 
 class Screen:
     def __init__(self, width, height, color):
@@ -91,7 +93,7 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-    B = Board(9,50,WIDTH, HEIGHT, BLUE, WHITE)
+    B = Board(9,50,WIDTH, HEIGHT, LINE_COLOR, BOARD_COLOR)
     
     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
     pygame.display.flip()
