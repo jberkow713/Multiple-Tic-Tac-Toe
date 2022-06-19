@@ -21,6 +21,7 @@ LINE_COLOR = BLUE
 BOARD_COLOR = WHITE 
 
 Used_Squares = []
+GAME_OVER = False
 
 class Screen:
     def __init__(self, width, height, color):
@@ -143,7 +144,11 @@ class Comp_Player:
         Used_Squares.append(index)
         return 
     def Random_Action(self):
-        
+        if len(Used_Squares)== self.Board.dimensions**2:
+            global GAME_OVER
+            GAME_OVER = True
+            return            
+
         Exit =False
         while Exit==False:
             random_Square = random.randint(0,self.keys)
@@ -158,22 +163,24 @@ class Comp_Player:
                     self.add_to_Global(random_Square)
                     Exit = True
         # print(random_Square)
+                    
         if self.shape == 'O':
             
             self.draw_circle()
         elif self.shape =='X':
                         
-            self.draw_X() 
+            self.draw_X()
+            
         return
 
 pygame.init()
 clock = pygame.time.Clock()
 B = Board(25,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
+
 C = Comp_Player(B, BLUE,'X')
 C2 = Comp_Player(B, RED, 'O')
 C3 = Comp_Player(B, GREEN, 'O')
 C4 = Comp_Player(B, RED, 'X')
-print(B.dimensions**2)
 
 
 # Need to keep track of each of the spots being drawn for each player, in their list,
@@ -185,15 +192,12 @@ while True:
             sys.exit()
     
     B.draw_board()
-    print(len(Used_Squares))
-    # if len(Used_Squares)!= B.dimensions**2:
-    #     C.Random_Action()
-    #     C2.Random_Action()
-    #     C3.Random_Action()
-    #     C4.Random_Action()
-        
     
-    
+    if GAME_OVER == False:
+        C.Random_Action()
+        C2.Random_Action()
+        C3.Random_Action()
+        C4.Random_Action()   
 
     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
     pygame.display.flip()
