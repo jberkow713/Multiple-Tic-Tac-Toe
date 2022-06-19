@@ -21,7 +21,9 @@ LINE_COLOR = BLUE
 BOARD_COLOR = WHITE 
 
 Used_Squares = []
+Players = []
 GAME_OVER = False
+Winning_Line_Dict = {}
 
 class Screen:
     def __init__(self, width, height, color):
@@ -113,15 +115,30 @@ class Board:
                      
 # Board.Positions[(B.dimensions**2+1)/2 -1]
 class Comp_Player:
-    def __init__(self, Board, color, shape):
+    def __init__(self, Board, color, shape, to_win):
         self.Board = Board
         self.color = color
         self.shape = shape
         self.keys = self.key_amounts()
+        self.to_win = to_win
         self.Circles = []
         self.Xs = []
-    def key_amounts(self):
-        
+        self.add_to_list()
+        # Checking to see if Winning_Lines Exist, 
+        # They will be created by first computer player, 
+        # and used by the others
+        if len(Winning_Line_Dict.keys())==0:
+            self.create_winning_lines()
+
+    def create_winning_lines(self):
+        # Create Winning Lines
+        # Use Board Dimensions, to_win count
+        pass        
+
+    def add_to_list(self):
+        Players.append(self)
+
+    def key_amounts(self):        
         return (self.Board.dimensions**2)-1
 
     def add_circle(self, index):
@@ -142,8 +159,9 @@ class Comp_Player:
             L2.draw(5)
     def add_to_Global(self, index):
         Used_Squares.append(index)
-        return 
-    def Random_Action(self):
+        return
+        
+    def Action(self):
         if len(Used_Squares)== self.Board.dimensions**2:
             global GAME_OVER
             GAME_OVER = True
@@ -151,19 +169,21 @@ class Comp_Player:
 
         Exit =False
         while Exit==False:
-            random_Square = random.randint(0,self.keys)
+            #Logic function built in here, to choose from keys
+            #For now, it is random 
+            Choice = random.randint(0,self.keys)
+            
             if self.shape == 'O':
-                if random_Square not in self.Circles and random_Square not in Used_Squares:
-                    self.add_circle(random_Square)
-                    self.add_to_Global(random_Square)
+                if Choice not in self.Circles and Choice not in Used_Squares:
+                    self.add_circle(Choice)
+                    self.add_to_Global(Choice)
                     Exit = True
             if self.shape == 'X':
-                if random_Square not in self.Xs and random_Square not in Used_Squares:
-                    self.add_X(random_Square)
-                    self.add_to_Global(random_Square)
+                if Choice not in self.Xs and Choice not in Used_Squares:
+                    self.add_X(Choice)
+                    self.add_to_Global(Choice)
                     Exit = True
-        # print(random_Square)
-                    
+                           
         if self.shape == 'O':
             
             self.draw_circle()
@@ -177,10 +197,10 @@ pygame.init()
 clock = pygame.time.Clock()
 B = Board(25,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
 
-C = Comp_Player(B, BLUE,'X')
-C2 = Comp_Player(B, RED, 'O')
-C3 = Comp_Player(B, GREEN, 'O')
-C4 = Comp_Player(B, RED, 'X')
+C = Comp_Player(B, BLUE,'X',5)
+C2 = Comp_Player(B, RED, 'O',5)
+C3 = Comp_Player(B, GREEN, 'O',5)
+C4 = Comp_Player(B, PURPLE, 'X',5)
 
 
 # Need to keep track of each of the spots being drawn for each player, in their list,
@@ -193,11 +213,9 @@ while True:
     
     B.draw_board()
     
-    if GAME_OVER == False:
-        C.Random_Action()
-        C2.Random_Action()
-        C3.Random_Action()
-        C4.Random_Action()   
+    for Player in Players:
+        Player.Action()
+         
 
     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
     pygame.display.flip()
