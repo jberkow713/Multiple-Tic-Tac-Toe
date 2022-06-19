@@ -61,6 +61,7 @@ class Board:
         self.screen = self.return_screen()
         self.lines = []
         self.square_size = None
+        # Circle Positions represent the center of each square
         self.Circle_Positions = {}
         self.Square_Positions = {}  
         self.create_lines()                   
@@ -112,26 +113,37 @@ class Comp_Player:
     def __init__(self, Board, color):
         self.Board = Board
         self.color = color
-    def draw_circle(self, index):
-        Position = self.Board.Circle_Positions[index]
-        pygame.draw.circle(self.Board.screen.view, self.color, Position, self.Board.square_size, 3)
-    def draw_X(self, index):
+        self.Circles = []
+        self.Xs = []
+    def add_circle(self, index):
+        if index not in self.Circles:
+            self.Circles.append(index)
+    def add_X(self, index):
+        if index not in self.Xs:
+            self.Xs.append(index)
+    def draw_circle(self):
+        for pos in self.Circles:
+            Position = self.Board.Circle_Positions[pos]
+            pygame.draw.circle(self.Board.screen.view, self.color, Position, self.Board.square_size, 3)
+    def draw_X(self):
         # [(518.0, 806.0), (554.0, 842.0), (518.0, 842.0), (554.0, 806.0)]
-        Positions = self.Board.Square_Positions
-        L1 = Line(self.Board.screen, Positions[index][0], Positions[index][1], self.color)
-        L2 = Line(self.Board.screen, Positions[index][2], Positions[index][3], self.color)
-        L1.draw(5)
-        L2.draw(5)
+        for pos in self.Xs:
 
-
-
+            Positions = self.Board.Square_Positions
+            L1 = Line(self.Board.screen, Positions[pos][0], Positions[pos][1], self.color)
+            L2 = Line(self.Board.screen, Positions[pos][2], Positions[pos][3], self.color)
+            L1.draw(5)
+            L2.draw(5)
    
 pygame.init()
 clock = pygame.time.Clock()
 B = Board(25,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
 C = Comp_Player(B, BLUE)
+C2 = Comp_Player(B,RED)
+C3 = Comp_Player(B, GREEN)
 
-
+# Need to keep track of each of the spots being drawn for each player, in their list,
+# Then in each loop iteration, need to draw all the spots in the players list by that player
 while True:
     clock.tick(FPS)
     for event in pygame.event.get():
@@ -139,9 +151,13 @@ while True:
             sys.exit()
     
     B.draw_board()
-    C.draw_circle(25)
-    C.draw_X(30)
-    
-    
+    C.add_circle(25)
+    C.add_circle(30)
+    C.draw_circle()   
+    C2.add_X(35)
+    C2.draw_X()
+    C3.add_circle(50)
+    C3.draw_circle()
+
     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
     pygame.display.flip()
