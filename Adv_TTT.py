@@ -42,10 +42,13 @@ class Line:
         self.Screen = Screen
         self.starting = starting
         self.ending = ending
-        self.color = color       
+        self.color = color               
         
-    def draw(self):
-        pygame.draw.line(self.Screen.view, self.color, self.starting, self.ending)      
+    def draw(self, width=None):
+        if width == None:
+            pygame.draw.line(self.Screen.view, self.color, self.starting, self.ending)      
+        else:
+            pygame.draw.line(self.Screen.view, self.color, self.starting, self.ending, width)   
 
 class Board:
     def __init__(self, dimensions, Buffer, Screen_Width, Screen_Height, line_color, screen_color):
@@ -58,10 +61,9 @@ class Board:
         self.screen = self.return_screen()
         self.lines = []
         self.square_size = None
-        self.Positions = {}
-        self.create_lines()
-        self.draw_board()
-        
+        self.Circle_Positions = {}
+        self.Square_Positions = {}  
+        self.create_lines()                   
 
     def return_screen(self):
 
@@ -80,33 +82,66 @@ class Board:
             self.lines.append(Vert_L)
             Hor_L = Line(screen, (Buff ,Buff+i*Y_Gap), (self.Width-Buff, Buff+i*Y_Gap), self.line_color)
             self.lines.append(Hor_L)
-        
+        #Circle Creation 
         count = 0
         for i in range(self.dimensions):
-            y_val = Buff + i*Y_Gap +.5*Y_Gap
-            
+            y_val = Buff + i*Y_Gap +.5*Y_Gap            
 
             for j in range(self.dimensions):
                 x_val = Buff+j*X_Gap + .5*X_Gap                
-                self.Positions[count]=(x_val,y_val)
+                self.Circle_Positions[count]=(x_val,y_val)
+                count +=1        
+        #X_Creation
+        count = 0
+        for i in range(self.dimensions):
+            y_val_1 = Buff + i*Y_Gap
+            y_val_2 = Buff + (i+1)*Y_Gap
+                       
+            for j in range(self.dimensions):
+                x_val_1 = Buff + j*X_Gap
+                x_val_2 = Buff + (j+1)*X_Gap
+                self.Square_Positions[count]=[(x_val_1,y_val_1),(x_val_2,y_val_2),(x_val_1,y_val_2),(x_val_2,y_val_1) ]  
                 count +=1
-        
-
+       
     def draw_board(self):
         for x in self.lines:
-            x.draw()         
+            x.draw()
+                     
+# Board.Positions[(B.dimensions**2+1)/2 -1]
+class Comp_Player:
+    def __init__(self, Board, color):
+        self.Board = Board
+        self.color = color
+    def draw_circle(self, index):
+        Position = self.Board.Circle_Positions[index]
+        pygame.draw.circle(self.Board.screen.view, self.color, Position, self.Board.square_size, 3)
+    def draw_X(self, index):
+        # [(518.0, 806.0), (554.0, 842.0), (518.0, 842.0), (554.0, 806.0)]
+        Positions = self.Board.Square_Positions
+        L1 = Line(self.Board.screen, Positions[index][0], Positions[index][1], self.color)
+        L2 = Line(self.Board.screen, Positions[index][2], Positions[index][3], self.color)
+        L1.draw(5)
+        L2.draw(5)
 
+
+
+   
 pygame.init()
 clock = pygame.time.Clock()
-B = Board(13,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
+B = Board(25,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
+C = Comp_Player(B, BLUE)
+
 
 while True:
     clock.tick(FPS)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-    B
-    pygame.draw.circle(B.screen.view, RED, B.Positions[(B.dimensions**2+1)/2 -1], B.square_size, 5)
+    
+    B.draw_board()
+    C.draw_circle(25)
+    C.draw_X(30)
+    
     
     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
     pygame.display.flip()
