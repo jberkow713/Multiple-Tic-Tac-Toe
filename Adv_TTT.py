@@ -20,6 +20,8 @@ PURPLE = (255,0,255)
 LINE_COLOR = BLUE
 BOARD_COLOR = WHITE 
 
+Used_Squares = []
+
 class Screen:
     def __init__(self, width, height, color):
         self.width = width
@@ -110,37 +112,69 @@ class Board:
                      
 # Board.Positions[(B.dimensions**2+1)/2 -1]
 class Comp_Player:
-    def __init__(self, Board, color):
+    def __init__(self, Board, color, shape):
         self.Board = Board
         self.color = color
+        self.shape = shape
+        self.keys = self.key_amounts()
         self.Circles = []
         self.Xs = []
+    def key_amounts(self):
+        
+        return (self.Board.dimensions**2)-1
+
     def add_circle(self, index):
-        if index not in self.Circles:
-            self.Circles.append(index)
+        self.Circles.append(index)
     def add_X(self, index):
-        if index not in self.Xs:
-            self.Xs.append(index)
+        self.Xs.append(index)
     def draw_circle(self):
         for pos in self.Circles:
             Position = self.Board.Circle_Positions[pos]
             pygame.draw.circle(self.Board.screen.view, self.color, Position, self.Board.square_size, 3)
     def draw_X(self):
-        # [(518.0, 806.0), (554.0, 842.0), (518.0, 842.0), (554.0, 806.0)]
+        
         for pos in self.Xs:
-
             Positions = self.Board.Square_Positions
             L1 = Line(self.Board.screen, Positions[pos][0], Positions[pos][1], self.color)
             L2 = Line(self.Board.screen, Positions[pos][2], Positions[pos][3], self.color)
             L1.draw(5)
             L2.draw(5)
-   
+    def add_to_Global(self, index):
+        Used_Squares.append(index)
+        return 
+    def Random_Action(self):
+        
+        Exit =False
+        while Exit==False:
+            random_Square = random.randint(0,self.keys)
+            if self.shape == 'O':
+                if random_Square not in self.Circles and random_Square not in Used_Squares:
+                    self.add_circle(random_Square)
+                    self.add_to_Global(random_Square)
+                    Exit = True
+            if self.shape == 'X':
+                if random_Square not in self.Xs and random_Square not in Used_Squares:
+                    self.add_X(random_Square)
+                    self.add_to_Global(random_Square)
+                    Exit = True
+        # print(random_Square)
+        if self.shape == 'O':
+            
+            self.draw_circle()
+        elif self.shape =='X':
+                        
+            self.draw_X() 
+        return
+
 pygame.init()
 clock = pygame.time.Clock()
 B = Board(25,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
-C = Comp_Player(B, BLUE)
-C2 = Comp_Player(B,RED)
-C3 = Comp_Player(B, GREEN)
+C = Comp_Player(B, BLUE,'X')
+C2 = Comp_Player(B, RED, 'O')
+C3 = Comp_Player(B, GREEN, 'O')
+C4 = Comp_Player(B, RED, 'X')
+print(B.dimensions**2)
+
 
 # Need to keep track of each of the spots being drawn for each player, in their list,
 # Then in each loop iteration, need to draw all the spots in the players list by that player
@@ -151,13 +185,15 @@ while True:
             sys.exit()
     
     B.draw_board()
-    C.add_circle(25)
-    C.add_circle(30)
-    C.draw_circle()   
-    C2.add_X(35)
-    C2.draw_X()
-    C3.add_circle(50)
-    C3.draw_circle()
+    print(len(Used_Squares))
+    # if len(Used_Squares)!= B.dimensions**2:
+    #     C.Random_Action()
+    #     C2.Random_Action()
+    #     C3.Random_Action()
+    #     C4.Random_Action()
+        
+    
+    
 
     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
     pygame.display.flip()
