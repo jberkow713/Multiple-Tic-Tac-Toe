@@ -35,7 +35,6 @@ class Screen:
         self.fill_screen()
             
     def build_screen(self):
-
         return pygame.display.set_mode((self.width, self.height))        
     
     def fill_screen(self):
@@ -72,7 +71,6 @@ class Board:
         self.create_lines()                   
 
     def return_screen(self):
-
         return Screen(self.Width, self.Height, self.screen_color)
         
     def create_lines(self):
@@ -91,8 +89,7 @@ class Board:
         #Circle Creation 
         count = 0
         for i in range(self.dimensions):
-            y_val = Buff + i*Y_Gap +.5*Y_Gap            
-
+            y_val = Buff + i*Y_Gap +.5*Y_Gap
             for j in range(self.dimensions):
                 x_val = Buff+j*X_Gap + .5*X_Gap                
                 self.Circle_Positions[count]=(x_val,y_val)
@@ -111,9 +108,8 @@ class Board:
        
     def draw_board(self):
         for x in self.lines:
-            x.draw()
-                     
-# Board.Positions[(B.dimensions**2+1)/2 -1]
+            x.draw()                     
+
 class Comp_Player:
     def __init__(self, Board, color, shape, to_win):
         self.Board = Board
@@ -143,20 +139,23 @@ class Comp_Player:
 
     def add_circle(self, index):
         self.Circles.append(index)
+    
     def add_X(self, index):
         self.Xs.append(index)
+    
     def draw_circle(self):
         for pos in self.Circles:
             Position = self.Board.Circle_Positions[pos]
             pygame.draw.circle(self.Board.screen.view, self.color, Position, self.Board.square_size, 3)
-    def draw_X(self):
-        
+    
+    def draw_X(self):        
         for pos in self.Xs:
             Positions = self.Board.Square_Positions
             L1 = Line(self.Board.screen, Positions[pos][0], Positions[pos][1], self.color)
             L2 = Line(self.Board.screen, Positions[pos][2], Positions[pos][3], self.color)
             L1.draw(5)
             L2.draw(5)
+
     def add_to_Global(self, index):
         Used_Squares.append(index)
         return
@@ -184,9 +183,9 @@ class Comp_Player:
                     self.add_to_Global(Choice)
                     Exit = True
                            
-        if self.shape == 'O':
-            
+        if self.shape == 'O':            
             self.draw_circle()
+
         elif self.shape =='X':
                         
             self.draw_X()
@@ -202,7 +201,6 @@ C2 = Comp_Player(B, RED, 'O',5)
 C3 = Comp_Player(B, GREEN, 'O',5)
 C4 = Comp_Player(B, PURPLE, 'X',5)
 
-
 # Need to keep track of each of the spots being drawn for each player, in their list,
 # Then in each loop iteration, need to draw all the spots in the players list by that player
 while True:
@@ -214,8 +212,7 @@ while True:
     B.draw_board()
     
     for Player in Players:
-        Player.Action()
-         
+        Player.Action()         
 
     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
     pygame.display.flip()
