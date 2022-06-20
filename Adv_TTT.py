@@ -128,19 +128,17 @@ class Comp_Player:
 
     def create_winning_lines(self):
 
-        # Create Winning Lines
-        # Use Board Dimensions, to_win count
-        # Use self.to_win as the values for each line
-        # Set Winning_Lines = return statement of this function
-        # [0,1,2...self.Board.dimensions-1], create matrix
+        # Create All possible Winning Lines for the Board, 
+        # Store in the Global Dictionary
         square = 0
         Matrix = []
-        for i in range(self.Board.dimensions):
+        for _ in range(self.Board.dimensions):
             L = []
-            for j in range(self.Board.dimensions):
+            for _ in range(self.Board.dimensions):
                 L.append(square)
                 square+=1
             Matrix.append(L)
+
         winning_lines = []
         # Row Winning Lines
         rows = len(Matrix)
@@ -171,7 +169,6 @@ class Comp_Player:
         while cols >0:
             count = 0
             curr_index = 0
-            index = 0
             row_index = 0
             col_winning_lines = []
             while row_index < self.Board.dimensions:
@@ -187,12 +184,62 @@ class Comp_Player:
                     row_index = curr_index
             col_index +=1
             cols -=1
+        # Diagonal Down Winning Lines
+        rows = len(Matrix)-self.to_win+1
+        row = 0
+        
+        while rows >0:
+            count = 0
+            curr_index = 0
+            row_index = row
+            col_index = 0
+            diag_winning_lines = []
+            while col_index < self.Board.dimensions:
+                Curr = Matrix[row_index][col_index]
+                diag_winning_lines.append(Curr)
+                count +=1
+                row_index +=1
+                col_index +=1
+                if count == self.to_win:
+                    winning_lines.append(diag_winning_lines)
+                    diag_winning_lines = []
+                    count = 0
+                    row_index = row
+                    curr_index +=1
+                    col_index = curr_index
+            row +=1
+            rows -=1
 
-        return winning_lines            
+        rows = len(Matrix)-self.to_win+1
+        row = self.Board.dimensions-1
+        while rows >0:
+            count = 0
+            curr_index = 0
+            row_index = row
+            col_index = 0
+            diag_winning_lines = []
+            
+            while col_index < self.Board.dimensions:
+                Curr = Matrix[row_index][col_index]
+                diag_winning_lines.append(Curr)
+                count +=1
+                row_index -=1
+                col_index +=1
+                if count == self.to_win:
+                    winning_lines.append(diag_winning_lines)
+                    diag_winning_lines = []
+                    count = 0
+                    row_index = row
+                    curr_index +=1
+                    col_index = curr_index
+            row -=1
+            rows -=1
 
-
-
-              
+        vals = [self.to_win for x in range(len(winning_lines))]
+        winning_lines = [tuple(x) for x in winning_lines]
+        global Winning_Lines
+        Winning_Lines = dict(zip(winning_lines,vals))
+        return        
 
     def add_to_list(self):
         Players.append(self)
@@ -257,13 +304,14 @@ class Comp_Player:
 
 pygame.init()
 clock = pygame.time.Clock()
-B = Board(25,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
+B = Board(9,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
 
 C = Comp_Player(B, BLUE,'X',5)
 C2 = Comp_Player(B, RED, 'O',5)
 C3 = Comp_Player(B, GREEN, 'O',5)
 C4 = Comp_Player(B, PURPLE, 'X',5)
-print(C.create_winning_lines())
+
+print(Winning_Lines)
 
 # Need to keep track of each of the spots being drawn for each player, in their list,
 # Then in each loop iteration, need to draw all the spots in the players list by that player
