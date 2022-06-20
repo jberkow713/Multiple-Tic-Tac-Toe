@@ -1,6 +1,6 @@
 import math
 import random 
-from copy import deepcopy
+import copy
 import numpy as np
 import pygame
 import sys
@@ -24,6 +24,10 @@ Used_Squares = []
 Players = []
 GAME_OVER = False
 Winning_Lines = {}
+Current_Points = {}
+Player_Tag = 0
+All_Player_Winning_Lines = []
+
 
 class Screen:
     def __init__(self, width, height, color):
@@ -119,12 +123,22 @@ class Comp_Player:
         self.to_win = to_win
         self.Circles = []
         self.Xs = []
+        self.tag = self.create_player_tag()
         self.add_to_list()
         # Checking to see if Winning_Lines Exist, 
         # They will be created by first computer player, 
         # and used by the others
         if len(Winning_Lines.keys())==0:
             self.create_winning_lines()
+        # Each need to have their own copy of this dictionary
+        elif len(Winning_Lines.keys())>0:
+            self.Winning_Lines = copy.deepcopy(Winning_Lines)
+
+    def create_player_tag(self):
+        global Player_Tag
+        current_tag = copy.deepcopy(Player_Tag)
+        Player_Tag +=1
+        return current_tag
 
     def create_winning_lines(self):
         # Create All possible Winning Lines for the Board, 
@@ -238,6 +252,7 @@ class Comp_Player:
         winning_lines = [tuple(x) for x in winning_lines]
         global Winning_Lines
         Winning_Lines = dict(zip(winning_lines,vals))
+        self.Winning_Lines = copy.deepcopy(Winning_Lines)
         return        
 
     def add_to_list(self):
@@ -268,7 +283,46 @@ class Comp_Player:
     def add_to_Global(self, index):
         Used_Squares.append(index)
         return
+    
+    def Make_Choice(self):
+        # This is where the decision making process happens
+        # Going to use the Global Winning Line Dictionary, and the individual Winning_Lines Copy
+        # Going to decide on a square to mark, then update the Winning_Lines Dictionary
+        # for all tuples that contain the square, 
+        # Ideas:
+        # 1)Individual winnings lines that are equal to the global keys, mean that you have made
+        # progress towards winning
+        # 2)If a block is made, this will mean that the global dictionary has a lower count than 
+        # the individual player's count, in this case, the individual player will remove that line 
+        # from the global, basically there is no more incentive to move in that line, could still use 
+        # the square for a different line however
+        # 3) So look to make moves which incentivize lowering the winning lines you have that are equivalent
+        # to the winning lines in the global,
+        # 4) Look to block winnings lines in the global that have lower counts than your dictionary,
+        # Once they reach a certain count, based on self.to_win, etc
+        # 5) So all comp players, can see the global, and they can see which winning lines have lower counts
+        # then their own, they know that some other player has marked, doesn't matter which player, initially
+        # 5b) Once a player has lowered winning_line count in their own dictionary, equivalent to the 
+        # global, they will add their tag, along with the winning_line to the Global_List
+        # They will add it to the All_Player Winning Lines list, along with their tag,
+        # This will allow other players to see how each current player is stacking up,
+        # This will include the human player as well
         
+        # 6) Once a comp player marks in a line that has lower count in the global than in their own,
+        # this means they have blocked that specific line, and the value of that line will become "B"
+        # The line itself will then also be removed from the All_Player_Winning_Lines list
+
+        # 7) The next time a comp player looks at their lines which have lower value, which need to also be stored
+        # In their own instance dict, they will then compare it to the global, but see a "B", 
+        # And at that point, they will remove the Key or Line, from the global, and also remove the same line
+        # From their own dictionary
+        
+        # 8) Other player's will still evaluate whether to block the line, based on their current lines, 
+        # and the count of the decreasing other global lines
+        # 9) In this game, there can be multiple wins per session, and if they get a win, the global will 
+        # be updated to show which player has how many wins, in the current session
+        pass    
+    
     def Action(self):
         if len(Used_Squares)== self.Board.dimensions**2:
             global GAME_OVER
