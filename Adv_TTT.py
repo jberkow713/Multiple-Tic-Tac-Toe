@@ -127,7 +127,6 @@ class Comp_Player:
             self.create_winning_lines()
 
     def create_winning_lines(self):
-
         # Create All possible Winning Lines for the Board, 
         # Store in the Global Dictionary
         square = 0
@@ -304,29 +303,29 @@ class Comp_Player:
 
 pygame.init()
 clock = pygame.time.Clock()
-B = Board(9,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
+B = Board(25,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
 
 C = Comp_Player(B, BLUE,'X',5)
 C2 = Comp_Player(B, RED, 'O',5)
 C3 = Comp_Player(B, GREEN, 'O',5)
 C4 = Comp_Player(B, PURPLE, 'X',5)
 
-print(Winning_Lines)
+print(len(Winning_Lines))
 
 # Need to keep track of each of the spots being drawn for each player, in their list,
 # Then in each loop iteration, need to draw all the spots in the players list by that player
 
 
-# while True:
-#     clock.tick(FPS)
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             sys.exit()
+while True:
+    clock.tick(FPS)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
     
-#     B.draw_board()
+    B.draw_board()
     
-#     for Player in Players:
-#         Player.Action()         
+    for Player in Players:
+        Player.Action()         
 
-#     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
-#     pygame.display.flip()
+    pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
+    pygame.display.flip()
