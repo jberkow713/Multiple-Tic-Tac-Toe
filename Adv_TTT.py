@@ -23,7 +23,7 @@ BOARD_COLOR = WHITE
 Used_Squares = []
 Players = []
 GAME_OVER = False
-Winning_Line_Dict = {}
+Winning_Lines = {}
 
 class Screen:
     def __init__(self, width, height, color):
@@ -123,13 +123,76 @@ class Comp_Player:
         # Checking to see if Winning_Lines Exist, 
         # They will be created by first computer player, 
         # and used by the others
-        if len(Winning_Line_Dict.keys())==0:
+        if len(Winning_Lines.keys())==0:
             self.create_winning_lines()
 
     def create_winning_lines(self):
+
         # Create Winning Lines
         # Use Board Dimensions, to_win count
-        pass        
+        # Use self.to_win as the values for each line
+        # Set Winning_Lines = return statement of this function
+        # [0,1,2...self.Board.dimensions-1], create matrix
+        square = 0
+        Matrix = []
+        for i in range(self.Board.dimensions):
+            L = []
+            for j in range(self.Board.dimensions):
+                L.append(square)
+                square+=1
+            Matrix.append(L)
+        winning_lines = []
+        # Row Winning Lines
+        rows = len(Matrix)
+        row_index = 0    
+        while rows >0:
+            count = 0
+            curr_index = 0
+            index = 0
+            row = Matrix[row_index]
+            row_winning_lines = []
+            while index < self.Board.dimensions:
+                curr = row[index]
+                row_winning_lines.append(curr)
+                count +=1
+                index +=1
+                if count ==self.to_win:
+                    winning_lines.append(row_winning_lines)
+                    row_winning_lines = []
+                    count = 0
+                    curr_index +=1
+                    index = curr_index    
+            row_index +=1
+            rows -=1
+        # Column Winning Lines
+        cols = len(Matrix)
+        col_index = 0
+
+        while cols >0:
+            count = 0
+            curr_index = 0
+            index = 0
+            row_index = 0
+            col_winning_lines = []
+            while row_index < self.Board.dimensions:
+                Curr = Matrix[row_index][col_index]
+                col_winning_lines.append(Curr)
+                count +=1
+                row_index +=1
+                if count == self.to_win:
+                    winning_lines.append(col_winning_lines)
+                    col_winning_lines = []
+                    count = 0
+                    curr_index +=1
+                    row_index = curr_index
+            col_index +=1
+            cols -=1
+
+        return winning_lines            
+
+
+
+              
 
     def add_to_list(self):
         Players.append(self)
@@ -200,19 +263,22 @@ C = Comp_Player(B, BLUE,'X',5)
 C2 = Comp_Player(B, RED, 'O',5)
 C3 = Comp_Player(B, GREEN, 'O',5)
 C4 = Comp_Player(B, PURPLE, 'X',5)
+print(C.create_winning_lines())
 
 # Need to keep track of each of the spots being drawn for each player, in their list,
 # Then in each loop iteration, need to draw all the spots in the players list by that player
-while True:
-    clock.tick(FPS)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
-    
-    B.draw_board()
-    
-    for Player in Players:
-        Player.Action()         
 
-    pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
-    pygame.display.flip()
+
+# while True:
+#     clock.tick(FPS)
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             sys.exit()
+    
+#     B.draw_board()
+    
+#     for Player in Players:
+#         Player.Action()         
+
+#     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
+#     pygame.display.flip()
