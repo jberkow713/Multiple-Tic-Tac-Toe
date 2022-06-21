@@ -28,9 +28,33 @@ Occurrence_Dict = {}
 Current_Points = {}
 Player_Tag = 0
 All_Player_Winning_Lines = []
-Most_Frequent_Keys = []
 
+def shuffle_keys(Dict):
+        
+    l = []
+    for x in Dict.values():
+        if x not in l:
+            l.append(x)
+    l = sorted(l, reverse=True)  
 
+    Final_List = []
+    length = len(l)
+    index = 0
+    while length >0:
+
+        mini = []
+        val = l[index]
+        for k,v in Dict.items():
+            if v == val:
+                mini.append(k)
+        random.shuffle(mini)
+        for x in mini:
+            Final_List.append(x)
+
+        length -=1
+        index +=1
+
+    return Final_List
 
 class Screen:
     def __init__(self, width, height, color):
@@ -267,8 +291,8 @@ class Comp_Player:
                     count +=1
             Occurrence_Dict[square]=count
             count = 0
-        global Most_Frequent_Keys
-        Most_Frequent_Keys = [x[0] for x in sorted(Occurrence_Dict.items(), key=lambda x: (-x[1], x[0]))]
+        global Shuffled
+        Shuffled = shuffle_keys(Occurrence_Dict)
         return        
 
     def add_to_list(self):
@@ -351,9 +375,10 @@ class Comp_Player:
         Exit =False
         while Exit==False:
             #Logic function built in here, to choose from keys
-            #For now, it is random
-            Choice = Most_Frequent_Keys[0]
-            Most_Frequent_Keys.remove(Choice)
+            #For now, it is random most frequent key as a placeholder
+            
+            Choice = Shuffled[0]
+            Shuffled.remove(Choice)
 
             # Choice = random.randint(0,self.keys)
             
