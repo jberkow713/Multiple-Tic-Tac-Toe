@@ -24,9 +24,12 @@ Used_Squares = []
 Players = []
 GAME_OVER = False
 Winning_Lines = {}
+Occurrence_Dict = {}
 Current_Points = {}
 Player_Tag = 0
 All_Player_Winning_Lines = []
+Most_Frequent_Keys = []
+
 
 
 class Screen:
@@ -125,6 +128,7 @@ class Comp_Player:
         self.Xs = []
         self.tag = self.create_player_tag()
         self.add_to_list()
+        self.square_list = list(range(Board.dimensions**2))
         # Checking to see if Winning_Lines Exist, 
         # They will be created by first computer player, 
         # and used by the others
@@ -253,6 +257,18 @@ class Comp_Player:
         global Winning_Lines
         Winning_Lines = dict(zip(winning_lines,vals))
         self.Winning_Lines = copy.deepcopy(Winning_Lines)
+
+        # Create occurence dictionary as well, for all possible squares, in terms of how often
+        # they show up in Winning_Lines
+        count = 0
+        for square in self.square_list:
+            for line in Winning_Lines.keys():
+                if square in line:
+                    count +=1
+            Occurrence_Dict[square]=count
+            count = 0
+        global Most_Frequent_Keys
+        Most_Frequent_Keys = [x[0] for x in sorted(Occurrence_Dict.items(), key=lambda x: (-x[1], x[0]))]
         return        
 
     def add_to_list(self):
@@ -282,10 +298,13 @@ class Comp_Player:
 
     def add_to_Global(self, index):
         Used_Squares.append(index)
+        self.square_list.remove(index)
         return
     
     def Make_Choice(self):
         # This is where the decision making process happens
+
+
         # Going to use the Global Winning Line Dictionary, and the individual Winning_Lines Copy
         # Going to decide on a square to mark, then update the Winning_Lines Dictionary
         # for all tuples that contain the square, 
@@ -332,8 +351,11 @@ class Comp_Player:
         Exit =False
         while Exit==False:
             #Logic function built in here, to choose from keys
-            #For now, it is random 
-            Choice = random.randint(0,self.keys)
+            #For now, it is random
+            Choice = Most_Frequent_Keys[0]
+            Most_Frequent_Keys.remove(Choice)
+
+            # Choice = random.randint(0,self.keys)
             
             if self.shape == 'O':
                 if Choice not in self.Circles and Choice not in Used_Squares:
@@ -361,10 +383,9 @@ B = Board(25,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
 
 C = Comp_Player(B, BLUE,'X',5)
 C2 = Comp_Player(B, RED, 'O',5)
+
 C3 = Comp_Player(B, GREEN, 'O',5)
 C4 = Comp_Player(B, PURPLE, 'X',5)
-
-print(len(Winning_Lines))
 
 # Need to keep track of each of the spots being drawn for each player, in their list,
 # Then in each loop iteration, need to draw all the spots in the players list by that player
