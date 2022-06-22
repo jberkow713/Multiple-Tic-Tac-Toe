@@ -359,6 +359,9 @@ class Comp_Player:
         # winning line key, at this point, remove the key from the global, and both players individual dicts
 
         # Other Ideas:
+
+        # Advanced_Shuffled Dictionary will need to be constantly updated, used by smarter comps, so updated
+        # each round by the smarter comps, but not necessarily used by the less smart comps
         
         # Blocks will be decided upon, based on the to_win amount, board size, and a bunch of other factors
         # Such as what tier list the square is in in the Advanced_Shuffled Dictionary
