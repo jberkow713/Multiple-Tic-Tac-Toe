@@ -29,7 +29,10 @@ Current_Points = {}
 Player_Tag = 0
 All_Player_Winning_Lines = []
 
-def shuffle_keys(Dict):
+def shuffle_keys(Dict, advanced=False):
+    # Returns list of random keys based on each key's occurence in winning_line Dictionary
+    # If optional parameter == True, returns list of lists of randomized values, for more 
+    # accurate use
         
     l = []
     for x in Dict.values():
@@ -38,6 +41,7 @@ def shuffle_keys(Dict):
     l = sorted(l, reverse=True)  
 
     Final_List = []
+    Advanced_List = []
     length = len(l)
     index = 0
     while length >0:
@@ -47,12 +51,18 @@ def shuffle_keys(Dict):
         for k,v in Dict.items():
             if v == val:
                 mini.append(k)
+
         random.shuffle(mini)
-        for x in mini:
-            Final_List.append(x)
+        if advanced==True:
+            Advanced_List.append(mini)
+        elif advanced==False:
+            for x in mini:
+                Final_List.append(x)
 
         length -=1
         index +=1
+    if advanced==True:
+        return Advanced_List
 
     return Final_List
 
@@ -142,12 +152,13 @@ class Board:
             x.draw()                     
 
 class Comp_Player:
-    def __init__(self, Board, color, shape, to_win):
+    def __init__(self, Board, color, shape, to_win, skill_level):
         self.Board = Board
         self.color = color
         self.shape = shape
         self.keys = self.key_amounts()
         self.to_win = to_win
+        self.skill_level = skill_level
         self.Circles = []
         self.Xs = []
         self.tag = self.create_player_tag()
@@ -161,6 +172,9 @@ class Comp_Player:
         # Each need to have their own copy of this dictionary
         elif len(Winning_Lines.keys())>0:
             self.Winning_Lines = copy.deepcopy(Winning_Lines)
+        if self.tag == 0:
+            self.create_shuffled_list()
+            self.advanced_shuffled_list()    
 
     def create_player_tag(self):
         global Player_Tag
@@ -281,9 +295,11 @@ class Comp_Player:
         global Winning_Lines
         Winning_Lines = dict(zip(winning_lines,vals))
         self.Winning_Lines = copy.deepcopy(Winning_Lines)
+        return 
+        
+    def create_shuffled_list(self):
+        # Creates a global list with squares and their values
 
-        # Create occurence dictionary as well, for all possible squares, in terms of how often
-        # they show up in Winning_Lines
         count = 0
         for square in self.square_list:
             for line in Winning_Lines.keys():
@@ -293,7 +309,14 @@ class Comp_Player:
             count = 0
         global Shuffled
         Shuffled = shuffle_keys(Occurrence_Dict)
-        return        
+        return
+
+    def advanced_shuffled_list(self):
+        # Purpose is to create advanced list tiering off squares based on their value
+        # This should be run by advanced models frequently, to reevaluate squares
+        global Advanced_Shuffled
+        Advanced_Shuffled = shuffle_keys(Occurrence_Dict, advanced=True)
+        return Advanced_Shuffled
 
     def add_to_list(self):
         Players.append(self)
@@ -327,6 +350,7 @@ class Comp_Player:
     
     def Make_Choice(self):
         # This is where the decision making process happens
+        # Based on skill_level, different choices will be made
 
 
         # Going to use the Global Winning Line Dictionary, and the individual Winning_Lines Copy
@@ -404,13 +428,13 @@ class Comp_Player:
 
 pygame.init()
 clock = pygame.time.Clock()
-B = Board(25,50,1000, 1000, LINE_COLOR, BOARD_COLOR)
+B = Board(25,100,1000, 1000, LINE_COLOR, BOARD_COLOR)
 
 C = Comp_Player(B, BLUE,'X',5)
 C2 = Comp_Player(B, RED, 'O',5)
-
 C3 = Comp_Player(B, GREEN, 'O',5)
 C4 = Comp_Player(B, PURPLE, 'X',5)
+C5 = Comp_Player(B, BLACK, 'O',5)
 
 # Need to keep track of each of the spots being drawn for each player, in their list,
 # Then in each loop iteration, need to draw all the spots in the players list by that player
