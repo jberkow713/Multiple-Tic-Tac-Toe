@@ -27,7 +27,7 @@ Winning_Lines = {}
 Occurrence_Dict = {}
 Current_Points = {}
 Player_Tag = 0
-All_Player_Winning_Lines = []
+All_Player_Winning_Lines = {}
 
 def shuffle_keys(Dict, advanced=False):
     # Returns list of random keys based on each key's occurence in winning_line Dictionary
@@ -352,42 +352,36 @@ class Comp_Player:
         # This is where the decision making process happens
         # Based on skill_level, different choices will be made
 
-
         # Going to use the Global Winning Line Dictionary, and the individual Winning_Lines Copy
-        # Going to decide on a square to mark, then update the Winning_Lines Dictionary
-        # for all tuples that contain the square, 
-        # Ideas:
-        # 1)Individual winnings lines that are equal to the global keys, mean that you have made
-        # progress towards winning
-        # 2)If a block is made, this will mean that the global dictionary has a lower count than 
-        # the individual player's count, in this case, the individual player will remove that line 
-        # from the global, basically there is no more incentive to move in that line, could still use 
-        # the square for a different line however
-        # 3) So look to make moves which incentivize lowering the winning lines you have that are equivalent
-        # to the winning lines in the global,
-        # 4) Look to block winnings lines in the global that have lower counts than your dictionary,
-        # Once they reach a certain count, based on self.to_win, etc
-        # 5) So all comp players, can see the global, and they can see which winning lines have lower counts
-        # then their own, they know that some other player has marked, doesn't matter which player, initially
-        # 5b) Once a player has lowered winning_line count in their own dictionary, equivalent to the 
-        # global, they will add their tag, along with the winning_line to the Global_List
-        # They will add it to the All_Player Winning Lines list, along with their tag,
-        # This will allow other players to see how each current player is stacking up,
-        # This will include the human player as well
-        
-        # 6) Once a comp player marks in a line that has lower count in the global than in their own,
-        # this means they have blocked that specific line, and the value of that line will become "B"
-        # The line itself will then also be removed from the All_Player_Winning_Lines list
+        # Going to decide on a square to mark, then update the individual copy for all tuples that 
+        # contain the square, 
+        # Not going to update the global, until more than 1 player has a reduced total for a specific 
+        # winning line key, at this point, remove the key from the global, and both players individual dicts
 
-        # 7) The next time a comp player looks at their lines which have lower value, which need to also be stored
-        # In their own instance dict, they will then compare it to the global, but see a "B", 
-        # And at that point, they will remove the Key or Line, from the global, and also remove the same line
-        # From their own dictionary
+        # Other Ideas:
         
-        # 8) Other player's will still evaluate whether to block the line, based on their current lines, 
-        # and the count of the decreasing other global lines
-        # 9) In this game, there can be multiple wins per session, and if they get a win, the global will 
-        # be updated to show which player has how many wins, in the current session
+        # Blocks will be decided upon, based on the to_win amount, board size, and a bunch of other factors
+        # Such as what tier list the square is in in the Advanced_Shuffled Dictionary
+              
+        # 5) So all comp players, can see the global, and they can see which winning lines have lower counts
+        # then their own, they know that some other player has marked, doesn't matter which player
+
+        # 5b) Once a player has lowered winning_line count in their own dictionary, equivalent to the 
+        # global, they will updated their tag key in All_Player_Winning_Lines Dict
+        # This will allow other players to see how each current player is stacking up, in terms of their 
+        # occurrences including the human player as well, more skilled comps will check this more frequently
+        # Than less skilled comps, making them "more aware"
+        
+        # 6)Once a player blocks another players winning line, the line itself will 
+        # be removed from the Winning_Lines dict and all players winning_lines dicts, 
+        # and the All_Player_Winning_Lines dict will be updated       
+        
+        # 8) Other player's will still evaluate whether to block the line, based on their current lines,
+        # counts, etc, as well as the counts of the other player's winning lines, and their overall key_count
+        # in the All_Player_Winning_Lines dictionary, as well as the Current_Points value for the given player
+        
+        # 9) In this game, there can be multiple wins per session, and if they get a win,
+        # Current_Points key for that player will be updated 
         pass    
     
     def Action(self):
