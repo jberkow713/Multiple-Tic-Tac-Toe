@@ -21,6 +21,7 @@ LINE_COLOR = BLUE
 BOARD_COLOR = WHITE 
 
 Used_Squares = []
+All_Squares = []
 Players = []
 GAME_OVER = False
 Winning_Lines = {}
@@ -109,7 +110,12 @@ class Board:
         # Circle Positions represent the center of each square
         self.Circle_Positions = {}
         self.Square_Positions = {}  
-        self.create_lines()                   
+        self.create_lines()
+        self.populate_all_squares()                  
+
+    def populate_all_squares(self):
+        for i in range(self.dimensions**2):
+            All_Squares.append(i)
 
     def return_screen(self):
         return Screen(self.Width, self.Height, self.screen_color)
@@ -152,7 +158,7 @@ class Board:
             x.draw()                     
 
 class Comp_Player:
-    def __init__(self, Board, color, shape, to_win, skill_level):
+    def __init__(self, Board, color, shape, to_win, skill_level='High'):
         self.Board = Board
         self.color = color
         self.shape = shape
@@ -347,11 +353,13 @@ class Comp_Player:
         Used_Squares.append(index)
         self.square_list.remove(index)
         return
-    
+    def calc_percent(self):
+        # finds percentage of squares left
+        return len(All_Squares)/self.Board.dimensions**2
     def Make_Choice(self):
         # This is where the decision making process happens
         # Based on skill_level, different choices will be made
-
+        Percent_left =Player.calc_percent()
         # Going to use the Global Winning Line Dictionary, and the individual Winning_Lines Copy
         # Going to decide on a square to mark, then update the individual copy for all tuples that 
         # contain the square, 
@@ -400,6 +408,8 @@ class Comp_Player:
             
             Choice = Shuffled[0]
             Shuffled.remove(Choice)
+            All_Squares.remove(Choice)
+            
 
             # Choice = random.randint(0,self.keys)
             
@@ -446,7 +456,8 @@ while True:
     B.draw_board()
     
     for Player in Players:
-        Player.Action()         
+        Player.Action()
+                
 
     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
     pygame.display.flip()
