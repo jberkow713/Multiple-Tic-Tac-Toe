@@ -179,8 +179,9 @@ class Comp_Player:
         elif len(Winning_Lines.keys())>0:
             self.Winning_Lines = copy.deepcopy(Winning_Lines)
         if self.tag == 0:
-            self.create_shuffled_list()
-            self.advanced_shuffled_list()    
+            self.create_Occurence_Dict()
+            self.advanced_shuffled_list()
+            self.shuffled_list()    
 
     def create_player_tag(self):
         global Player_Tag
@@ -303,7 +304,7 @@ class Comp_Player:
         self.Winning_Lines = copy.deepcopy(Winning_Lines)
         return 
         
-    def create_shuffled_list(self):
+    def create_Occurence_Dict(self):
         # Creates a global list with squares and their values
 
         count = 0
@@ -313,6 +314,8 @@ class Comp_Player:
                     count +=1
             Occurrence_Dict[square]=count
             count = 0
+    def shuffled_list(self):
+    
         global Shuffled
         Shuffled = shuffle_keys(Occurrence_Dict)
         return
@@ -359,7 +362,21 @@ class Comp_Player:
     def Make_Choice(self):
         # This is where the decision making process happens
         # Based on skill_level, different choices will be made
-        Percent_left =Player.calc_percent()
+        self.advanced_shuffled_list()
+        Percent_left = self.calc_percent()
+        premium = Advanced_Shuffled[0]
+        
+        
+        position = premium[random.randint(0,len(premium)-1)]
+
+        # Everytime player chooses a square, the winning line dictionary needs to get updated,
+        # All keys in the global winning line dict need to be removed which contain that square
+        # Then we recreate the occurence dictionary, so that you can recreate the Advanced Shuffled,
+        # or Shuffled list
+
+
+
+
         # Going to use the Global Winning Line Dictionary, and the individual Winning_Lines Copy
         # Going to decide on a square to mark, then update the individual copy for all tuples that 
         # contain the square, 
@@ -442,7 +459,7 @@ C2 = Comp_Player(B, RED, 'O',5)
 C3 = Comp_Player(B, GREEN, 'O',5)
 C4 = Comp_Player(B, PURPLE, 'X',5)
 C5 = Comp_Player(B, BLACK, 'O',5)
-
+print(Advanced_Shuffled)
 # Need to keep track of each of the spots being drawn for each player, in their list,
 # Then in each loop iteration, need to draw all the spots in the players list by that player
 
