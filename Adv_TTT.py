@@ -314,6 +314,7 @@ class Comp_Player:
                     count +=1
             Occurrence_Dict[square]=count
             count = 0
+
     def shuffled_list(self):
     
         global Shuffled
@@ -362,12 +363,26 @@ class Comp_Player:
     def Make_Choice(self):
         # This is where the decision making process happens
         # Based on skill_level, different choices will be made
+        self.create_Occurence_Dict()
         self.advanced_shuffled_list()
-        Percent_left = self.calc_percent()
-        premium = Advanced_Shuffled[0]
-        
-        
+        premium = Advanced_Shuffled[0]        
         position = premium[random.randint(0,len(premium)-1)]
+        global Winning_Lines
+        D = copy.deepcopy(Winning_Lines)
+        for line in Winning_Lines.keys():
+            if position in line:
+                del D[line]
+
+        Winning_Lines = D
+        # All_Squares.remove(position)
+        return position        
+
+
+
+
+
+        # Percent_left = self.calc_percent()
+
 
         # Everytime player chooses a square, the winning line dictionary needs to get updated,
         # All keys in the global winning line dict need to be removed which contain that square
@@ -422,11 +437,10 @@ class Comp_Player:
         while Exit==False:
             #Logic function built in here, to choose from keys
             #For now, it is random most frequent key as a placeholder
-            
-            Choice = Shuffled[0]
-            Shuffled.remove(Choice)
-            All_Squares.remove(Choice)
-            
+            Choice = self.Make_Choice()
+            # Choice = Shuffled[0]
+            # Shuffled.remove(Choice)
+                       
 
             # Choice = random.randint(0,self.keys)
             
