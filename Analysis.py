@@ -41,6 +41,7 @@ for filename in os.listdir(directory):
             if line == "Chief Complaint:":
                 start = True
         
+        start = False 
         for line in lines:                        
             if line == "Discharge Condition:":
                 Symptoms.append(Symptom)
@@ -52,6 +53,7 @@ for filename in os.listdir(directory):
                    
         df.close()
 
+print(len(Symptoms))
 # Now that there are two lists, one with Conditions, one with Symptoms, time for topic modeling
 # Clean data, etc
 
