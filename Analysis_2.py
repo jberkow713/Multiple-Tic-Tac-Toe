@@ -6,6 +6,9 @@ from gensim.corpora import Dictionary
 import pyLDAvis.gensim
 import os, re, operator, warnings
 import json
+
+np.random.seed(57)
+
 warnings.filterwarnings('ignore')
 nlp = spacy.load('en_core_web_sm')
 stopwords = nlp.Defaults.stop_words
@@ -57,35 +60,79 @@ def create_corpus(List_of_Lists, tenses, length):
     corpus = [dictionary.doc2bow(x) for x in texts]
     return dictionary, corpus
 
+# Creating Condition and Symptom Topic Models
+'''
 Dict, Corpus =  create_corpus(Conditions, Tenses, 2)
 Dict_2, Corpus_2 = create_corpus(Symptoms, Tenses, 2)
 
-Condition_Model = HdpModel(corpus=Corpus, id2word=Dict)
-Symptom_Model = HdpModel(corpus=Corpus_2, id2word=Dict_2)
-
+Condition_Model = LdaModel(corpus=Corpus,num_topics=15, id2word=Dict)
+Symptom_Model = LdaModel(corpus=Corpus_2,num_topics=15, id2word=Dict_2)
+'''
+# Dumping Condition Corpus and Symptom Corpus into JSON Files
 '''
 with open('Eval_Conditions.json', 'w') as f:
     json.dump(Corpus, f)
 with open('Eval_Symptoms.json', 'w') as f:
     json.dump(Corpus_2, f)      
 '''
-
+# Opening Condition and Symptom Corpuses for evaluation
+'''
 f = open('Eval_Conditions.json')
 BOW_Conditions = json.load(f)
 g = open('Eval_Symptoms.json')
 BOW_Symptoms = json.load(g)
-
-for index, score in sorted(Condition_Model[BOW_Conditions[0]], key=lambda tup: -1*tup[1]):
-    print("\nScore: {}\t \nTopic: {}".format(score, Condition_Model.print_topic(index, 10)))
-
-
-# Going with the hdp_model for evaluation
 '''
-So above I have determined the topics for both Conditions, and Symptoms, using
-A conglomeration of all of the patient Texts using specific tenses, etc.... 
-I saved the original Conditions in Evaluate.json, and the original symptoms in Eval_Symptoms.json
-I will now use the topic models to evaluate each of the files, to return Top Condition, and Top_3
- symptoms for each  file, and store in a dataframe
+
+def tuple_sort(list,top_n):
+    
+    vals = sorted([x[1] for x in list], reverse=True)
+    if len(vals)<top_n:
+        top_n = len(vals)
+
+    sorted_topics = []
+    index = 0
+    while top_n>0:
+        val = vals[index]
+        for x in list:
+            if x[1]==val:
+                sorted_topics.append(x[0])
+                break 
+        index +=1
+        top_n -=1
+
+    return sorted_topics
+
+# Creating Analysis of individual topics using the above LDA Model, Saving into JSON_Dictionary
+# Keys are Conditions, Values are the top 1-3 Symptoms corresponding to the condition
+'''
+Condition_Symptom_Dict = {}
+count = 0
+for x in range(len(BOW_Conditions)):
+    Cond_Symp = {}
+    Top_Condition = Condition_Model[BOW_Conditions[count]]
+    A = tuple_sort(Top_Condition,1)
+    Symptoms = Symptom_Model[BOW_Symptoms[count]]
+    B = tuple_sort(Symptoms,3)
+    Cond_Symp[A[0]]= B
+    Condition_Symptom_Dict[count] = Cond_Symp
+    count +=1
+
+with open('Evaluation_Cond_Symp.json', 'w') as f:
+    json.dump(Condition_Symptom_Dict, f)
+'''
+# Loading in the Evaluation Dictionary
+Eval_Dict = open('Evaluation_Cond_Symp.json')
+Dict = json.load(Eval_Dict)
+print(Dict) 
+
+
+# TODO
+'''
+The Eval_Dict is a list of conditions and their corresponding topics, based on the medical documents
+and the topic models
+
+Need to first get the keywords for the topics themselves, then create a dataframe to connect
+and correlate average condition to its symptoms 
 '''
 
 
