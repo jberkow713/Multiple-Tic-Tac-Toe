@@ -22,6 +22,7 @@ def num_check(s):
   return any(i.isdigit() for i in s)
 
 def clean_text(text, tenses, Length):
+    # Cleans a string of text, based on allowable tenses, and min_length of a word
     new = re.sub('[^A-Za-z0-9]+', ' ', text)
     New = [x.lower() for x in new.split() if num_check(x)==False]
     # NLP objects for the cleaned text
@@ -31,12 +32,12 @@ def clean_text(text, tenses, Length):
 
 Tenses = ['NOUN', 'VERB', 'ADJ', 'ADV']
 
-def return_text(List):
+def return_text(List, tenses, Length):
     # Parses a list of lists, returns a list of cleaned joined strings
     Parsed = parse_list(List)
-    return [clean_text(x, Tenses,2) for x in Parsed]  
+    return [clean_text(x, tenses,Length) for x in Parsed]  
 
-print(return_text(Conditions))   
+print(return_text(Conditions, Tenses, 2))   
 
 # Create function to clean text
 
