@@ -18,21 +18,23 @@ Symptoms = json.load(g)
 # Create function to parse this text and return joined strings of text
 def parse_list(List):
     return [' '.join(x) for x in List]
-def num_there(s):
+def num_check(s):
   return any(i.isdigit() for i in s)
 
-def clean_text(text):
+def clean_text(text, tenses, Length):
     new = re.sub('[^A-Za-z0-9]+', ' ', text)
-    New = [x.lower() for x in new.split() if num_there(x)==False]
+    New = [x.lower() for x in new.split() if num_check(x)==False]
     # NLP objects for the cleaned text
-    usable = ['NOUN', 'VERB', 'ADJ', 'ADV']
     doc = nlp(' '.join(New))
-    cleaned = [x.lemma_ for x in doc if x.is_stop==False and x.pos_ in usable and len(x)>2]
+    cleaned = [x.lemma_ for x in doc if x.is_stop==False and x.pos_ in tenses and len(x)>Length]
     return ' '.join(cleaned)
 
+Tenses = ['NOUN', 'VERB', 'ADJ', 'ADV']
+
 def return_text(List):
+    # Parses a list of lists, returns a list of cleaned joined strings
     Parsed = parse_list(List)
-    return [clean_text(x) for x in Parsed]  
+    return [clean_text(x, Tenses,2) for x in Parsed]  
 
 print(return_text(Conditions))   
 
