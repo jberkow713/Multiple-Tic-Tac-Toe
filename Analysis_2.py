@@ -60,26 +60,30 @@ def create_corpus(List_of_Lists, tenses, length):
 Dict, Corpus =  create_corpus(Conditions, Tenses, 2)
 Dict_2, Corpus_2 = create_corpus(Symptoms, Tenses, 2)
 
-'''
-To_Eval_Conditions = return_text(Conditions, Tenses, 2, joined=True)
-To_Eval_Symptoms = return_text(Symptoms, Tenses, 2, joined=True)
-with open('Eval_Conditions.json', 'w') as f:
-    json.dump(To_Eval_Conditions, f)
-with open('Eval_Symptoms.json', 'w') as f:
-    json.dump(To_Eval_Symptoms, f)      
-'''
-Condition_Topics = HdpModel(corpus=Corpus, id2word=Dict)
-print(Condition_Topics.show_topics())
+Condition_Model = HdpModel(corpus=Corpus, id2word=Dict)
+Symptom_Model = HdpModel(corpus=Corpus_2, id2word=Dict_2)
 
-Symptom_Topics = HdpModel(corpus=Corpus_2, id2word=Dict_2)
-print(Symptom_Topics.show_topics())
+'''
+with open('Eval_Conditions.json', 'w') as f:
+    json.dump(Corpus, f)
+with open('Eval_Symptoms.json', 'w') as f:
+    json.dump(Corpus_2, f)      
+'''
+
+f = open('Eval_Conditions.json')
+BOW_Conditions = json.load(f)
+g = open('Eval_Symptoms.json')
+BOW_Symptoms = json.load(g)
+
+for index, score in sorted(Condition_Model[BOW_Conditions[0]], key=lambda tup: -1*tup[1]):
+    print("\nScore: {}\t \nTopic: {}".format(score, Condition_Model.print_topic(index, 10)))
+
 
 # Going with the hdp_model for evaluation
 '''
 So above I have determined the topics for both Conditions, and Symptoms, using
 A conglomeration of all of the patient Texts using specific tenses, etc.... 
 I saved the original Conditions in Evaluate.json, and the original symptoms in Eval_Symptoms.json
-
 I will now use the topic models to evaluate each of the files, to return Top Condition, and Top_3
  symptoms for each  file, and store in a dataframe
 '''
