@@ -1,7 +1,7 @@
 import numpy as np
 import spacy
 import gensim
-from gensim.models import CoherenceModel, LdaModel
+from gensim.models import CoherenceModel, LdaModel, HdpModel, LsiModel
 from gensim.corpora import Dictionary
 import pyLDAvis.gensim
 import os, re, operator, warnings
@@ -9,6 +9,14 @@ import json
 warnings.filterwarnings('ignore')
 nlp = spacy.load('en_core_web_sm')
 stopwords = nlp.Defaults.stop_words
+# add words to stopwords
+my_stopwords = [u'patient', u'history', u'note', u'pain', u'family',\
+    u'report', u'normal', u'deny', u'give', u'prior']
+
+for word in my_stopwords:
+    lexeme = nlp.vocab[word]
+    lexeme.is_stop = True
+
 
 # Open files with Conditions and Symptoms Text, store in Variables
 f = open('Conditions.json')
@@ -45,14 +53,26 @@ def create_corpus(List_of_Lists, tenses, length):
 
     dictionary = Dictionary(texts)
     corpus = [dictionary.doc2bow(x) for x in texts]
-    return corpus
+    return dictionary, corpus
 
-Corpus = create_corpus(Conditions, Tenses, 2)
-print(Corpus)
+Dict, Corpus =  create_corpus(Conditions, Tenses, 2)
+Dict_2, Corpus_2 = create_corpus(Symptoms, Tenses, 2)
 
-   
+# lsimodel = LsiModel(corpus=Corpus, num_topics=10, id2word=Dict)
+# print(lsimodel.show_topics(num_topics=5))
 
-# Create function to clean text
+hdp_model_conditions = HdpModel(corpus=Corpus, id2word=Dict)
+print(hdp_model_conditions.show_topics())
+
+hdp_model_symptoms = HdpModel(corpus=Corpus_2, id2word=Dict_2)
+print(hdp_model_symptoms.show_topics())
+
+# lda_model = LdaModel(corpus=Corpus, num_topics=10, id2word=Dict)
+# print(lda_model.show_topics())
+
+# Going with the hdp_model for evaluation
+
+
 
 
   
