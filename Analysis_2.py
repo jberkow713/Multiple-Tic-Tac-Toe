@@ -1,5 +1,6 @@
 import numpy as np
 import spacy
+import gensim
 from gensim.models import CoherenceModel, LdaModel
 from gensim.corpora import Dictionary
 import pyLDAvis.gensim
@@ -28,7 +29,7 @@ def clean_text(text, tenses, Length):
     # NLP objects for the cleaned text
     doc = nlp(' '.join(New))
     cleaned = [x.lemma_ for x in doc if x.is_stop==False and x.pos_ in tenses and len(x)>Length]
-    return ' '.join(cleaned)
+    return cleaned
 
 Tenses = ['NOUN', 'VERB', 'ADJ', 'ADV']
 
@@ -37,7 +38,19 @@ def return_text(List, tenses, Length):
     Parsed = parse_list(List)
     return [clean_text(x, tenses,Length) for x in Parsed]  
 
-print(return_text(Conditions, Tenses, 2))   
+def create_corpus(List_of_Lists, tenses, length):
+    TEXTS = return_text(List_of_Lists, tenses, length)
+    bigram = gensim.models.Phrases(TEXTS)
+    texts = [bigram[x] for x in TEXTS]
+
+    dictionary = Dictionary(texts)
+    corpus = [dictionary.doc2bow(x) for x in texts]
+    return corpus
+
+Corpus = create_corpus(Conditions, Tenses, 2)
+print(Corpus)
+
+   
 
 # Create function to clean text
 
