@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from glob import glob
+import json
 
 import os
 # Create Conditions list of text lists 
@@ -52,6 +53,15 @@ for filename in os.listdir(directory):
                 start = True                       
                    
         df.close()
+'''
+Initially Saving the Data to two json files to be loaded in later for topic modeling
+
+with open('Conditions.json', 'w') as f:
+    json.dump(Conditions , f)
+with open('Symptoms.json', 'w') as f:
+    json.dump(Symptoms, f)    
+'''
+
 
 print(len(Symptoms))
 # Now that there are two lists, one with Conditions, one with Symptoms, time for topic modeling
