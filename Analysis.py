@@ -12,6 +12,8 @@ Conditions = []
 Symptoms = []
 for filename in os.listdir(directory):
     
+    # Each file must have a condition and symptom, in order to be added
+    
     if filename.endswith(".txt"):        
         PATH = os.path.join(directory, filename)                
         df = open(PATH, "r")
@@ -23,13 +25,13 @@ for filename in os.listdir(directory):
         Condition = []
         for line in lines:                        
             if line == "Physical Exam:":
-                Conditions.append(Condition)
+                # Conditions.append(Condition)
                 break 
             if start == True:
                 Condition.append(line)
             if line == "History of Present Illness:":
                 start = True
-        
+                
         start = False 
         # Create Symptom List for each patient, Selecting History of Present Illness up to Physical Exam
         Symptom = []
@@ -45,25 +47,27 @@ for filename in os.listdir(directory):
         start = False 
         for line in lines:                        
             if line == "Discharge Condition:":
-                Symptoms.append(Symptom)
+                # Symptoms.append(Symptom)
                 break 
             if start == True:
                 Symptom.append(line)
             if line == "Discharge Diagnosis:":
                 start = True                       
-                   
+
+        if Condition!=[] and Symptom!=[]:
+            Conditions.append(Condition)
+            Symptoms.append(Symptom)
+
         df.close()
-'''
-Initially Saving the Data to two json files to be loaded in later for topic modeling
+
+# Initially Saving the Data to two json files to be loaded in later for topic modeling
 
 with open('Conditions.json', 'w') as f:
     json.dump(Conditions , f)
 with open('Symptoms.json', 'w') as f:
     json.dump(Symptoms, f)    
-'''
 
 
-print(len(Symptoms))
 # Now that there are two lists, one with Conditions, one with Symptoms, time for topic modeling
 # Clean data, etc
 

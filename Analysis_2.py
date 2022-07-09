@@ -17,7 +17,6 @@ for word in my_stopwords:
     lexeme = nlp.vocab[word]
     lexeme.is_stop = True
 
-
 # Open files with Conditions and Symptoms Text, store in Variables
 f = open('Conditions.json')
 Conditions = json.load(f)
@@ -37,14 +36,17 @@ def clean_text(text, tenses, Length):
     # NLP objects for the cleaned text
     doc = nlp(' '.join(New))
     cleaned = [x.lemma_ for x in doc if x.is_stop==False and x.pos_ in tenses and len(x)>Length]
-    return cleaned
+    return cleaned    
 
 Tenses = ['NOUN', 'VERB', 'ADJ', 'ADV']
 
-def return_text(List, tenses, Length):
-    # Parses a list of lists, returns a list of cleaned joined strings
+def return_text(List, tenses, Length, joined=False):
+    # Parses a list of lists, returns a list of cleaned joined tokens, or strings
     Parsed = parse_list(List)
-    return [clean_text(x, tenses,Length) for x in Parsed]  
+    if joined==False:
+        return [clean_text(x, tenses,Length) for x in Parsed]
+    elif joined==True:
+        return [' '.join(clean_text(x, tenses,Length)) for x in Parsed]      
 
 def create_corpus(List_of_Lists, tenses, length):
     TEXTS = return_text(List_of_Lists, tenses, length)
@@ -58,19 +60,29 @@ def create_corpus(List_of_Lists, tenses, length):
 Dict, Corpus =  create_corpus(Conditions, Tenses, 2)
 Dict_2, Corpus_2 = create_corpus(Symptoms, Tenses, 2)
 
-# lsimodel = LsiModel(corpus=Corpus, num_topics=10, id2word=Dict)
-# print(lsimodel.show_topics(num_topics=5))
+'''
+To_Eval_Conditions = return_text(Conditions, Tenses, 2, joined=True)
+To_Eval_Symptoms = return_text(Symptoms, Tenses, 2, joined=True)
+with open('Eval_Conditions.json', 'w') as f:
+    json.dump(To_Eval_Conditions, f)
+with open('Eval_Symptoms.json', 'w') as f:
+    json.dump(To_Eval_Symptoms, f)      
+'''
+Condition_Topics = HdpModel(corpus=Corpus, id2word=Dict)
+print(Condition_Topics.show_topics())
 
-hdp_model_conditions = HdpModel(corpus=Corpus, id2word=Dict)
-print(hdp_model_conditions.show_topics())
-
-hdp_model_symptoms = HdpModel(corpus=Corpus_2, id2word=Dict_2)
-print(hdp_model_symptoms.show_topics())
-
-# lda_model = LdaModel(corpus=Corpus, num_topics=10, id2word=Dict)
-# print(lda_model.show_topics())
+Symptom_Topics = HdpModel(corpus=Corpus_2, id2word=Dict_2)
+print(Symptom_Topics.show_topics())
 
 # Going with the hdp_model for evaluation
+'''
+So above I have determined the topics for both Conditions, and Symptoms, using
+A conglomeration of all of the patient Texts using specific tenses, etc.... 
+I saved the original Conditions in Evaluate.json, and the original symptoms in Eval_Symptoms.json
+
+I will now use the topic models to evaluate each of the files, to return Top Condition, and Top_3
+ symptoms for each  file, and store in a dataframe
+'''
 
 
 
