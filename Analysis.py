@@ -2,7 +2,6 @@ import os
 import pandas as pd
 from glob import glob
 import json
-
 import os
 # Create Conditions list of text lists 
 # Create Symptoms list of text lists
@@ -25,7 +24,6 @@ for filename in os.listdir(directory):
         Condition = []
         for line in lines:                        
             if line == "Physical Exam:":
-                # Conditions.append(Condition)
                 break 
             if start == True:
                 Condition.append(line)
@@ -47,13 +45,13 @@ for filename in os.listdir(directory):
         start = False 
         for line in lines:                        
             if line == "Discharge Condition:":
-                # Symptoms.append(Symptom)
                 break 
             if start == True:
                 Symptom.append(line)
             if line == "Discharge Diagnosis:":
                 start = True                       
-
+        # If both a condition and symptom text exist, for each individual document, 
+        # Add it to the general list
         if Condition!=[] and Symptom!=[]:
             Conditions.append(Condition)
             Symptoms.append(Symptom)
@@ -61,14 +59,7 @@ for filename in os.listdir(directory):
         df.close()
 
 # Initially Saving the Data to two json files to be loaded in later for topic modeling
-
 with open('Conditions.json', 'w') as f:
     json.dump(Conditions , f)
 with open('Symptoms.json', 'w') as f:
-    json.dump(Symptoms, f)    
-
-
-# Now that there are two lists, one with Conditions, one with Symptoms, time for topic modeling
-# Clean data, etc
-
-    
+    json.dump(Symptoms, f)
