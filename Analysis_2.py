@@ -202,6 +202,13 @@ Medic.create_topic_models()
 Medic.conditions_to_symptoms()
 Medic.display_results()
 
+Tenses_2 = ['NOUN', 'VERB', 'ADJ', 'ADV']
+Medic_2 = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses_2, 3, 15)
+Medic_2.create_topic_models()
+Medic_2.conditions_to_symptoms()
+Medic_2.display_results()
+
+
 
 # TODO
 '''
