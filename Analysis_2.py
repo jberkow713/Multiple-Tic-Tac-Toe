@@ -62,7 +62,6 @@ def create_corpus(List_of_Lists, tenses, length):
     TEXTS = return_text(List_of_Lists, tenses, length)
     bigram = gensim.models.Phrases(TEXTS)
     texts = [bigram[x] for x in TEXTS]
-
     dictionary = Dictionary(texts)
     corpus = [dictionary.doc2bow(x) for x in texts]
     return dictionary, corpus
@@ -72,7 +71,6 @@ def tuple_sort(list,top_n):
     vals = sorted([x[1] for x in list], reverse=True)
     if len(vals)<top_n:
         top_n = len(vals)
-
     sorted_topics = []
     index = 0
     while top_n>0:
@@ -83,7 +81,6 @@ def tuple_sort(list,top_n):
                 break 
         index +=1
         top_n -=1
-
     return sorted_topics
 
 class Medical_Evaluator:
@@ -119,7 +116,6 @@ class Medical_Evaluator:
         # {0: Condition: Symptom/s...}
         BOW_Conditions = self.condition_Corpus
         BOW_Symptoms = self.Symptom_Corpus
-
         Condition_Symptom_Dict = {}
         count = 0
         for x in range(len(BOW_Conditions)):
@@ -135,7 +131,6 @@ class Medical_Evaluator:
     
     def concat(self, topic):
     # Creates readable topics for a given topic model topic
-
         to_remove = ['+', '.', '*', '#', '"']        
         l = []
         Topic = ""
@@ -150,7 +145,6 @@ class Medical_Evaluator:
         # Concatenates topics into a Dictionary of Topic: String
         Cond_Topics = self.condition_model.print_topics()
         Symp_Topics = self.symptom_model.print_topics()
-
         for x in Cond_Topics:
             self.Condition_Dict[x[0]]=self.concat(x)
         for x in Symp_Topics:
@@ -161,19 +155,16 @@ class Medical_Evaluator:
         D = self.create_Eval_Dict()
         num_topics = self.num_topics
         Cond_Symp_Dict = {}
-        for i in range(num_topics):
-            
+        for i in range(num_topics):            
             topics = []
             for v in D.values():
-
                 for x,y in v.items():
                     if x ==i:
                         for z in y:
                             topics.append(z)
             C = Counter(topics)
             Top_3 = C.most_common(3)
-            Sympts = sorted([x[0] for x in Top_3])
-            
+            Sympts = sorted([x[0] for x in Top_3])            
             Cond_Symp_Dict[i]=Sympts
         return Cond_Symp_Dict
 
