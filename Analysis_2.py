@@ -115,8 +115,6 @@ class Medical_Evaluator:
         Symptom_Model = LdaModel(corpus=Corpus_2,num_topics=self.num_topics, id2word=Dict_2)
         self.condition_Corpus = Corpus 
         self.Symptom_Corpus = Corpus_2
-        self.Condition_Dict = {}
-        self.Symptom_Dict = {}
         self.condition_model = Condition_Model
         self.symptom_model = Symptom_Model
         return
@@ -128,7 +126,7 @@ class Medical_Evaluator:
         BOW_Symptoms = self.Symptom_Corpus
         Condition_Symptom_Dict = {}
         count = 0
-        for x in range(len(BOW_Conditions)):
+        for _ in range(len(BOW_Conditions)):
             Cond_Symp = {}
             Top_Condition = self.condition_model[BOW_Conditions[count]]
             A = tuple_sort(Top_Condition,1)
@@ -183,11 +181,11 @@ class Medical_Evaluator:
         # Create_Dataframe with Conditions Corresponding to Symptoms
         self.topics()
         df = pd.DataFrame.from_dict(self.Condition_Dict,orient='index')
-        df.rename(columns = {0 : 'Conditions by Index'}, inplace = True)                
+        df.rename(columns = {0 : 'Conditions by Topic'}, inplace = True)                
         print(df)
         print('-------------------------------------')
         df2 = pd.DataFrame.from_dict(self.Symptom_Dict,orient='index')
-        df2.rename(columns = {0 : 'Symptoms by Index'}, inplace = True)
+        df2.rename(columns = {0 : 'Symptoms by Topic'}, inplace = True)
         print(df2)
         print('-------------------------------------')        
         df_3 = pd.DataFrame.from_dict(self.cond_symp_Dict,orient='index')
@@ -210,7 +208,7 @@ Medic_2.display_results()
 
 '''
 Medic Evaluator model 1: Medic
-
+                                        Conditions by Topic
 0  abdominal blood negative changes severe felt states repair disease fluid
 1  abdominal disease increased month time renal nausea_vomiting negative denied severe
 2  chest negative transferred disease multiple changes month cancer abdominal chronic
@@ -222,7 +220,7 @@ Medic Evaluator model 1: Medic
 8  abdominal chronic review_systems nausea_vomiting chest negative baseline time location bilateral
 9  chest time abdominal blood significant hypertension negative location tobacco multiple
 -------------------------------------
-                                                    Symptoms by Index
+                                        Symptoms by Topic
 0  blood failure anemia primary secondary cell cancer renal_failure atrial_fibrillation chronic
 1  secondary primary bleeding hypertension cancer kidney chronic pulmonary coronary_artery mechanical
 2  secondary failure infection primary atrial_fibrillation leakage disease renal_failure transfer acute_renal
@@ -249,7 +247,7 @@ Condition 9  1           7           0
 Medic Evaluator model 2: Medic_2
 
 
-                                          Conditions by Index
+                                        Conditions by Topic
 0   negative chest currently time transferred abdominal surgery felt stable months
 1   time chest currently acute stable significant placed transferred abdominal disease
 2   chest time increased negative bleeding severe abdominal baseline initially chronic
@@ -266,7 +264,7 @@ Medic Evaluator model 2: Medic_2
 13  chest abdominal multiple negative tobacco transferred today recently nausea_vomiting significant
 14  abdominal disease negative felt today month transferred tobacco weeks bilateral
 -------------------------------------
-                                                   Symptoms by Index
+                                        Symptoms by Topic
 0   secondary failure stent requiring likely lower shock wound bleeding cell
 1   failure primary secondary disease kidney acute_renal bilateral multiple transfer seizure
 2   primary hypertension disease chronic pulmonary secondary embolism kidney requiring adrenal
@@ -300,4 +298,48 @@ Condition 12  6           7           2
 Condition 13  6           1           14
 Condition 14  0           3           10
 
-''' 
+'''
+
+'''
+To summarize:
+
+Data from the patients medical files you gave me was created in Analysis.py, 
+and the Conditions.json and Symptoms.json were saved locally. These text files were used
+to create topic models for both Conditions and Symptoms.
+
+Next, I created the Medical Evaluator class. This class takes in 5 arguments:
+1) Conditions Text Document: List of List of Texts from patient files corresponding to Conditions
+2) Symptoms Text Document: List of List of Texts from patient files, corresponding to Symptoms
+3) A list of Tenses, which narrows down types of words which will be used in the Topic Modeling
+4) Length, An integer determining the minimum word length of words to be used in Topic Modeling,
+    So if this is 3, then all words used have to be more than 3 letters long.
+5) Number of Topics in Both Condition and Symptom Modeling.
+
+Once the Medic_Evaluator instance is instantiated, the Topic Models are created by using:
+create_topic_models(). I used LDA Model and Bag of Words to create this, using Spacy.
+
+Next I ran conditions_to_symptoms(). The first thing this function does is run 
+create_Eval_Dict(). This function uses the stored corpus for both Condition and Symptoms models,
+and evaluates in order using the created models. 
+So create_Eval_Dict outputs
+
+        Document 1: Most prevalent Condition : Document 1 [Top Symptom, 2nd Symptom, 3rd Symptom],
+        and so on for each Document. This function uses a sorting function tuple_sort() to return
+        top 3 symptoms, and top 1 condition.
+
+conditions_to_symptoms() parses this Dictionary, and returns a list of the top 3 symptoms for a condition
+by using a for loop, and a Counter dictionary. This is saved in self.cond_symp_Dict as :
+        D = {Condition_0: [Top Symptom, 2nd Symptom, 3rd Symptom]...}
+
+And Finally display_results() displays what you see above:
+    This first runs topics() which calls concat() which takes all of the keywords for a given topic,
+    And turns it into one topic.
+    
+    So the final output is a dataframe displaying Conditions by Topic,
+    a dataframe displaying Symptoms by Topic,
+    And a dataframe Linking Each condition with the top symptoms.
+
+
+
+
+'''
