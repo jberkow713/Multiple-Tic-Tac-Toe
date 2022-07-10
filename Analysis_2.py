@@ -208,18 +208,96 @@ Medic_2.create_topic_models()
 Medic_2.conditions_to_symptoms()
 Medic_2.display_results()
 
-
-
-# TODO
 '''
-The Eval_Dict is a list of conditions and their corresponding topics, based on the medical documents
-and the topic models
+Medic Evaluator model 1: Medic
 
-Need to first get the keywords for the topics themselves, then create a dataframe to connect
-and correlate average condition to its symptoms 
-'''
+0  abdominal blood negative changes severe felt states repair disease fluid
+1  abdominal disease increased month time renal nausea_vomiting negative denied severe
+2  chest negative transferred disease multiple changes month cancer abdominal chronic
+3  time bilateral negative today care baseline treated nausea_vomiting abdominal chest
+4  chest significant time transferred location abdominal disease felt multiple placed
+5  negative blood time placed abdominal foot cancer bleeding chest baseline
+6  negative chest time disease abdominal transferred felt children stage severe
+7  treated transferred abdominal time brain negative feeling nausea_vomiting bleeding fluid
+8  abdominal chronic review_systems nausea_vomiting chest negative baseline time location bilateral
+9  chest time abdominal blood significant hypertension negative location tobacco multiple
+-------------------------------------
+                                                    Symptoms by Index
+0  blood failure anemia primary secondary cell cancer renal_failure atrial_fibrillation chronic
+1  secondary primary bleeding hypertension cancer kidney chronic pulmonary coronary_artery mechanical
+2  secondary failure infection primary atrial_fibrillation leakage disease renal_failure transfer acute_renal
+3  secondary primary disease renal hypotension failure status chronic stage bleed
+4  secondary bleed primary abdominal cell disease anemia severe kidney gastrointestinal
+5  secondary primary status skin epidural swelling altered_mental deceased pulmonary resolved
+6  status altered_mental renal_failure hypertension atrial_fibrillation failure primary exacerbation frequency seizures
+7  secondary hypotension abdominal aortic primary liver common bypass post operative
+8  failure secondary acute_renal primary syndrome bleeding distress infection status depression
+9  bilateral hypotension secondary diabetes gastric hemorrhage renal stage acute_blood acute
+-------------------------------------
+             Top Factor  2nd Factor  3rd Factor
+Condition 0  2           6           1
+Condition 1  0           3           5
+Condition 2  3           0           2
+Condition 3  0           4           9
+Condition 4  2           3           8
+Condition 5  0           8           2
+Condition 6  3           1           0
+Condition 7  3           8           7
+Condition 8  3           1           4
+Condition 9  1           7           0
+
+Medic Evaluator model 2: Medic_2
 
 
+                                          Conditions by Index
+0   negative chest currently time transferred abdominal surgery felt stable months
+1   time chest currently acute stable significant placed transferred abdominal disease
+2   chest time increased negative bleeding severe abdominal baseline initially chronic
+3   transferred infection abdominal placed time chest known negative died currently
+4   abdominal foot multiple bilateral disease placed significant negative artery blood
+5   time chronic chest negative transferred review_systems nausea_vomiting care abdominal tobacco
+6   negative blood multiple location disease felt recently died shortness_breath increased
+7   denied nausea_vomiting diarrhea time abdominal recently month blood negative ercp
+8   changes time location chest presents abdominal transferred placed cancer status
+9   abdominal currently disease recently time care blood multiple placed chest
+10  abdominal chest currently hospital improved initially disease negative treated likely
+11  chest negative abdominal time placed discharged severe currently chronic cancer
+12  blood negative disease husband recently children time chest currently improved
+13  chest abdominal multiple negative tobacco transferred today recently nausea_vomiting significant
+14  abdominal disease negative felt today month transferred tobacco weeks bilateral
+-------------------------------------
+                                                   Symptoms by Index
+0   secondary failure stent requiring likely lower shock wound bleeding cell
+1   failure primary secondary disease kidney acute_renal bilateral multiple transfer seizure
+2   primary hypertension disease chronic pulmonary secondary embolism kidney requiring adrenal
+3   renal_failure failure acute_chronic hypotension weakness anemia renal overload congestive_heart type
+4   expired failure requiring secondary renal_failure dysgerminoma critical ovary thought pneumonia
+5   failure respiratory primary cancer leakage sepsis infection pneumonia congestive_heart cell
+6   secondary primary hypotension abdominal hemorrhage coronary_artery atrial_fibrillation failure chronic elevated
+7   disease secondary gastric stage severe atrial_fibrillation chronic bipolar cancer hypotension
+8   secondary primary failure liver acute artery intoxication altered_mental abuse ventricular
+9   primary secondary acute hypertension pulmonary disease transfer high atrial_fibrillation status
+10  status secondary primary failure hypertension disease post coronary_artery infection altered_mental
+11  bleed secondary primary colitis infection metastatic small doctor upper ventricular
+12  depression harvesting myocardial hypoglycemia greater saphenous coronary infarction anxiety bypass
+13  primary secondary common repair abdominal aortic bypass pericardial effusion bleed
+14  secondary primary abdominal diabetes bleed failure acute_chronic status heart_failure systolic
+-------------------------------------
+              Top Factor  2nd Factor  3rd Factor
+Condition 0   1           0           14
+Condition 1   0           6           14
+Condition 2   10          0           8
+Condition 3   0           10          5
+Condition 4   9           13          7
+Condition 5   6           0           9
+Condition 6   6           2           0
+Condition 7   0           6           12
+Condition 8   8           11          1
+Condition 9   0           11          1
+Condition 10  0           14          9
+Condition 11  0           14          6
+Condition 12  6           7           2
+Condition 13  6           1           14
+Condition 14  0           3           10
 
-
-  
+''' 
