@@ -6,6 +6,7 @@ from gensim.corpora import Dictionary
 import pyLDAvis.gensim
 import os, re, operator, warnings
 import json
+from collections import Counter
 
 # Setting the random seed
 np.random.seed(57)
@@ -155,15 +156,28 @@ class Medical_Evaluator:
 
     def conditions_to_symptoms(self):
         # Evaluate Condition_Symptom Dictionary to find top 1-3 symptoms for each condition
-        pass
+        D = self.create_Eval_Dict()
+        num_topics = self.num_topics
+        Cond_Symp_Dict = {}
+        for i in range(num_topics):            
+            topics = []
+            for v in D.values():
+                for x,y in v.items():
+                    if x ==i:
+                        for z in y:
+                            topics.append(z)
+            C = Counter(topics)
+            Top_3 = C.most_common(3)
+            Sympts = sorted([x[0] for x in Top_3])
+            
+            Cond_Symp_Dict[i]=Sympts
+        return Cond_Symp_Dict
 
 Tenses = ['NOUN', 'VERB', 'ADJ']
 Medic = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses, 3, 10)
 Medic.create_topic_models()
-print(Medic.create_Eval_Dict())
-Medic.topics()
-print(Medic.Symptom_Dict)
-print(Medic.Condition_Dict)
+print(Medic.conditions_to_symptoms())
+
 
 
 # TODO
