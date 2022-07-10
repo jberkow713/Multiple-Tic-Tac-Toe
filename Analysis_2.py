@@ -18,7 +18,8 @@ my_stopwords = [u'patient', u'start',u'history', u'note', u'pain', u'family',\
         u'received', u'denies', u'medical',u'given', u'daughter', u'noted',  u'found', u'days',\
             u'social', u'home', u'reports', u'years', u'year', u'started', u'past', \
                 u'showed', u'presented', u'symptoms', u'developed', u'recent', u'lives', u'live', \
-                    u'mother', u'admitted', u'week', u'diagnosed', u'diagnoses', u'admission']
+                    u'mother', u'admitted', u'week', u'diagnosed', u'diagnoses',\
+                        u'admission', u'wife', u'diagnosis']
 
 for word in my_stopwords:
     lexeme = nlp.vocab[word]
@@ -183,13 +184,13 @@ class Medical_Evaluator:
 
         to_remove = ['+', '.', '*', '#', '"']        
         l = []
-        s = ""
+        Topic = ""
         for x in topic[1].split():
             l.append(''.join([i for i in x if not i.isdigit() and i not in to_remove]))
         for x in l:
             if len(x)>0:
-                s+=x + ' '
-        return s    
+                Topic+=x + ' '
+        return Topic    
     
     def topics(self):
         # Concatenates topics into a Dictionary of Topic: String
