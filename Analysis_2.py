@@ -3,7 +3,6 @@ import spacy
 import gensim
 from gensim.models import CoherenceModel, LdaModel, HdpModel, LsiModel
 from gensim.corpora import Dictionary
-import pyLDAvis.gensim
 import os, re, operator, warnings
 import json
 from collections import Counter
@@ -33,12 +32,6 @@ my_stopwords = [u'patient', u'start',u'history', u'note', u'pain', u'family',\
 for word in my_stopwords:
     lexeme = nlp.vocab[word]
     lexeme.is_stop = True
-
-# Open files with Conditions and Symptoms Text, store in Variables
-f = open('Conditions.json')
-Conditions = json.load(f)
-g = open('Symptoms.json')
-Symptoms = json.load(g)
 
 def parse_list(List):
     # Create function to return joined strings of text from list of lists
@@ -74,7 +67,7 @@ def create_corpus(List_of_Lists, tenses, length):
     return dictionary, corpus
 
 def tuple_sort(list,top_n):
-    
+    # Sorts values based on top_n to return    
     vals = sorted([x[1] for x in list], reverse=True)
     if len(vals)<top_n:
         top_n = len(vals)
@@ -91,6 +84,7 @@ def tuple_sort(list,top_n):
     return sorted_topics
 
 class Medical_Evaluator:
+    # Evaluates Medical Documents creating topic models for Conditions and Symptoms
     def __init__(self, Conditions_Json, Symptoms_Json, Tenses, Length, num_topics):
         Cond = open(Conditions_Json)
         self.Conditions = json.load(Cond)
@@ -150,7 +144,7 @@ class Medical_Evaluator:
         return Topic    
     
     def topics(self):
-        # Concatenates topics into a Dictionary of Topic: String
+        # Concatenates topics into a Dictionary of {Topic: String...}
         Cond_Topics = self.condition_model.print_topics()
         Symp_Topics = self.symptom_model.print_topics()
         for x in Cond_Topics:
@@ -178,7 +172,7 @@ class Medical_Evaluator:
         return Cond_Symp_Dict
 
     def display_results(self):
-        # Create_Dataframe with Conditions Corresponding to Symptoms
+        # Create_Dataframes to be displayed
         self.topics()
         df = pd.DataFrame.from_dict(self.Condition_Dict,orient='index')
         df.rename(columns = {0 : 'Conditions by Topic'}, inplace = True)                
@@ -246,7 +240,6 @@ Condition 9  1           7           0
 
 Medic Evaluator model 2: Medic_2
 
-
                                         Conditions by Topic
 0   negative chest currently time transferred abdominal surgery felt stable months
 1   time chest currently acute stable significant placed transferred abdominal disease
@@ -298,13 +291,11 @@ Condition 12  6           7           2
 Condition 13  6           1           14
 Condition 14  0           3           10
 
-'''
-
-'''
-To summarize:
+                                      SUMMARY:
 
 Data from the patients medical files you gave me was created in Analysis.py, 
-and the Conditions.json and Symptoms.json were saved locally. These text files were used
+I used various text scraping techniques and loops which can be seen in that file.
+The Conditions.json and Symptoms.json were saved locally. These text files were used
 to create topic models for both Conditions and Symptoms.
 
 Next, I created the Medical Evaluator class. This class takes in 5 arguments:
@@ -313,33 +304,42 @@ Next, I created the Medical Evaluator class. This class takes in 5 arguments:
 3) A list of Tenses, which narrows down types of words which will be used in the Topic Modeling
 4) Length, An integer determining the minimum word length of words to be used in Topic Modeling,
     So if this is 3, then all words used have to be more than 3 letters long.
-5) Number of Topics in Both Condition and Symptom Modeling.
+5) Number of Topics in Both Condition and Symptom Topic Models. 
 
-Once the Medic_Evaluator instance is instantiated, the Topic Models are created by using:
-create_topic_models(). I used LDA Model and Bag of Words to create this, using Spacy.
+I experimented with stop words, I did not use lemmatization in this case, because there were some 
+strange errors when I did, so I just manually experimented to the best of my ability in this regard.
+
+Once the Medic_Evaluator instance is created, the Topic Models are created by using:
+create_topic_models(). I used an LDA Model and Bag of Words to create this, using Spacy.
 
 Next I ran conditions_to_symptoms(). The first thing this function does is run 
-create_Eval_Dict(). This function uses the stored corpus for both Condition and Symptoms models,
-and evaluates in order using the created models. 
-So create_Eval_Dict outputs
+create_Eval_Dict(). This function uses the stored corpus, which is a bag of words
+for both Condition and Symptoms models, and evaluates in order using the created models. 
+So create_Eval_Dict() outputs
 
-        Document 1: Most prevalent Condition : Document 1 [Top Symptom, 2nd Symptom, 3rd Symptom],
-        and so on for each Document. This function uses a sorting function tuple_sort() to return
-        top 3 symptoms, and top 1 condition.
+    {Document 1: Most prevalent Condition : [Top Symptom, 2nd Symptom, 3rd Symptom]...},
+    and so on for each Document. This function uses a sorting function tuple_sort() to return
+    top 3 symptoms, and top 1 condition.
 
 conditions_to_symptoms() parses this Dictionary, and returns a list of the top 3 symptoms for a condition
-by using a for loop, and a Counter dictionary. This is saved in self.cond_symp_Dict as :
-        D = {Condition_0: [Top Symptom, 2nd Symptom, 3rd Symptom]...}
-
-And Finally display_results() displays what you see above:
-    This first runs topics() which calls concat() which takes all of the keywords for a given topic,
-    And turns it into one topic.
+by using a for loop, and a Counter dictionary for each condition. This is saved in self.cond_symp_Dict as:
     
+    D = {Condition_0: [Top Symptom, 2nd Symptom, 3rd Symptom]...}
+
+Finally display_results() displays what you see above:
+
+    This first runs topics() which calls concat() which takes all of the keywords for a given topic,
+    and turns each into a more readable string representation of the topic.
+
     So the final output is a dataframe displaying Conditions by Topic,
     a dataframe displaying Symptoms by Topic,
-    And a dataframe Linking Each condition with the top symptoms.
+    And a dataframe Linking Each condition with the top 3 symptoms.
 
+All you need to do to test a different set of tenses, word length, etc, is to instantiate a new
+Medical_Evaluator object. The whole process from creating the models, to displaying all of the data,
+for each model, takes less than 20 seconds, making it very convenient and simple to test a variety of
+parameters. This was a challenging exercise in both Data Engineering, Text Scraping, Machine Learning,
+and Object-Oriented-Programming.
 
-
-
+I hope you enjoyed this summary, and I thank you for the opportunity to create this.
 '''
