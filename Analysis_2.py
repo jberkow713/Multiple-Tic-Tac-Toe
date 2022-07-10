@@ -7,6 +7,13 @@ import pyLDAvis.gensim
 import os, re, operator, warnings
 import json
 from collections import Counter
+import pandas as pd
+
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', None)
+pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.colheader_justify', 'center')
 
 # Setting the random seed
 np.random.seed(57)
@@ -96,6 +103,9 @@ class Medical_Evaluator:
         self.Symptom_Corpus = None  
         self.condition_model = None 
         self.symptom_model = None
+        self.Condition_Dict = {}
+        self.Symptom_Dict = {}
+        self.cond_symp_Dict = None
     
     def create_topic_models(self):
         # Creates topic models using Condition and Symptom Files and global functions
@@ -164,15 +174,33 @@ class Medical_Evaluator:
                             topics.append(z)
             C = Counter(topics)
             Top_3 = C.most_common(3)
-            Sympts = sorted([x[0] for x in Top_3])            
+            Sympts = [x[0] for x in Top_3]            
             Cond_Symp_Dict[i]=Sympts
+        self.cond_symp_Dict = Cond_Symp_Dict    
         return Cond_Symp_Dict
+
+    def display_results(self):
+        # Create_Dataframe with Conditions Corresponding to Symptoms
+        self.topics()
+        df = pd.DataFrame.from_dict(self.Condition_Dict,orient='index')
+        df.rename(columns = {0 : 'Conditions by Index'}, inplace = True)                
+        print(df)
+        print('-------------------------------------')
+        df2 = pd.DataFrame.from_dict(self.Symptom_Dict,orient='index')
+        df2.rename(columns = {0 : 'Symptoms by Index'}, inplace = True)
+        print(df2)
+        print('-------------------------------------')        
+        df_3 = pd.DataFrame.from_dict(self.cond_symp_Dict,orient='index')
+        df_3.rename(columns = {0 : 'Top Factor', 1 : '2nd Factor', 2: '3rd Factor'}, inplace = True)
+        df_3 = (df_3.set_axis(['Condition ' + str(x) for x in range(self.num_topics)], axis=0))
+        print(df_3)
 
 
 Tenses = ['NOUN', 'VERB', 'ADJ']
 Medic = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses, 3, 10)
 Medic.create_topic_models()
-print(Medic.conditions_to_symptoms())
+Medic.conditions_to_symptoms()
+Medic.display_results()
 
 
 # TODO
