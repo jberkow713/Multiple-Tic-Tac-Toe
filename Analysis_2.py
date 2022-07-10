@@ -60,6 +60,7 @@ def create_corpus(List_of_Lists, tenses, length):
     corpus = [dictionary.doc2bow(x) for x in texts]
     return dictionary, corpus
 
+
 # Creating Condition and Symptom Topic Models
 '''
 Dict, Corpus =  create_corpus(Conditions, Tenses, 2)
@@ -121,10 +122,58 @@ with open('Evaluation_Cond_Symp.json', 'w') as f:
     json.dump(Condition_Symptom_Dict, f)
 '''
 # Loading in the Evaluation Dictionary
+'''
 Eval_Dict = open('Evaluation_Cond_Symp.json')
 Dict = json.load(Eval_Dict)
 print(Dict) 
+'''
 
+class Medical_Evaluator:
+    def __init__(self, Conditions_Json, Symptoms_Json, Tenses, Length, num_topics):
+        Cond = open(Conditions_Json)
+        self.Conditions = json.load(Cond)
+        Sympt = open(Symptoms_Json)
+        self.Symptoms = json.load(Sympt)
+        self.Tenses = Tenses
+        self.Length = Length
+        self.num_topics = num_topics
+        self.condition_Corpus = None
+        self.Symptom_Corpus = None  
+        self.condition_model = None 
+        self.symptom_model = None
+    
+    def create_topic_models(self):
+        Dict, Corpus =  create_corpus(self.Conditions, self.Tenses, self.Length)
+        Dict_2, Corpus_2 = create_corpus(self.Symptoms, self.Tenses, self.Length)
+        Condition_Model = LdaModel(corpus=Corpus,num_topics=self.num_topics, id2word=Dict)
+        Symptom_Model = LdaModel(corpus=Corpus_2,num_topics=self.num_topics, id2word=Dict_2)
+        self.condition_Corpus = Corpus 
+        self.Symptom_Corpus = Corpus_2
+        self.condition_model = Condition_Model
+        self.symptom_model = Symptom_Model
+        return
+    
+    def create_Eval_Dict(self):
+
+        BOW_Conditions = self.condition_Corpus
+        BOW_Symptoms = self.Symptom_Corpus
+
+        Condition_Symptom_Dict = {}
+        count = 0
+        for x in range(len(BOW_Conditions)):
+            Cond_Symp = {}
+            Top_Condition = self.condition_model[BOW_Conditions[count]]
+            A = tuple_sort(Top_Condition,1)
+            Symptoms = self.symptom_model[BOW_Symptoms[count]]
+            B = tuple_sort(Symptoms,3)
+            Cond_Symp[A[0]]= B
+            Condition_Symptom_Dict[count] = Cond_Symp
+            count +=1
+        return Condition_Symptom_Dict      
+
+Medic = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses, 2, 10)
+Medic.create_topic_models()
+print(Medic.create_Eval_Dict())
 
 # TODO
 '''
