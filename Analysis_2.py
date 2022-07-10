@@ -7,10 +7,11 @@ import pyLDAvis.gensim
 import os, re, operator, warnings
 import json
 
+# Setting the random seed
 np.random.seed(57)
-
 warnings.filterwarnings('ignore')
 nlp = spacy.load('en_core_web_sm')
+# importing stopwords
 stopwords = nlp.Defaults.stop_words
 # add words to stopwords
 my_stopwords = [u'patient', u'start',u'history', u'note', u'pain', u'family',\
@@ -31,11 +32,13 @@ Conditions = json.load(f)
 g = open('Symptoms.json')
 Symptoms = json.load(g)
 
-# Create function to parse this text and return joined strings of text
 def parse_list(List):
+    # Create function to return joined strings of text from list of lists
     return [' '.join(x) for x in List]
+ 
 def num_check(s):
-  return any(i.isdigit() for i in s)
+    # Checks if a string contains a digit
+    return any(i.isdigit() for i in s)
 
 def clean_text(text, tenses, Length):
     # Cleans a string of text, based on allowable tenses, and min_length of a word
@@ -45,8 +48,6 @@ def clean_text(text, tenses, Length):
     doc = nlp(' '.join(New))
     cleaned = [x.text for x in doc if x.is_stop==False and x.pos_ in tenses and len(x)>Length]
     return cleaned    
-
-Tenses = ['NOUN', 'VERB', 'ADJ']
 
 def return_text(List, tenses, Length, joined=False):
     # Parses a list of lists, returns a list of cleaned joined tokens, or strings
@@ -64,30 +65,6 @@ def create_corpus(List_of_Lists, tenses, length):
     dictionary = Dictionary(texts)
     corpus = [dictionary.doc2bow(x) for x in texts]
     return dictionary, corpus
-
-
-# Creating Condition and Symptom Topic Models
-'''
-Dict, Corpus =  create_corpus(Conditions, Tenses, 2)
-Dict_2, Corpus_2 = create_corpus(Symptoms, Tenses, 2)
-
-Condition_Model = LdaModel(corpus=Corpus,num_topics=15, id2word=Dict)
-Symptom_Model = LdaModel(corpus=Corpus_2,num_topics=15, id2word=Dict_2)
-'''
-# Dumping Condition Corpus and Symptom Corpus into JSON Files
-'''
-with open('Eval_Conditions.json', 'w') as f:
-    json.dump(Corpus, f)
-with open('Eval_Symptoms.json', 'w') as f:
-    json.dump(Corpus_2, f)      
-'''
-# Opening Condition and Symptom Corpuses for evaluation
-'''
-f = open('Eval_Conditions.json')
-BOW_Conditions = json.load(f)
-g = open('Eval_Symptoms.json')
-BOW_Symptoms = json.load(g)
-'''
 
 def tuple_sort(list,top_n):
     
@@ -108,31 +85,6 @@ def tuple_sort(list,top_n):
 
     return sorted_topics
 
-# Creating Analysis of individual topics using the above LDA Model, Saving into JSON_Dictionary
-# Keys are Conditions, Values are the top 1-3 Symptoms corresponding to the condition
-'''
-Condition_Symptom_Dict = {}
-count = 0
-for x in range(len(BOW_Conditions)):
-    Cond_Symp = {}
-    Top_Condition = Condition_Model[BOW_Conditions[count]]
-    A = tuple_sort(Top_Condition,1)
-    Symptoms = Symptom_Model[BOW_Symptoms[count]]
-    B = tuple_sort(Symptoms,3)
-    Cond_Symp[A[0]]= B
-    Condition_Symptom_Dict[count] = Cond_Symp
-    count +=1
-
-with open('Evaluation_Cond_Symp.json', 'w') as f:
-    json.dump(Condition_Symptom_Dict, f)
-'''
-# Loading in the Evaluation Dictionary
-'''
-Eval_Dict = open('Evaluation_Cond_Symp.json')
-Dict = json.load(Eval_Dict)
-print(Dict) 
-'''
-
 class Medical_Evaluator:
     def __init__(self, Conditions_Json, Symptoms_Json, Tenses, Length, num_topics):
         Cond = open(Conditions_Json)
@@ -148,21 +100,20 @@ class Medical_Evaluator:
         self.symptom_model = None
     
     def create_topic_models(self):
+        # Creates topic models using Condition and Symptom Files and global functions
         Dict, Corpus =  create_corpus(self.Conditions, self.Tenses, self.Length)
         Dict_2, Corpus_2 = create_corpus(self.Symptoms, self.Tenses, self.Length)
         Condition_Model = LdaModel(corpus=Corpus,num_topics=self.num_topics, id2word=Dict)
         Symptom_Model = LdaModel(corpus=Corpus_2,num_topics=self.num_topics, id2word=Dict_2)
         self.condition_Corpus = Corpus 
         self.Symptom_Corpus = Corpus_2
-        self.condition_model = Condition_Model
-        self.symptom_model = Symptom_Model
         self.Condition_Dict = {}
         self.Symptom_Dict = {}
-
         return
     
     def create_Eval_Dict(self):
-
+        # Creates Dictionary that evaluates medical files and returns
+        # {0: Condition: Symptom/s...}
         BOW_Conditions = self.condition_Corpus
         BOW_Symptoms = self.Symptom_Corpus
 
@@ -180,7 +131,7 @@ class Medical_Evaluator:
         return Condition_Symptom_Dict      
     
     def concat(self, topic):
-    # Concatenating topics
+    # Creates readable topics for a given topic model topic
 
         to_remove = ['+', '.', '*', '#', '"']        
         l = []
@@ -194,15 +145,19 @@ class Medical_Evaluator:
     
     def topics(self):
         # Concatenates topics into a Dictionary of Topic: String
-        A = self.condition_model.print_topics()
-        B = self.symptom_model.print_topics()
+        Cond_Topics = self.condition_model.print_topics()
+        Symp_Topics = self.symptom_model.print_topics()
 
-        for x in A:
+        for x in Cond_Topics:
             self.Condition_Dict[x[0]]=self.concat(x)
-        for x in B:
+        for x in Symp_Topics:
             self.Symptom_Dict[x[0]]=self.concat(x)        
 
+    def conditions_to_symptoms(self):
+        # Evaluate Condition_Symptom Dictionary to find top 1-3 symptoms for each condition
+        pass
 
+Tenses = ['NOUN', 'VERB', 'ADJ']
 Medic = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses, 3, 10)
 Medic.create_topic_models()
 print(Medic.create_Eval_Dict())
