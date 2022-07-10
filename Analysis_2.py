@@ -110,6 +110,8 @@ class Medical_Evaluator:
         self.Symptom_Corpus = Corpus_2
         self.Condition_Dict = {}
         self.Symptom_Dict = {}
+        self.condition_model = Condition_Model
+        self.symptom_model = Symptom_Model
         return
     
     def create_Eval_Dict(self):
@@ -159,9 +161,11 @@ class Medical_Evaluator:
         D = self.create_Eval_Dict()
         num_topics = self.num_topics
         Cond_Symp_Dict = {}
-        for i in range(num_topics):            
+        for i in range(num_topics):
+            
             topics = []
             for v in D.values():
+
                 for x,y in v.items():
                     if x ==i:
                         for z in y:
@@ -173,11 +177,11 @@ class Medical_Evaluator:
             Cond_Symp_Dict[i]=Sympts
         return Cond_Symp_Dict
 
+
 Tenses = ['NOUN', 'VERB', 'ADJ']
 Medic = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses, 3, 10)
 Medic.create_topic_models()
 print(Medic.conditions_to_symptoms())
-
 
 
 # TODO
