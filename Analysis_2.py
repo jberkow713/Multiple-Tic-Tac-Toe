@@ -13,8 +13,12 @@ warnings.filterwarnings('ignore')
 nlp = spacy.load('en_core_web_sm')
 stopwords = nlp.Defaults.stop_words
 # add words to stopwords
-my_stopwords = [u'patient', u'history', u'note', u'pain', u'family',\
-    u'report', u'normal', u'deny', u'give', u'prior']
+my_stopwords = [u'patient', u'start',u'history', u'note', u'pain', u'family',\
+    u'report', u'normal', u'deny', u'give', u'prior', u'present', u'left', u'right', \
+        u'received', u'denies', u'medical',u'given', u'daughter', u'noted',  u'found', u'days',\
+            u'social', u'home', u'reports', u'years', u'year', u'started', u'past', \
+                u'showed', u'presented', u'symptoms', u'developed', u'recent', u'lives', u'live', \
+                    u'mother', u'admitted', u'week', u'diagnosed', u'diagnoses', u'admission']
 
 for word in my_stopwords:
     lexeme = nlp.vocab[word]
@@ -38,10 +42,10 @@ def clean_text(text, tenses, Length):
     New = [x.lower() for x in new.split() if num_check(x)==False]
     # NLP objects for the cleaned text
     doc = nlp(' '.join(New))
-    cleaned = [x.lemma_ for x in doc if x.is_stop==False and x.pos_ in tenses and len(x)>Length]
+    cleaned = [x.text for x in doc if x.is_stop==False and x.pos_ in tenses and len(x)>Length]
     return cleaned    
 
-Tenses = ['NOUN', 'VERB', 'ADJ', 'ADV']
+Tenses = ['NOUN', 'VERB', 'ADJ']
 
 def return_text(List, tenses, Length, joined=False):
     # Parses a list of lists, returns a list of cleaned joined tokens, or strings
@@ -151,6 +155,9 @@ class Medical_Evaluator:
         self.Symptom_Corpus = Corpus_2
         self.condition_model = Condition_Model
         self.symptom_model = Symptom_Model
+        self.Condition_Dict = {}
+        self.Symptom_Dict = {}
+
         return
     
     def create_Eval_Dict(self):
@@ -170,10 +177,38 @@ class Medical_Evaluator:
             Condition_Symptom_Dict[count] = Cond_Symp
             count +=1
         return Condition_Symptom_Dict      
+    
+    def concat(self, topic):
+    # Concatenating topics
 
-Medic = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses, 2, 10)
+        to_remove = ['+', '.', '*', '#', '"']        
+        l = []
+        s = ""
+        for x in topic[1].split():
+            l.append(''.join([i for i in x if not i.isdigit() and i not in to_remove]))
+        for x in l:
+            if len(x)>0:
+                s+=x + ' '
+        return s    
+    
+    def topics(self):
+        # Concatenates topics into a Dictionary of Topic: String
+        A = self.condition_model.print_topics()
+        B = self.symptom_model.print_topics()
+
+        for x in A:
+            self.Condition_Dict[x[0]]=self.concat(x)
+        for x in B:
+            self.Symptom_Dict[x[0]]=self.concat(x)        
+
+
+Medic = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses, 3, 10)
 Medic.create_topic_models()
 print(Medic.create_Eval_Dict())
+Medic.topics()
+print(Medic.Symptom_Dict)
+print(Medic.Condition_Dict)
+
 
 # TODO
 '''
