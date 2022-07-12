@@ -226,7 +226,7 @@ Medic Evaluator model 1: Medic
 8  failure secondary acute_renal primary syndrome bleeding distress infection status depression
 9  bilateral hypotension secondary diabetes gastric hemorrhage renal stage acute_blood acute
 -------------------------------------
-             Top Factor  2nd Factor  3rd Factor
+             Top Symptom 2nd Symptom 3rd Symptom
 Condition 0  2           6           1
 Condition 1  0           3           5
 Condition 2  3           0           2
@@ -274,7 +274,7 @@ Medic Evaluator model 2: Medic_2
 13  primary secondary common repair abdominal aortic bypass pericardial effusion bleed
 14  secondary primary abdominal diabetes bleed failure acute_chronic status heart_failure systolic
 -------------------------------------
-              Top Factor  2nd Factor  3rd Factor
+              Top Symptom 2nd Symptom 3rd Symptom
 Condition 0   1           0           14
 Condition 1   0           6           14
 Condition 2   10          0           8
