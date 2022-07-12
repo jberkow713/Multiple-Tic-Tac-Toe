@@ -183,7 +183,7 @@ class Medical_Evaluator:
         print(df2)
         print('-------------------------------------')        
         df_3 = pd.DataFrame.from_dict(self.cond_symp_Dict,orient='index')
-        df_3.rename(columns = {0 : 'Top Factor', 1 : '2nd Factor', 2: '3rd Factor'}, inplace = True)
+        df_3.rename(columns = {0 : 'Top Symptom', 1 : '2nd Symptom', 2: '3rd Symptom'}, inplace = True)
         df_3 = (df_3.set_axis(['Condition ' + str(x) for x in range(self.num_topics)], axis=0))
         print(df_3)
 
