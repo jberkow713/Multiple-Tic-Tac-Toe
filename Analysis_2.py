@@ -21,6 +21,8 @@ nlp = spacy.load('en_core_web_sm')
 # importing stopwords
 stopwords = nlp.Defaults.stop_words
 # add words to stopwords
+# Did not use lemmas in this case, certain words were triggering the same Lemma, so 
+# made more sense to just extensively filter out specific words
 my_stopwords = [u'patient', u'start',u'history', u'note', u'pain', u'family',\
     u'report', u'normal', u'deny', u'give', u'prior', u'present', u'left', u'right', \
         u'received', u'denies', u'medical',u'given', u'daughter', u'noted',  u'found', u'days',\
@@ -62,7 +64,7 @@ def return_text(List, tenses, Length, joined=False):
     # Parses a list of lists, returns a list of cleaned joined tokens, or strings
     Parsed = parse_list(List)
     if joined==False:
-        # Cleaning each string, 
+        # Cleaning each string and returning list of tokens for topic modeling 
         return [clean_text(x, tenses,Length) for x in Parsed]
     elif joined==True:
         return [' '.join(clean_text(x, tenses,Length)) for x in Parsed]      
@@ -74,12 +76,14 @@ def create_corpus(List_of_Lists, tenses, length):
     texts = [bigram[x] for x in TEXTS]
     dictionary = Dictionary(texts)
     corpus = [dictionary.doc2bow(x) for x in texts]
+    # dictionary is a list of all words in the filtered List of Lists of Texts
+    # corpus is a list of documents, and the count of each word
     return dictionary, corpus
 
 def tuple_sort(list,top_n):
     # Sorts values based on top_n to return
-    # Input = [(1, 0.01129444), (5, 0.2115628), (9, 0.70797455), (11, 0.06368912)]
-    # Output: [9,5,11]
+    # Input is list of topics and their probability :  [(1, 0.01129444), (5, 0.2115628), (9, 0.70797455), (11, 0.06368912)]
+    # Output is sorted list based on top_n values, 3 in this case, and highest probability: [9,5,11]
     
     # Sorts the topic probability in descending order
     vals = sorted([x[1] for x in list], reverse=True)
@@ -121,6 +125,8 @@ class Medical_Evaluator:
         # Creates topic models using Condition and Symptom Files and global functions
         Dict, Corpus =  create_corpus(self.Conditions, self.Tenses, self.Length)
         Dict_2, Corpus_2 = create_corpus(self.Symptoms, self.Tenses, self.Length)
+        # Filtered Vocab, and the Corpus for each Document is fed into the LdaModel class,
+        # For Conditions and Symptoms topic models
         Condition_Model = LdaModel(corpus=Corpus,num_topics=self.num_topics, id2word=Dict)
         Symptom_Model = LdaModel(corpus=Corpus_2,num_topics=self.num_topics, id2word=Dict_2)
         self.condition_Corpus = Corpus 
@@ -131,7 +137,7 @@ class Medical_Evaluator:
     
     def create_Eval_Dict(self):
         # Creates Dictionary that evaluates medical files and returns
-        # {0: Condition: Symptom/s...}
+        # {Doc_Number: {Condition: [Symptom/s]}...}
         # Does this by matching up top condition, with top x topics using tuple_sort on the list of conditions
         BOW_Conditions = self.condition_Corpus
         BOW_Symptoms = self.Symptom_Corpus
@@ -141,9 +147,10 @@ class Medical_Evaluator:
         for _ in range(len(BOW_Conditions)):
             Cond_Symp = {}
             # Top_Condition represents the condition model's evaluation of the particular document for conditions
+            # The current count represents the document of the corpus which is fed into the model for evaluation
             Top_Condition = self.condition_model[BOW_Conditions[count]]
             A = tuple_sort(Top_Condition,1)
-            # Symptoms represents the symptom model's evaluation of particular symptoms
+            # This does the same thing as above, but for symptoms
             Symptoms = self.symptom_model[BOW_Symptoms[count]]
             B = tuple_sort(Symptoms,3)
             # Setting dictionary key inside the loop
@@ -178,8 +185,9 @@ class Medical_Evaluator:
             self.Symptom_Dict[x[0]]=self.concat(x)        
 
     def conditions_to_symptoms(self):
-        # Evaluate Condition_Symptom Dictionary to find top 1-3 symptoms for each condition
-        # This Dictionary represents a dictionary of conditions, linked to topics
+        # Loops through each document, creates a list of symptoms for each condition, 
+        # Takes the top 3 symptom for each condition 
+        # Output: {0:[top symp, 2nd sympt, 3rd sympt], 1:[top_symp, 2nd_symp, 3rd_symp]...}
         D = self.create_Eval_Dict()        
         num_topics = self.num_topics
         Cond_Symp_Dict = {}
