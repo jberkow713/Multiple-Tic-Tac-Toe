@@ -17,6 +17,7 @@ for filename in os.listdir(directory):
         lines = [x.strip() for x in lines]       
         start = False 
         # Create Condition List for each patient, Selecting History of Present Illness up to Physical Exam
+        # Get all Past and Medical History as basis for Conditions
         Condition = []
         for line in lines:                        
             if line == "Physical Exam:":
@@ -29,6 +30,7 @@ for filename in os.listdir(directory):
         # Create Symptom List for each patient, Selecting History of Present Illness up to Physical Exam
         # And also using Discharge Diagnosis section
         Symptom = []
+        # To grab the chief complaint info
         for line in lines:                        
             if line == "Major Surgical or Invasive Procedure:":
                 break 
@@ -38,6 +40,7 @@ for filename in os.listdir(directory):
             if line == "Chief Complaint:":
                 start = True        
         start = False 
+        # To grab the Discharge Diagnosis info
         for line in lines:                        
             if line == "Discharge Condition:":
                 break 
