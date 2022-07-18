@@ -29,24 +29,32 @@ my_stopwords = [u'patient', u'start',u'history', u'note', u'pain', u'family',\
                     u'mother', u'admitted', u'week', u'diagnosed', u'diagnoses',\
                         u'admission', u'wife', u'diagnosis']
 
+# Turning added stopwords into stop words in the nlp vocab, to be filtered later
 for word in my_stopwords:
     lexeme = nlp.vocab[word]
     lexeme.is_stop = True
 
 def parse_list(List):
     # Create function to return joined strings of text from list of lists
+    # This is being done just to filter it into the clean text function, out of convenience
     return [' '.join(x) for x in List]
  
 def num_check(s):
     # Checks if a string contains a digit
+    # Returns true if it contains a digit, otherwise returns false
     return any(i.isdigit() for i in s)
 
 def clean_text(text, tenses, Length):
     # Cleans a string of text, based on allowable tenses, and min_length of a word
+    # Returns a list of tokens
+
+    # Get rid of unnecessary characters, uppercase letters, and numbers
     new = re.sub('[^A-Za-z0-9]+', ' ', text)
     New = [x.lower() for x in new.split() if num_check(x)==False]
-    # NLP objects for the cleaned text
+    # Create NLP objects for the cleaned text, to be used in final list comprehension
     doc = nlp(' '.join(New))
+    # This final list comprehension will filter to get rid of stop words, check if the tense is in the allowable tenses,
+    # and check to see if the words are longer than the minimum required length
     cleaned = [x.text for x in doc if x.is_stop==False and x.pos_ in tenses and len(x)>Length]
     return cleaned    
 
@@ -54,11 +62,13 @@ def return_text(List, tenses, Length, joined=False):
     # Parses a list of lists, returns a list of cleaned joined tokens, or strings
     Parsed = parse_list(List)
     if joined==False:
+        # Cleaning each string, 
         return [clean_text(x, tenses,Length) for x in Parsed]
     elif joined==True:
         return [' '.join(clean_text(x, tenses,Length)) for x in Parsed]      
 
 def create_corpus(List_of_Lists, tenses, length):
+    # Creates a dictionary, corpus to be used in the Topic Modeling process
     TEXTS = return_text(List_of_Lists, tenses, length)
     bigram = gensim.models.Phrases(TEXTS)
     texts = [bigram[x] for x in TEXTS]
@@ -67,8 +77,14 @@ def create_corpus(List_of_Lists, tenses, length):
     return dictionary, corpus
 
 def tuple_sort(list,top_n):
-    # Sorts values based on top_n to return    
+    # Sorts values based on top_n to return
+    # Input = [(1, 0.01129444), (5, 0.2115628), (9, 0.70797455), (11, 0.06368912)]
+    # Output: [9,5,11]
+    
+    # Sorts the topic probability in descending order
     vals = sorted([x[1] for x in list], reverse=True)
+    # In case fewer come out than what is expected, need to stop the looping 
+    # at the smaller value
     if len(vals)<top_n:
         top_n = len(vals)
     sorted_topics = []
@@ -116,19 +132,26 @@ class Medical_Evaluator:
     def create_Eval_Dict(self):
         # Creates Dictionary that evaluates medical files and returns
         # {0: Condition: Symptom/s...}
+        # Does this by matching up top condition, with top x topics using tuple_sort on the list of conditions
         BOW_Conditions = self.condition_Corpus
         BOW_Symptoms = self.Symptom_Corpus
         Condition_Symptom_Dict = {}
         count = 0
+        # Can use Bow_conditions or Bow_symptoms, they are equal length, as documents are equal length
         for _ in range(len(BOW_Conditions)):
             Cond_Symp = {}
+            # Top_Condition represents the condition model's evaluation of the particular document for conditions
             Top_Condition = self.condition_model[BOW_Conditions[count]]
             A = tuple_sort(Top_Condition,1)
+            # Symptoms represents the symptom model's evaluation of particular symptoms
             Symptoms = self.symptom_model[BOW_Symptoms[count]]
             B = tuple_sort(Symptoms,3)
+            # Setting dictionary key inside the loop
             Cond_Symp[A[0]]= B
+            # Saving the small inner loop dictionary inside overall dictionary
             Condition_Symptom_Dict[count] = Cond_Symp
             count +=1
+        #This represents each document, with {Top_Condition: List of Symptoms} 
         return Condition_Symptom_Dict      
     
     def concat(self, topic):
@@ -147,6 +170,8 @@ class Medical_Evaluator:
         # Concatenates topics into a Dictionary of {Topic: String...}
         Cond_Topics = self.condition_model.print_topics()
         Symp_Topics = self.symptom_model.print_topics()
+        # Links up the Conditions and Topics to a string concatted 
+        # representation using concat(), saves as class attributes
         for x in Cond_Topics:
             self.Condition_Dict[x[0]]=self.concat(x)
         for x in Symp_Topics:
@@ -154,20 +179,31 @@ class Medical_Evaluator:
 
     def conditions_to_symptoms(self):
         # Evaluate Condition_Symptom Dictionary to find top 1-3 symptoms for each condition
-        D = self.create_Eval_Dict()
+        # This Dictionary represents a dictionary of conditions, linked to topics
+        D = self.create_Eval_Dict()        
         num_topics = self.num_topics
         Cond_Symp_Dict = {}
+        # Scrolling through the values, for example: {0: [5, 11, 6]} 
         for i in range(num_topics):            
             topics = []
             for v in D.values():
                 for x,y in v.items():
+                    # if the key is equal to the topic, append the individual topics to the inner topic loop
                     if x ==i:
                         for z in y:
                             topics.append(z)
+            # Create a counter of the topic list 
             C = Counter(topics)
+            # the Counter most_common method sorts the symptoms by counts, 
+            # Tuple format, so first value is most common symptom, 2nd is it's count, etc.
+            # Sorts it in descending order [(0, 7), (4, 5), (6, 2)]
             Top_3 = C.most_common(3)
+            # Grab a list of the top 3 symptoms per overall condition
             Sympts = [x[0] for x in Top_3]            
+            # For each condition, set that key's value to the sorted Symptoms
             Cond_Symp_Dict[i]=Sympts
+        #Save the overall condition symptom dictionary as a class attribute
+        #To be used in display_results() 
         self.cond_symp_Dict = Cond_Symp_Dict    
         return Cond_Symp_Dict
 
