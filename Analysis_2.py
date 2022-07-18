@@ -20,9 +20,9 @@ warnings.filterwarnings('ignore')
 nlp = spacy.load('en_core_web_sm')
 # importing stopwords
 stopwords = nlp.Defaults.stop_words
-# add words to stopwords
+# Adding stopwords to default stop word list
 # Did not use lemmas in this case, certain words were triggering the same Lemma, so 
-# made more sense to just extensively filter out specific words
+# made more sense to just extensively filter out specific words and their variations
 my_stopwords = [u'patient', u'start',u'history', u'note', u'pain', u'family',\
     u'report', u'normal', u'deny', u'give', u'prior', u'present', u'left', u'right', \
         u'received', u'denies', u'medical',u'given', u'daughter', u'noted',  u'found', u'days',\
@@ -136,8 +136,9 @@ class Medical_Evaluator:
         return
     
     def create_Eval_Dict(self):
-        # Creates Dictionary that evaluates medical files and returns
-        # {Doc_Number: {Condition: [Symptom/s]}...}
+        # Creates Dictionary that evaluates each individual corpus using the created topic models
+        # Output: {Doc_Number: {Condition: [Symptom/s]}...}
+
         # Does this by matching up top condition, with top x topics using tuple_sort on the list of conditions
         BOW_Conditions = self.condition_Corpus
         BOW_Symptoms = self.Symptom_Corpus
@@ -158,7 +159,7 @@ class Medical_Evaluator:
             # Saving the small inner loop dictionary inside overall dictionary
             Condition_Symptom_Dict[count] = Cond_Symp
             count +=1
-        #This represents each document, with {Top_Condition: List of Symptoms} 
+            
         return Condition_Symptom_Dict      
     
     def concat(self, topic):
