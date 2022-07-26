@@ -38,7 +38,7 @@ for word in my_stopwords:
 
 def parse_list(List):
     # Create function to return joined strings of text from list of lists
-    # This is being done just to filter it into the clean text function, out of convenience
+    # This is being done just to filter it into the clean text function, for use with Regex, needed strings
     return [' '.join(x) for x in List]
  
 def num_check(s):
@@ -53,18 +53,18 @@ def clean_text(text, tenses, Length):
     # Get rid of unnecessary characters, uppercase letters, and numbers
     new = re.sub('[^A-Za-z0-9]+', ' ', text)
     New = [x.lower() for x in new.split() if num_check(x)==False]
-    # Create NLP objects for the cleaned text, to be used in final list comprehension
+    # Create NLP objects for the cleaned text, to be used in final list comprehension, tokens
     doc = nlp(' '.join(New))
     # This final list comprehension will filter to get rid of stop words, check if the tense is in the allowable tenses,
     # and check to see if the words are longer than the minimum required length
     cleaned = [x.text for x in doc if x.is_stop==False and x.pos_ in tenses and len(x)>Length]
     return cleaned    
 
-def return_text(List, tenses, Length, joined=False):
+def return_text(List_of_docs, tenses, Length, joined=False):
     # Parses a list of lists, returns a list of cleaned joined tokens, or strings
-    Parsed = parse_list(List)
+    Parsed = parse_list(List_of_docs)
     if joined==False:
-        # Cleaning each string and returning list of tokens for topic modeling 
+        # Cleaning each string and returning list of lists of tokens for topic modeling 
         return [clean_text(x, tenses,Length) for x in Parsed]
     elif joined==True:
         return [' '.join(clean_text(x, tenses,Length)) for x in Parsed]      
@@ -77,7 +77,7 @@ def create_corpus(List_of_Lists, tenses, length):
     dictionary = Dictionary(texts)
     corpus = [dictionary.doc2bow(x) for x in texts]
     # dictionary is a list of all words in the filtered List of Lists of Texts
-    # corpus is a list of documents, and the count of each word
+    # corpus is a list of documents in tuple form,(word_ref, word_count) per document
     return dictionary, corpus
 
 def tuple_sort(list,top_n):
@@ -149,6 +149,9 @@ class Medical_Evaluator:
             Cond_Symp = {}
             # Top_Condition represents the condition model's evaluation of the particular document for conditions
             # The current count represents the document of the corpus which is fed into the model for evaluation
+            
+            # Feeding in specific index of Conditions Corpus into the condition model, to identify the top condition
+            # of each individual Corpus, by using tuple_sort to return specified amount of conditions
             Top_Condition = self.condition_model[BOW_Conditions[count]]
             A = tuple_sort(Top_Condition,1)
             # This does the same thing as above, but for symptoms
@@ -190,6 +193,7 @@ class Medical_Evaluator:
         # Takes the top 3 symptom for each condition 
         # Output: {0:[top symp, 2nd sympt, 3rd sympt], 1:[top_symp, 2nd_symp, 3rd_symp]...}
         D = self.create_Eval_Dict()        
+        # Num_topics will always line up with what's in the eval_dict
         num_topics = self.num_topics
         Cond_Symp_Dict = {}
         # Scrolling through the values, for example: {0: [5, 11, 6]} 
@@ -240,7 +244,7 @@ Medic.conditions_to_symptoms()
 Medic.display_results()
 
 Tenses_2 = ['NOUN', 'VERB', 'ADJ', 'ADV']
-Medic_2 = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses_2, 3, 15)
+Medic_2 = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses_2, 3, 20)
 Medic_2.create_topic_models()
 Medic_2.conditions_to_symptoms()
 Medic_2.display_results()
