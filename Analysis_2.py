@@ -21,7 +21,7 @@ nlp = spacy.load('en_core_web_sm')
 # importing stopwords
 stopwords = nlp.Defaults.stop_words
 # Adding stopwords to default stop word list
-# Did not use lemmas in this case, certain words were triggering the same Lemma, so 
+# Did not use lemmas in this case, certain similar stopwords were triggering the same Lemma, so 
 # made more sense to just extensively filter out specific words and their variations
 my_stopwords = [u'patient', u'start',u'history', u'note', u'pain', u'family',\
     u'report', u'normal', u'deny', u'give', u'prior', u'present', u'left', u'right', \
@@ -53,7 +53,8 @@ def clean_text(text, tenses, Length):
     # Get rid of unnecessary characters, uppercase letters, and numbers
     new = re.sub('[^A-Za-z0-9]+', ' ', text)
     New = [x.lower() for x in new.split() if num_check(x)==False]
-    # Create NLP objects for the cleaned text, to be used in final list comprehension, tokens
+    # Create NLP objects for the cleaned tokens, to be used in final list comprehension
+    # This creates a string, because this is the format needed for spacy, spacy then breaks it back into tokens
     doc = nlp(' '.join(New))
     # This final list comprehension will filter to get rid of stop words, check if the tense is in the allowable tenses,
     # and check to see if the words are longer than the minimum required length
@@ -72,6 +73,7 @@ def return_text(List_of_docs, tenses, Length, joined=False):
 def create_corpus(List_of_Lists, tenses, length):
     # Creates a dictionary, corpus to be used in the Topic Modeling process
     TEXTS = return_text(List_of_Lists, tenses, length)
+    # TEXTS is a list of lists of tokens, this is needed to funnel into the phrases bigrams
     bigram = gensim.models.Phrases(TEXTS)
     texts = [bigram[x] for x in TEXTS]
     dictionary = Dictionary(texts)
@@ -179,8 +181,9 @@ class Medical_Evaluator:
     
     def topics(self):
         # Concatenates topics into a Dictionary of {Topic: String...}
-        Cond_Topics = self.condition_model.print_topics()
-        Symp_Topics = self.symptom_model.print_topics()
+        # print_topics caps at 20, have to set num_topics = actual topics you're using for it to stay ordered
+        Cond_Topics = self.condition_model.print_topics(num_topics=self.num_topics)
+        Symp_Topics = self.symptom_model.print_topics(num_topics=self.num_topics)
         # Links up the Conditions and Topics to a string concatted 
         # representation using concat(), saves as class attributes
         for x in Cond_Topics:
@@ -244,10 +247,16 @@ Medic.conditions_to_symptoms()
 Medic.display_results()
 
 Tenses_2 = ['NOUN', 'VERB', 'ADJ', 'ADV']
-Medic_2 = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses_2, 3, 20)
+Medic_2 = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses_2, 3, 15)
 Medic_2.create_topic_models()
 Medic_2.conditions_to_symptoms()
 Medic_2.display_results()
+
+Tenses_3 = ['NOUN', 'VERB', 'ADJ', 'ADV', 'ADP', 'CONJ']
+Medic_3 = Medical_Evaluator('Conditions.json', 'Symptoms.json', Tenses_3, 3, 26)
+Medic_3.create_topic_models()
+Medic_3.conditions_to_symptoms()
+Medic_3.display_results()
 
 '''
 Medic Evaluator model 1: Medic
