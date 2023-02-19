@@ -1,10 +1,8 @@
-import math
 import random 
 import copy
 import numpy as np
 import pygame
 import sys
-
 #Dimensions
 BOARD_WIDTH = 1500 
 BOARD_HEIGHT = 1000 
@@ -19,7 +17,7 @@ BLUE = (0,0,255)
 PURPLE = (255,0,255)
 LINE_COLOR = BLUE
 BOARD_COLOR = WHITE 
-
+# Global Variables
 Used_Squares = []
 All_Squares = []
 Players = []
@@ -28,40 +26,26 @@ Winning_Lines = {}
 Occurrence_Dict = {}
 Current_Points = {}
 Player_Tag = 0
-All_Player_Winning_Lines = {}
+Shared_Lines = []
 
 def shuffle_keys(Dict, advanced=False):
     # Returns list of random keys based on each key's occurence in winning_line Dictionary
-    # If optional parameter == True, returns list of lists of randomized values, for more 
-    # accurate use
-        
-    l = []
-    for x in Dict.values():
-        if x not in l:
-            l.append(x)
-    l = sorted(l, reverse=True)  
-
+    # If optional parameter == True, returns list of lists of randomized values            
+    l = sorted(list(set([x for x in Dict.values()])),reverse=True)
     Final_List = []
     Advanced_List = []
-    length = len(l)
-    index = 0
-    while length >0:
-
+    for i in range(len(l)):
         mini = []
-        val = l[index]
+        val = l[i]
         for k,v in Dict.items():
             if v == val:
                 mini.append(k)
-
         random.shuffle(mini)
         if advanced==True:
             Advanced_List.append(mini)
         elif advanced==False:
             for x in mini:
                 Final_List.append(x)
-
-        length -=1
-        index +=1
     if advanced==True:
         return Advanced_List
 
@@ -129,9 +113,11 @@ class Board:
         self.square_size = X_Gap/2
 
         for i in range(self.dimensions+1):
-            Vert_L = Line(screen, (Buff + i*X_Gap,Buff), (Buff + i*X_Gap, self.Height-Buff), self.line_color)
+            Vert_L = Line(screen, (Buff + i*X_Gap,Buff), (Buff + i*X_Gap, self.Height-Buff),\
+                self.line_color)
             self.lines.append(Vert_L)
-            Hor_L = Line(screen, (Buff ,Buff+i*Y_Gap), (self.Width-Buff, Buff+i*Y_Gap), self.line_color)
+            Hor_L = Line(screen, (Buff ,Buff+i*Y_Gap), (self.Width-Buff, Buff+i*Y_Gap),\
+                self.line_color)
             self.lines.append(Hor_L)
         #Circle Creation 
         count = 0
@@ -145,12 +131,12 @@ class Board:
         count = 0
         for i in range(self.dimensions):
             y_val_1 = Buff + i*Y_Gap
-            y_val_2 = Buff + (i+1)*Y_Gap
-                       
+            y_val_2 = Buff + (i+1)*Y_Gap                       
             for j in range(self.dimensions):
                 x_val_1 = Buff + j*X_Gap
                 x_val_2 = Buff + (j+1)*X_Gap
-                self.Square_Positions[count]=[(x_val_1,y_val_1),(x_val_2,y_val_2),(x_val_1,y_val_2),(x_val_2,y_val_1) ]  
+                self.Square_Positions[count]=[(x_val_1,y_val_1),(x_val_2,y_val_2),\
+                    (x_val_1,y_val_2),(x_val_2,y_val_1)]  
                 count +=1
        
     def draw_board(self):
@@ -167,13 +153,12 @@ class Comp_Player:
         self.skill_level = skill_level
         self.Circles = []
         self.Xs = []
+        self.chances = []
         self.tag = self.create_player_tag()
         self.add_to_list()
         self.square_list = list(range(Board.dimensions**2))
-        # Checking to see if Winning_Lines Exist, 
-        # They will be created by first computer player, 
-        # and used by the others
-        if len(Winning_Lines.keys())==0:
+        
+        if len(Winning_Lines.keys())==0:            
             self.create_winning_lines()
         # Each need to have their own copy of this dictionary
         elif len(Winning_Lines.keys())>0:
@@ -305,8 +290,7 @@ class Comp_Player:
         return 
         
     def create_Occurence_Dict(self):
-        # Creates a global list with squares and their values
-
+        # Creates a global list with squares and their values        
         count = 0
         for square in self.square_list:
             for line in Winning_Lines.keys():
@@ -315,8 +299,7 @@ class Comp_Player:
             Occurrence_Dict[square]=count
             count = 0
 
-    def shuffled_list(self):
-    
+    def shuffled_list(self):    
         global Shuffled
         Shuffled = shuffle_keys(Occurrence_Dict)
         return
@@ -325,7 +308,7 @@ class Comp_Player:
         # Purpose is to create advanced list tiering off squares based on their value
         # This should be run by advanced models frequently, to reevaluate squares
         global Advanced_Shuffled
-        Advanced_Shuffled = shuffle_keys(Occurrence_Dict, advanced=True)
+        Advanced_Shuffled = shuffle_keys(Occurrence_Dict, advanced=True)       
         return Advanced_Shuffled
 
     def add_to_list(self):
@@ -357,76 +340,47 @@ class Comp_Player:
         Used_Squares.append(index)
         self.square_list.remove(index)
         return
+
     def calc_percent(self):
         # finds percentage of squares left
         return len(All_Squares)/self.Board.dimensions**2
+
+    def calc_shared_winning_lines(self):
+        
+        l1 = []
+        global Shared_Lines
+        for p in Players:
+            for x in p.chances:
+                if x in l1:
+                    Shared_Lines.append(x)
+                l1.append(x)       
+       
+        Shared_Lines = []
+        if len(Shared_Lines)>0:
+            for p in Players:
+                D = copy.deepcopy(p.Winning_Lines)
+                l = []
+                for x in p.chances:
+                    if x in Shared_Lines:                        
+                        p.chances.remove(x)        
+                        l.append(x)
+                for x in l:
+                    if x in D.keys():
+                        del D[x]
+                p.Winning_Lines = D       
+        return 
+
     def Make_Choice(self):
-        # This is where the decision making process happens
-        # Based on skill_level, different choices will be made
-        self.create_Occurence_Dict()
-        self.advanced_shuffled_list()
-        premium = Advanced_Shuffled[0]        
-        position = premium[random.randint(0,len(premium)-1)]
-        global Winning_Lines
-        D = copy.deepcopy(Winning_Lines)
-        for line in Winning_Lines.keys():
-            if position in line:
-                del D[line]
+        # This is where the decision making process happens           
+        self.calc_shared_winning_lines()       
+        self.shuffled_list()                
+        position = Shuffled[random.randint(0,len(Shuffled)-1)]        
+        for k,v in self.Winning_Lines.items():
+            if position in k:
+                self.chances.append(k)
+                v -=1
+        return position
 
-        Winning_Lines = D
-        # All_Squares.remove(position)
-        return position        
-
-
-
-
-
-        # Percent_left = self.calc_percent()
-
-
-        # Everytime player chooses a square, the winning line dictionary needs to get updated,
-        # All keys in the global winning line dict need to be removed which contain that square
-        # Then we recreate the occurence dictionary, so that you can recreate the Advanced Shuffled,
-        # or Shuffled list
-
-
-
-
-        # Going to use the Global Winning Line Dictionary, and the individual Winning_Lines Copy
-        # Going to decide on a square to mark, then update the individual copy for all tuples that 
-        # contain the square, 
-        # Not going to update the global, until more than 1 player has a reduced total for a specific 
-        # winning line key, at this point, remove the key from the global, and both players individual dicts
-
-        # Other Ideas:
-
-        # Advanced_Shuffled Dictionary will need to be constantly updated, used by smarter comps, so updated
-        # each round by the smarter comps, but not necessarily used by the less smart comps
-        
-        # Blocks will be decided upon, based on the to_win amount, board size, and a bunch of other factors
-        # Such as what tier list the square is in in the Advanced_Shuffled Dictionary
-              
-        # 5) So all comp players, can see the global, and they can see which winning lines have lower counts
-        # then their own, they know that some other player has marked, doesn't matter which player
-
-        # 5b) Once a player has lowered winning_line count in their own dictionary, equivalent to the 
-        # global, they will updated their tag key in All_Player_Winning_Lines Dict
-        # This will allow other players to see how each current player is stacking up, in terms of their 
-        # occurrences including the human player as well, more skilled comps will check this more frequently
-        # Than less skilled comps, making them "more aware"
-        
-        # 6)Once a player blocks another players winning line, the line itself will 
-        # be removed from the Winning_Lines dict and all players winning_lines dicts, 
-        # and the All_Player_Winning_Lines dict will be updated       
-        
-        # 8) Other player's will still evaluate whether to block the line, based on their current lines,
-        # counts, etc, as well as the counts of the other player's winning lines, and their overall key_count
-        # in the All_Player_Winning_Lines dictionary, as well as the Current_Points value for the given player
-        
-        # 9) In this game, there can be multiple wins per session, and if they get a win,
-        # Current_Points key for that player will be updated 
-        pass    
-    
     def Action(self):
         if len(Used_Squares)== self.Board.dimensions**2:
             global GAME_OVER
@@ -434,15 +388,9 @@ class Comp_Player:
             return            
 
         Exit =False
-        while Exit==False:
-            #Logic function built in here, to choose from keys
-            #For now, it is random most frequent key as a placeholder
-            Choice = self.Make_Choice()
-            # Choice = Shuffled[0]
-            # Shuffled.remove(Choice)
-                       
-
-            # Choice = random.randint(0,self.keys)
+        while Exit==False:            
+            Choice = Shuffled[0]
+            Shuffled.remove(Choice)      
             
             if self.shape == 'O':
                 if Choice not in self.Circles and Choice not in Used_Squares:
@@ -454,14 +402,11 @@ class Comp_Player:
                     self.add_X(Choice)
                     self.add_to_Global(Choice)
                     Exit = True
-                           
+        
         if self.shape == 'O':            
             self.draw_circle()
-
-        elif self.shape =='X':
-                        
-            self.draw_X()
-            
+        elif self.shape =='X':                        
+            self.draw_X()            
         return
 
 pygame.init()
@@ -473,22 +418,18 @@ C2 = Comp_Player(B, RED, 'O',5)
 C3 = Comp_Player(B, GREEN, 'O',5)
 C4 = Comp_Player(B, PURPLE, 'X',5)
 C5 = Comp_Player(B, BLACK, 'O',5)
-print(Advanced_Shuffled)
-# Need to keep track of each of the spots being drawn for each player, in their list,
-# Then in each loop iteration, need to draw all the spots in the players list by that player
 
+# Need to keep track of each of the spots being drawn for each player, in their list,
+# Then in each loop iteration, need to draw all the spots in the players list for player
 
 while True:
     clock.tick(FPS)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-    
     B.draw_board()
-    
     for Player in Players:
         Player.Action()
-                
 
     pygame.display.set_caption("Multiplayer_Tic_Tac_Toe")
     pygame.display.flip()
